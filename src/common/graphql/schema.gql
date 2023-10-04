@@ -1,0 +1,41 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ProjectCategory {
+  project_category: String!
+}
+
+type CoutnryCode {
+  country_code: String!
+}
+
+type User {
+  user_id: String!
+  email: String!
+  name: String!
+  profile_image_url: String
+  created_at: DateTime!
+  countryCode: CoutnryCode!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Project {
+  project_id: String!
+  title: String!
+  content: String!
+  amount_required: Int!
+  amount_raised: Int!
+  donation_count: Int!
+  created_at: DateTime!
+  user_id: User!
+  projectCategory: ProjectCategory!
+}
+
+type Query {
+  sayHello: String!
+}
