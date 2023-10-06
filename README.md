@@ -4,7 +4,7 @@
 
 ## User Module
 
-- [ ] feature1/createUser
+- [x] feature1/createUser
 - [ ] feature5/updateCountryCode(whenGoogleSignup)
 - [ ] feature6/editProfile
 - [ ] feature19/fetchMyProfile(includeDonationHistory)

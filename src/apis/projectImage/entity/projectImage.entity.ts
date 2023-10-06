@@ -25,5 +25,5 @@ export class ProjectImage {
   @JoinColumn({ name: 'project_id' })
   @ManyToOne(() => Project, { nullable: false })
   @Field(() => Project)
-  project: Project;
+  project_id: Project;
 }

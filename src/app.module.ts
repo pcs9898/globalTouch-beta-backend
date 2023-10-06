@@ -41,6 +41,7 @@ import { UpdatedProjectModule } from './apis/updatedProject/updatedProject.modul
       entities: [__dirname + '/apis/**/entity/*.entity.*'],
       synchronize: true,
       logging: true,
+      autoLoadEntities: true,
     }),
   ],
 })

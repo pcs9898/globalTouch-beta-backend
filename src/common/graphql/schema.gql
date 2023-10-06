@@ -2,11 +2,7 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type ProjectCategory {
-  project_category: String!
-}
-
-type CoutnryCode {
+type CountryCode {
   country_code: String!
 }
 
@@ -16,13 +12,24 @@ type User {
   name: String!
   profile_image_url: String
   created_at: DateTime!
-  countryCode: CoutnryCode!
+  country_code: CountryCode!
 }
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type UserResponseDTO {
+  user_id: String!
+  name: String!
+  profile_image_url: String
+  country_code: CountryCode!
+}
+
+type ProjectCategory {
+  project_category: String!
+}
 
 type Project {
   project_id: String!
@@ -33,9 +40,21 @@ type Project {
   donation_count: Int!
   created_at: DateTime!
   user_id: User!
-  projectCategory: ProjectCategory!
+  project_category: ProjectCategory!
 }
 
 type Query {
   sayHello: String!
+}
+
+type Mutation {
+  createUser(createUserDTO: CreateUserDTO!): UserResponseDTO!
+}
+
+input CreateUserDTO {
+  email: String!
+  name: String!
+  profile_image_url: String
+  password: String!
+  country_code: String!
 }

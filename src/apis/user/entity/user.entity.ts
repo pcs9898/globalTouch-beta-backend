@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
-import { CoutnryCode } from 'src/apis/coutryCode/entity/coutnryCode.entity';
+import { CountryCode } from 'src/apis/countryCode/entity/countryCode.entity';
 import {
   Column,
   CreateDateColumn,
@@ -18,25 +18,25 @@ export class User {
   user_id: string;
 
   @Column({ unique: true, type: 'varchar', length: 255, nullable: false })
+  @Field(() => String, { nullable: false })
   @IsNotEmpty()
   @IsEmail()
   @Length(1, 255)
-  @Field(() => String, { nullable: false })
   email: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   password_hash: string;
 
   @Column({ type: 'varchar', length: 30, nullable: false })
+  @Field(() => String, { nullable: false })
   @IsNotEmpty()
   @IsString()
   @Length(1, 30)
-  @Field(() => String, { nullable: false })
   name: string;
 
   @Column({ type: 'text', nullable: true })
-  @IsString()
   @Field(() => String, { nullable: true })
+  @IsString()
   profile_image_url: string;
 
   @CreateDateColumn()
@@ -44,7 +44,7 @@ export class User {
   created_at: Date;
 
   @JoinColumn({ name: 'country_code' })
-  @ManyToOne(() => CoutnryCode, { nullable: false })
-  @Field(() => CoutnryCode)
-  countryCode: CoutnryCode;
+  @ManyToOne(() => CountryCode, { nullable: true })
+  @Field(() => CountryCode)
+  country_code: CountryCode;
 }

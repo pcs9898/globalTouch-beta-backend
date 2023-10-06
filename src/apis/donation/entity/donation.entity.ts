@@ -50,10 +50,10 @@ export class Donation {
   @JoinColumn({ name: 'user_id' })
   @ManyToOne(() => User, { nullable: false })
   @Field(() => User)
-  user: User;
+  user_id: User;
 
   @JoinColumn({ name: 'project_id' })
   @ManyToOne(() => Project, { nullable: false })
   @Field(() => Project)
-  project: Project;
+  project_id: Project;
 }

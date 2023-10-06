@@ -1,10 +1,58 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { CreateUserDTO } from './dto/create-user.dto';
+import { UserResponseDTO } from './dto/user-response.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entity/user.entity';
+import { Repository } from 'typeorm';
+import { CountryCode } from '../countryCode/entity/countryCode.entity';
+import { plainToClass } from 'class-transformer';
+import * as bcrypt from 'bcrypt';
+
+export interface IUserServiceCreateUser {
+  createUserDTO: CreateUserDTO;
+}
+
+export interface IUserServiceFindOneByEmail {
+  email: string;
+}
 
 @Injectable()
 export class UserService {
-  constructor() {}
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
 
-  hello(): string {
-    return 'hello';
+    @InjectRepository(CountryCode)
+    private readonly countryCodeRepository: Repository<CountryCode>,
+  ) {}
+
+  findOneByEmail({ email }: IUserServiceFindOneByEmail) {
+    return this.userRepository.findOne({ where: { email } });
   }
+
+  async create({
+    createUserDTO,
+  }: IUserServiceCreateUser): Promise<UserResponseDTO> {
+    const user = await this.findOneByEmail({ email: createUserDTO.email });
+
+    if (user) throw new ConflictException('Already registered email');
+
+    const hashedPassword = await bcrypt.hash(createUserDTO.password, 10);
+
+    const countryCode = await this.countryCodeRepository.findOne({
+      where: { country_code: createUserDTO.country_code },
+    });
+
+    if (!countryCode) throw new ConflictException('Invalid country code');
+
+    const newUser = await this.userRepository.save({
+      ...createUserDTO,
+      password_hash: hashedPassword,
+      country_code: countryCode,
+    });
+
+    return plainToClass(UserResponseDTO, newUser);
+  }
+
+  //create user 구현
 }

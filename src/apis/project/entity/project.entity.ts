@@ -64,5 +64,5 @@ export class Project {
   @JoinColumn({ name: 'project_category' })
   @ManyToOne(() => ProjectCategory, { nullable: false })
   @Field(() => ProjectCategory)
-  projectCategory: ProjectCategory;
+  project_category: ProjectCategory;
 }
