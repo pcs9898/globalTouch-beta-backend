@@ -11,7 +11,7 @@
 
 ## Auth Module
 
-- [ ] feature2/login
+- [x] feature2/login
 - [ ] feature3/googleLogin
 - [ ] feature4/ restoreAccessToken
 
