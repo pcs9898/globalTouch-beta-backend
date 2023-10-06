@@ -1,6 +1,10 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CreateUserDTO } from './dto/create-user.dto';
-import { UserResponseDTO } from './dto/user-response.dto';
+import { CreateUserResponseDTO } from './dto/create-user-response.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
@@ -32,7 +36,7 @@ export class UserService {
 
   async create({
     createUserDTO,
-  }: IUserServiceCreateUser): Promise<UserResponseDTO> {
+  }: IUserServiceCreateUser): Promise<CreateUserResponseDTO> {
     const user = await this.findOneByEmail({ email: createUserDTO.email });
 
     if (user) throw new ConflictException('Already registered email');
@@ -43,7 +47,8 @@ export class UserService {
       where: { country_code: createUserDTO.country_code },
     });
 
-    if (!countryCode) throw new ConflictException('Invalid country code');
+    if (!countryCode)
+      throw new UnprocessableEntityException('Invalid country code');
 
     const newUser = await this.userRepository.save({
       ...createUserDTO,
@@ -51,7 +56,7 @@ export class UserService {
       country_code: countryCode,
     });
 
-    return plainToClass(UserResponseDTO, newUser);
+    return plainToClass(CreateUserResponseDTO, newUser);
   }
 
   //create user 구현

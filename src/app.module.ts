@@ -29,7 +29,7 @@ import { UpdatedProjectModule } from './apis/updatedProject/updatedProject.modul
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/common/graphql/schema.gql',
-      // context: ({ req, res }) => ({ req, res }),
+      context: ({ req, res }) => ({ req, res }),
     }),
     TypeOrmModule.forRoot({
       type: String(process.env.DATABASE_TYPE) as 'mysql',
@@ -41,7 +41,7 @@ import { UpdatedProjectModule } from './apis/updatedProject/updatedProject.modul
       entities: [__dirname + '/apis/**/entity/*.entity.*'],
       synchronize: true,
       logging: true,
-      autoLoadEntities: true,
+      // autoLoadEntities: true,
     }),
   ],
 })
