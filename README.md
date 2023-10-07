@@ -5,15 +5,15 @@
 ## User Module
 
 - [x] feature1/createUser2
-- [ ] feature5/updateCountryCode(whenGoogleSignup)
+- [ ] feature5/updateCountryCode(createUserWithGoogle)
 - [ ] feature6/editProfile
 - [ ] feature19/fetchMyProfile(includeDonationHistory)
 
 ## Auth Module
 
 - [x] feature2/login
-- [ ] feature3/googleLogin
-- [ ] feature4/ restoreAccessToken
+- [x] feature3/googleLogin
+- [ ] feature4/restoreAccessToken
 
 ## Project Module
 

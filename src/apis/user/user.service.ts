@@ -3,7 +3,6 @@ import {
   Injectable,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { CreateUserDTO } from './dto/create-user.dto';
 import { CreateUserResponseDTO } from './dto/create-user-response.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
@@ -11,14 +10,11 @@ import { Repository } from 'typeorm';
 import { CountryCode } from '../countryCode/entity/countryCode.entity';
 import { plainToClass } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
-
-export interface IUserServiceCreateUser {
-  createUserDTO: CreateUserDTO;
-}
-
-export interface IUserServiceFindOneByEmail {
-  email: string;
-}
+import {
+  IUserServiceCreateUser,
+  IUserServiceCreateUserWithGoogle,
+  IUserServiceFindOneByEmail,
+} from './interfaces/user-service.interface';
 
 @Injectable()
 export class UserService {
@@ -59,5 +55,10 @@ export class UserService {
     return plainToClass(CreateUserResponseDTO, newUser);
   }
 
-  //create user 구현
+  async createUserWithGoogle({
+    name,
+    email,
+  }: IUserServiceCreateUserWithGoogle): Promise<User> {
+    return this.userRepository.save({ name, email });
+  }
 }

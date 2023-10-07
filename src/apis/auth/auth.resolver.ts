@@ -15,3 +15,5 @@ export class AuthResolver {
     return this.authService.login({ loginDTO, context });
   }
 }
+
+// 구글로그인 구현하기~
