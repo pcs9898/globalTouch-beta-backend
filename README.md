@@ -13,7 +13,7 @@
 
 - [x] feature2/login
 - [x] feature3/googleLogin
-- [ ] feature4/restoreAccessToken
+- [x] feature4/restoreAccessToken
 
 ## Project Module
 

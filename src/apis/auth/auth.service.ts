@@ -1,25 +1,14 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDTO } from 'src/apis/auth/dto/login.dto';
+
 import * as bcrypt from 'bcrypt';
-import { IContext } from 'src/common/interfaces/context';
-import { User } from '../user/entity/user.entity';
-import { Response } from 'express';
-
-export interface IAuthServiceLogin {
-  loginDTO: LoginDTO;
-  context: IContext;
-}
-
-export interface IAuthServiceSetRefreshToken {
-  user: User;
-  res: Response;
-}
-
-export interface IAuthServiceGetAccessToken {
-  user: User;
-}
+import {
+  IAuthServiceGetAccessToken,
+  IAuthServiceLogin,
+  IAuthServiceRestoreAccessToken,
+  IAuthServiceSetRefreshToken,
+} from './interfaces/auth-service.interface';
 
 @Injectable()
 export class AuthService {
@@ -54,7 +43,11 @@ export class AuthService {
   getAccessToken({ user }: IAuthServiceGetAccessToken): string {
     return this.jwtService.sign(
       { sub: user.user_id },
-      { secret: process.env.PASSPORT_JWT_ACCESS_SECRET_KEY, expiresIn: '1d' },
+      { secret: process.env.PASSPORT_JWT_ACCESS_SECRET_KEY, expiresIn: '15s' },
     );
+  }
+
+  restoreAccessToken({ user }: IAuthServiceRestoreAccessToken): string {
+    return this.getAccessToken({ user });
   }
 }

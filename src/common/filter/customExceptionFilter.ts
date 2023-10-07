@@ -24,7 +24,8 @@ export class CustomExceptionFilter implements ExceptionFilter {
       error.message = exception.response.data.message;
     }
 
-    console.error(error);
+    console.log(exception);
+
     throw new GraphQLError(error.message, {
       extensions: { code: error.status },
     });
