@@ -4,6 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { IOAuthUser } from './interfaces/auth-service.interface';
 import { CommonService } from '../common/common.service';
+import { User } from '../user/entity/user.entity';
 
 @Controller()
 export class AuthController {
@@ -15,16 +16,31 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   @Get('/login/google')
   async googleLogin(@Req() req: Request & IOAuthUser, @Res() res: Response) {
-    let user = await this.commonService.findOneByEmail({
-      email: req.user.email,
-    });
-
-    if (!user) {
-      user = await this.commonService.createUserWithGoogle({ ...req.user });
-    }
+    const { user, isNewUser } = await this.findOrCreateUser({ user: req.user });
 
     this.authService.setRefreshToken({ user, res });
 
-    res.redirect(process.env.PASSPORT_OAUTH_GOOGLE_REDIRECT_URL);
+    const redirectUrl = isNewUser
+      ? process.env.PASSPORT_OAUTH_GOOGLE_REDIRECT_URL_UPDATE_COUNTRY_CODE
+      : process.env.PASSPORT_OAUTH_GOOGLE_REDIRECT_URL_HOME;
+
+    console.log(isNewUser);
+    res.redirect(redirectUrl);
+  }
+
+  private async findOrCreateUser({
+    user: _user,
+  }: IOAuthUser): Promise<{ user: User; isNewUser: boolean }> {
+    let user = await this.commonService.findOneByEmail({
+      email: _user.email,
+    });
+    let isNewUser = false;
+
+    if (!user) {
+      user = await this.commonService.createUserWithGoogle({ ..._user });
+      isNewUser = true;
+    }
+
+    return { user, isNewUser };
   }
 }
