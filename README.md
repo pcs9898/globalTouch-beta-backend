@@ -7,7 +7,7 @@
 - [x] feature1/createUser
 - [x] feature5/updateCountryCode(createUserWithGoogle)
 - [x] feature5.5/fetchUserLoggedIn
-- [ ] feature6/updateUser(editMyProfile)
+- [x] feature6/updateUser(editMyProfile)
 - [ ] feature19/fetchUserProfileInfo(includeDonationHistory,my projects)
 
 ## Auth Module

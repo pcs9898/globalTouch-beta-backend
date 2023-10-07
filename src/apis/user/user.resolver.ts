@@ -8,6 +8,8 @@ import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
 import { UpdateCountryCodeReponseDTO } from './dto/update-countryCode-response.dto';
 import { UpdateCountryCodeDTO } from './dto/update-countryCode.dto';
 import { FetchUserLoggedInResponseDTO } from './dto/fetch-user-loggedIn-response.dto';
+import { UpdateUserResponseDTO } from './dto/update-user-response.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
 
 @Resolver()
 export class UserResolver {
@@ -44,5 +46,14 @@ export class UserResolver {
     @Context() context: IContext,
   ): Promise<FetchUserLoggedInResponseDTO> {
     return this.userService.fetchUserLoggedIn({ context });
+  }
+
+  @UseGuards(GqlAuthGuard('access'))
+  @Mutation(() => UpdateUserResponseDTO)
+  async updateUser(
+    @Args('updateUserDTO') updateUserDTO: UpdateUserDTO,
+    @Context() context: IContext,
+  ): Promise<UpdateUserResponseDTO> {
+    return this.userService.updateUser({ updateUserDTO, context });
   }
 }

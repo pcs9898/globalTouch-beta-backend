@@ -17,6 +17,8 @@ import { UpdateCountryCodeDTO } from './dto/update-countryCode.dto';
 import { UpdateCountryCodeReponseDTO } from './dto/update-countryCode-response.dto';
 import { FetchUserLoggedInResponseDTO } from './dto/fetch-user-loggedIn-response.dto';
 import { plainToClass } from 'class-transformer';
+import { UpdateUserDTO } from './dto/update-user.dto';
+import { UpdateUserResponseDTO } from './dto/update-user-response.dto';
 
 export interface IUserServiceUpdateCountryCode {
   updateCountryCodeDTO: UpdateCountryCodeDTO;
@@ -32,6 +34,11 @@ export interface IUserServiceFindOneUserById {
 }
 
 export interface IUserServiceFetchUserLoggedIn {
+  context: IContext;
+}
+
+export interface IUserServiceUpdateUser {
+  updateUserDTO: UpdateUserDTO;
   context: IContext;
 }
 
@@ -117,6 +124,24 @@ export class UserService {
     if (!user) throw new UnprocessableEntityException("User doesn't exist");
 
     return plainToClass(FetchUserLoggedInResponseDTO, user);
+  }
+
+  //
+  async updateUser({
+    updateUserDTO,
+    context,
+  }: IUserServiceUpdateUser): Promise<UpdateUserResponseDTO> {
+    const user = await this.findOneUserById({
+      user_id: context.req.user.user_id,
+    });
+    if (!user) throw new UnprocessableEntityException("User doesn't exist");
+
+    const updatedUser = await this.userRepository.save({
+      ...user,
+      ...updateUserDTO,
+    });
+
+    return plainToClass(UpdateUserResponseDTO, updatedUser);
   }
 
   //

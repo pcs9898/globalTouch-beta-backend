@@ -27,6 +27,11 @@ type FetchUserLoggedInResponseDTO {
   country_code: CountryCode!
 }
 
+type UpdateUserResponseDTO {
+  name: String
+  profile_image_url: String
+}
+
 type CreateUserResponseDTO {
   accessToken: String!
 }
@@ -61,6 +66,7 @@ type Mutation {
   restoreAccessToken: String!
   createUser(createUserDTO: CreateUserDTO!): CreateUserResponseDTO!
   updateCountryCode(updateCountryCodeDTO: UpdateCountryCodeDTO!): UpdateCountryCodeReponseDTO!
+  updateUser(updateUserDTO: UpdateUserDTO!): UpdateUserResponseDTO!
 }
 
 input LoginDTO {
@@ -78,4 +84,9 @@ input CreateUserDTO {
 
 input UpdateCountryCodeDTO {
   country_code: String!
+}
+
+input UpdateUserDTO {
+  name: String
+  profile_image_url: String
 }
