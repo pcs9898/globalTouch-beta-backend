@@ -24,14 +24,13 @@ export class AuthController {
       ? process.env.PASSPORT_OAUTH_GOOGLE_REDIRECT_URL_UPDATE_COUNTRY_CODE
       : process.env.PASSPORT_OAUTH_GOOGLE_REDIRECT_URL_HOME;
 
-    console.log(isNewUser);
     res.redirect(redirectUrl);
   }
 
   private async findOrCreateUser({
     user: _user,
   }: IOAuthUser): Promise<{ user: User; isNewUser: boolean }> {
-    let user = await this.commonService.findOneByEmail({
+    let user = await this.commonService.findOneUserByEmail({
       email: _user.email,
     });
     let isNewUser = false;

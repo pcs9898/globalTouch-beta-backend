@@ -2,12 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entity/user.entity';
 import { Repository } from 'typeorm';
-import { ICommonServiceFindOneByEmail } from './interfaces/common-service.interface';
-
-export interface ICommonServiceCreateUserWithGoogle {
-  name: string;
-  email: string;
-}
+import {
+  ICommonServiceCreateUserWithGoogle,
+  ICommonServiceFindUserOneByEmail,
+} from './interfaces/common-service.interface';
 
 @Injectable()
 export class CommonService {
@@ -16,11 +14,11 @@ export class CommonService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  findOneByEmail({ email }: ICommonServiceFindOneByEmail) {
+  findOneUserByEmail({ email }: ICommonServiceFindUserOneByEmail) {
     return this.userRepository.findOne({ where: { email } });
   }
 
-  async createUserWithGoogle({
+  createUserWithGoogle({
     name,
     email,
   }: ICommonServiceCreateUserWithGoogle): Promise<User> {

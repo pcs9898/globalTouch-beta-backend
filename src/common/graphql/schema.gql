@@ -24,6 +24,10 @@ type CreateUserResponseDTO {
   accessToken: String!
 }
 
+type UpdateCountryCodeReponseDTO {
+  accessToken: String!
+}
+
 type ProjectCategory {
   project_category: String!
 }
@@ -49,6 +53,7 @@ type Mutation {
   login(loginDTO: LoginDTO!): String!
   restoreAccessToken: String!
   createUser(createUserDTO: CreateUserDTO!): CreateUserResponseDTO!
+  updateCountryCode(updateCountryCodeDTO: UpdateCountryCodeDTO!): UpdateCountryCodeReponseDTO!
 }
 
 input LoginDTO {
@@ -61,5 +66,9 @@ input CreateUserDTO {
   name: String!
   profile_image_url: String
   password: String!
+  country_code: String!
+}
+
+input UpdateCountryCodeDTO {
   country_code: String!
 }

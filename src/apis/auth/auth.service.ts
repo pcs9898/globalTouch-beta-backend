@@ -18,7 +18,7 @@ export class AuthService {
   ) {}
 
   async login({ loginDTO, context }: IAuthServiceLogin): Promise<string> {
-    const user = await this.commonService.findOneByEmail({
+    const user = await this.commonService.findOneUserByEmail({
       email: loginDTO.email,
     });
     if (!user) throw new UnprocessableEntityException('User does not exist');
