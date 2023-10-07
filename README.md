@@ -5,10 +5,10 @@
 ## User Module
 
 - [x] feature1/createUser
-- [x] feature5/updateCountryCode(createUserWithGoogle)
+- [x] feature5/updateCountryCode (createUserWithGoogle)
 - [x] feature5.5/fetchUserLoggedIn
-- [x] feature6/updateUser(editMyProfile)
-- [ ] feature19/fetchUserProfileInfo(includeDonationHistory,my projects)
+- [x] feature6/updateUser (editMyProfile)
+- [ ] feature19/fetchUserProfileInfo (includeDonationHistory, myprojects)
 
 ## Auth Module
 
@@ -18,11 +18,11 @@
 
 ## Project Module
 
-- [ ] feature7/createProject-pictureMax3
+- [ ] feature7/createProject(picture max 3)
 - [ ] feature8/fetchProject
-- [ ] feature9/fetchPopularProjects(pageNation-pageSize:4, sortByNumberOfDonors)
-- [ ] feature10/fetchNewProjects(pageNation-pageSize:4, sortByTime)
-- [ ] feature11/fetchProjectsByCountry(pageNation-pageSize:4, sortByTime)
+- [ ] feature9/fetchProjectsTrending (pageNation-pageSize:6, sortByNumberOfDonors)
+- [ ] feature10/fetchProjectsNewst (pageNation-pageSize:6, sortByTime)
+- [ ] feature11/fetchProjectsByCountry (pageNation-pageSize:6, sortByTime)
 
 ## Comment Module
 
