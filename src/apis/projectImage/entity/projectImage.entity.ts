@@ -12,7 +12,7 @@ import {
 @Entity()
 @ObjectType()
 export class ProjectImage {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   projectImage_id: string;
 
@@ -23,7 +23,9 @@ export class ProjectImage {
   image_url: string;
 
   @JoinColumn({ name: 'project_id' })
-  @ManyToOne(() => Project, { nullable: false })
+  @ManyToOne(() => Project, (project) => project.projectImages, {
+    nullable: false,
+  })
   @Field(() => Project)
-  project_id: Project;
+  project: Project;
 }

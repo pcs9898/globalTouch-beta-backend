@@ -46,5 +46,5 @@ export class User {
   @JoinColumn({ name: 'country_code' })
   @ManyToOne(() => CountryCode, { nullable: true })
   @Field(() => CountryCode)
-  country_code: CountryCode;
+  countryCode: CountryCode;
 }

@@ -6,5 +6,5 @@ export class FetchUserLoggedInResponseDTO extends PickType(User, [
   'email',
   'name',
   'profile_image_url',
-  'country_code',
+  'countryCode',
 ] as const) {}

@@ -18,28 +18,34 @@
 
 ## Project Module
 
-- [ ] feature7/createProject(picture max 3)
+- [x] feature7/createProject (picture max 3, transaction)
 - [ ] feature8/fetchProject
-- [ ] feature9/fetchProjectsTrending (pageNation-pageSize:6, sortByNumberOfDonors)
-- [ ] feature10/fetchProjectsNewst (pageNation-pageSize:6, sortByTime)
-- [ ] feature11/fetchProjectsByCountry (pageNation-pageSize:6, sortByTime)
+- [ ] feature9/fetchProjectsTrending (pageNation-pageSize:4, sortByNumberOfDonors)
+- [ ] feature10/fetchProjectsNewst (pageNation-pageSize:4, sortByTime)
+- [ ] feature11/fetchProjectsByCountry (pageNation-pageSize:4, sortByTime)
 
 ## Comment Module
 
+--need to add one to many relation
+
 - [ ] feature12/createComment
-- [ ] feature13/fetchComments(sortByTime)
+- [ ] feature13/fetchComments (sortByTime)
 - [ ] feature14/updateComment
 - [ ] feature15/deleteComment
 
 ## UpdatedProject Module
+
+--need to add one to many relation
 
 - [ ] feature16/createUpdatedProject
 - [ ] feature17/fetchUpdatedProjects
 
 ## Donation Module
 
-- [ ] feature18/createDonation
+--need to add one to many relation
+
+- [ ] feature18/createDonation (transaction)
 
 ## Search Module
 
-- [ ] feature20/search(searchByCategory, sortbyTime)
+- [ ] feature20/search (searchByCategory, sortByTime)

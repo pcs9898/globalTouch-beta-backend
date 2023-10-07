@@ -12,7 +12,7 @@ type User {
   name: String!
   profile_image_url: String
   created_at: DateTime!
-  country_code: CountryCode!
+  countryCode: CountryCode!
 }
 
 """
@@ -24,7 +24,7 @@ type FetchUserLoggedInResponseDTO {
   email: String!
   name: String!
   profile_image_url: String
-  country_code: CountryCode!
+  countryCode: CountryCode!
 }
 
 type UpdateUserResponseDTO {
@@ -44,6 +44,19 @@ type ProjectCategory {
   project_category: String!
 }
 
+type ProjectImage {
+  projectImage_id: String!
+  image_url: String!
+  project: Project!
+}
+
+type UpdatedProject {
+  updatedProject_id: String!
+  content: String!
+  created_at: DateTime!
+  project: Project!
+}
+
 type Project {
   project_id: String!
   title: String!
@@ -52,8 +65,25 @@ type Project {
   amount_raised: Int!
   donation_count: Int!
   created_at: DateTime!
-  user_id: User!
-  project_category: ProjectCategory!
+  user: User!
+  projectCategory: ProjectCategory!
+  countryCode: CountryCode!
+  projectImages: [ProjectImage!]!
+  updatedProjects: [UpdatedProject!]!
+}
+
+type CreateProjectResponseDTO {
+  project_id: String!
+  title: String!
+  content: String!
+  amount_required: Int!
+  amount_raised: Int!
+  donation_count: Int!
+  created_at: DateTime!
+  user: User!
+  projectCategory: ProjectCategory!
+  countryCode: CountryCode!
+  projectImages: [ProjectImage!]!
 }
 
 type Query {
@@ -64,6 +94,7 @@ type Query {
 type Mutation {
   loginUser(loginDTO: LoginDTO!): String!
   restoreAccessToken: String!
+  createProject(createProjectDTO: CreateProjectDTO!): CreateProjectResponseDTO!
   createUser(createUserDTO: CreateUserDTO!): CreateUserResponseDTO!
   updateCountryCode(updateCountryCodeDTO: UpdateCountryCodeDTO!): UpdateCountryCodeReponseDTO!
   updateUser(updateUserDTO: UpdateUserDTO!): UpdateUserResponseDTO!
@@ -72,6 +103,15 @@ type Mutation {
 input LoginDTO {
   email: String!
   password: String!
+}
+
+input CreateProjectDTO {
+  title: String!
+  content: String!
+  amount_required: Int!
+  project_category: String!
+  country_code: String!
+  projectImageUrls: String!
 }
 
 input CreateUserDTO {

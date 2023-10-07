@@ -11,12 +11,18 @@ import { ProjectModule } from './apis/project/project.module';
 import { ProjectImageModule } from './apis/projectImage/projectImage.module';
 import { SearchModule } from './apis/search/search.module';
 import { UpdatedProjectModule } from './apis/updatedProject/updatedProject.module';
+import { CountryCodeModule } from './apis/countryCode/countryCode.module';
+import { CommonModule } from './apis/common/common.module';
+import { ProjectCategoryModule } from './apis/projectCategory/projectCategory.module';
 
 @Module({
   imports: [
     AuthModule,
     CommentModule,
+    CountryCodeModule,
+    CommonModule,
     DonationModule,
+    ProjectCategoryModule,
     ProjectModule,
     ProjectImageModule,
     SearchModule,

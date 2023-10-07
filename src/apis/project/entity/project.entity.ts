@@ -1,6 +1,9 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { IsInt, IsNotEmpty, IsString, Length, Min } from 'class-validator';
+import { CountryCode } from 'src/apis/countryCode/entity/countryCode.entity';
 import { ProjectCategory } from 'src/apis/projectCategory/entity/projectCategory.entity';
+import { ProjectImage } from 'src/apis/projectImage/entity/projectImage.entity';
+import { UpdatedProject } from 'src/apis/updatedProject/entity/updatedProject.entity';
 import { User } from 'src/apis/user/entity/user.entity';
 import {
   Column,
@@ -8,6 +11,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -18,7 +22,7 @@ export class Project {
   @Field(() => String)
   project_id: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: false })
+  @Column({ unique: true, type: 'varchar', length: 255, nullable: false })
   @IsNotEmpty()
   @IsString()
   @Length(1, 255)
@@ -59,10 +63,23 @@ export class Project {
   @JoinColumn({ name: 'user_id' })
   @ManyToOne(() => User, { nullable: false })
   @Field(() => User)
-  user_id: User;
+  user: User;
 
   @JoinColumn({ name: 'project_category' })
   @ManyToOne(() => ProjectCategory, { nullable: false })
   @Field(() => ProjectCategory)
-  project_category: ProjectCategory;
+  projectCategory: ProjectCategory;
+
+  @JoinColumn({ name: 'country_code' })
+  @ManyToOne(() => CountryCode, { nullable: false })
+  @Field(() => CountryCode)
+  countryCode: CountryCode;
+
+  @OneToMany(() => ProjectImage, (projectImage) => projectImage.project)
+  @Field(() => [ProjectImage])
+  projectImages: ProjectImage[];
+
+  @OneToMany(() => UpdatedProject, (updatedProject) => updatedProject.project)
+  @Field(() => [UpdatedProject])
+  updatedProjects: UpdatedProject[];
 }
