@@ -10,22 +10,16 @@ export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
   @Mutation(() => String)
-  async login(
+  async loginUser(
     @Args('loginDTO') loginDTO: LoginDTO,
     @Context() context: IContext,
   ): Promise<string> {
-    return this.authService.login({ loginDTO, context });
+    return this.authService.loginUser({ loginDTO, context });
   }
 
   @UseGuards(GqlAuthGuard('refresh'))
   @Mutation(() => String)
   restoreAccessToken(@Context() context: IContext): string {
     return this.authService.restoreAccessToken({ user: context.req.user });
-  }
-
-  @UseGuards(GqlAuthGuard('access'))
-  @Query(() => String)
-  test(): string {
-    return 'ok';
   }
 }

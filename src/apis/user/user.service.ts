@@ -15,6 +15,8 @@ import { AuthService } from '../auth/auth.service';
 import { IContext } from 'src/common/interfaces/context';
 import { UpdateCountryCodeDTO } from './dto/update-countryCode.dto';
 import { UpdateCountryCodeReponseDTO } from './dto/update-countryCode-response.dto';
+import { FetchUserLoggedInResponseDTO } from './dto/fetch-user-loggedIn-response.dto';
+import { plainToClass } from 'class-transformer';
 
 export interface IUserServiceUpdateCountryCode {
   updateCountryCodeDTO: UpdateCountryCodeDTO;
@@ -23,6 +25,14 @@ export interface IUserServiceUpdateCountryCode {
 
 export interface IUserServiceFindOneCountryCode {
   country_code: string;
+}
+
+export interface IUserServiceFindOneUserById {
+  user_id: string;
+}
+
+export interface IUserServiceFetchUserLoggedIn {
+  context: IContext;
 }
 
 @Injectable()
@@ -39,7 +49,7 @@ export class UserService {
     private readonly authService: AuthService,
   ) {}
 
-  async create({
+  async createUser({
     createUserDTO,
     context,
   }: IUserServiceCreateUser): Promise<CreateUserResponseDTO> {
@@ -75,8 +85,8 @@ export class UserService {
     updateCountryCodeDTO,
     context,
   }: IUserServiceUpdateCountryCode): Promise<UpdateCountryCodeReponseDTO> {
-    const user = await this.userRepository.findOne({
-      where: { user_id: context.req.user.user_id },
+    const user = await this.findOneUserById({
+      user_id: context.req.user.user_id,
     });
     if (!user) throw new UnprocessableEntityException("User doesn't exist");
 
@@ -96,6 +106,28 @@ export class UserService {
     return { accessToken };
   }
 
+  //
+  async fetchUserLoggedIn({
+    context,
+  }: IUserServiceFetchUserLoggedIn): Promise<FetchUserLoggedInResponseDTO> {
+    const user = await this.userRepository.findOne({
+      where: { user_id: context.req.user.user_id },
+      relations: ['country_code'],
+    });
+    if (!user) throw new UnprocessableEntityException("User doesn't exist");
+
+    return plainToClass(FetchUserLoggedInResponseDTO, user);
+  }
+
+  //
+  async findOneUserById({ user_id }: IUserServiceFindOneUserById) {
+    return this.userRepository.findOne({
+      where: { user_id },
+      relations: ['country_code'],
+    });
+  }
+
+  //
   async findOneCountryCode({ country_code }: IUserServiceFindOneCountryCode) {
     return this.countryCodeRepository.findOne({ where: { country_code } });
   }

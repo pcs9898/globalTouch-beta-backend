@@ -17,7 +17,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login({ loginDTO, context }: IAuthServiceLogin): Promise<string> {
+  async loginUser({ loginDTO, context }: IAuthServiceLogin): Promise<string> {
     const user = await this.commonService.findOneUserByEmail({
       email: loginDTO.email,
     });

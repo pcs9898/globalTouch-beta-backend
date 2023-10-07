@@ -20,6 +20,13 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type FetchUserLoggedInResponseDTO {
+  email: String!
+  name: String!
+  profile_image_url: String
+  country_code: CountryCode!
+}
+
 type CreateUserResponseDTO {
   accessToken: String!
 }
@@ -45,12 +52,12 @@ type Project {
 }
 
 type Query {
-  test: String!
   sayHello: String!
+  fetchUserLoggedIn: FetchUserLoggedInResponseDTO!
 }
 
 type Mutation {
-  login(loginDTO: LoginDTO!): String!
+  loginUser(loginDTO: LoginDTO!): String!
   restoreAccessToken: String!
   createUser(createUserDTO: CreateUserDTO!): CreateUserResponseDTO!
   updateCountryCode(updateCountryCodeDTO: UpdateCountryCodeDTO!): UpdateCountryCodeReponseDTO!
