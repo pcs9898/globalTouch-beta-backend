@@ -4,8 +4,9 @@
 
 ## User Module
 
-- [x] feature1/createUser2
-- [ ] feature5/updateCountryCode(createUserWithGoogle)
+- [x] feature1/createUser
+- [x] feature5/updateCountryCode-createUserWithGoogle
+- [ ] feature5.5/fetchUser
 - [ ] feature6/editProfile
 - [ ] feature19/fetchMyProfile(includeDonationHistory)
 
@@ -17,7 +18,7 @@
 
 ## Project Module
 
-- [ ] feature7/createPoject(picture max 3)
+- [ ] feature7/createProject-pictureMax3
 - [ ] feature8/fetchProject
 - [ ] feature9/fetchPopularProjects(pageNation-pageSize:4, sortByNumberOfDonors)
 - [ ] feature10/fetchNewProjects(pageNation-pageSize:4, sortByTime)

@@ -8,13 +8,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import { CountryCode } from '../countryCode/entity/countryCode.entity';
-import { plainToClass } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
-import {
-  IUserServiceCreateUser,
-  IUserServiceCreateUserWithGoogle,
-  IUserServiceFindOneByEmail,
-} from './interfaces/user-service.interface';
+import { IUserServiceCreateUser } from './interfaces/user-service.interface';
+import { CommonService } from '../common/common.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UserService {
@@ -24,16 +21,19 @@ export class UserService {
 
     @InjectRepository(CountryCode)
     private readonly countryCodeRepository: Repository<CountryCode>,
-  ) {}
 
-  findOneByEmail({ email }: IUserServiceFindOneByEmail) {
-    return this.userRepository.findOne({ where: { email } });
-  }
+    private readonly commonService: CommonService,
+
+    private readonly authService: AuthService,
+  ) {}
 
   async create({
     createUserDTO,
+    context,
   }: IUserServiceCreateUser): Promise<CreateUserResponseDTO> {
-    const user = await this.findOneByEmail({ email: createUserDTO.email });
+    const user = await this.commonService.findOneByEmail({
+      email: createUserDTO.email,
+    });
 
     if (user) throw new ConflictException('Already registered email');
 
@@ -52,13 +52,10 @@ export class UserService {
       country_code: countryCode,
     });
 
-    return plainToClass(CreateUserResponseDTO, newUser);
-  }
+    this.authService.setRefreshToken({ user: newUser, res: context.res });
 
-  async createUserWithGoogle({
-    name,
-    email,
-  }: IUserServiceCreateUserWithGoogle): Promise<User> {
-    return this.userRepository.save({ name, email });
+    const accessToken = this.authService.getAccessToken({ user: newUser });
+
+    return { accessToken };
   }
 }

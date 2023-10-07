@@ -1,5 +1,4 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 
 import * as bcrypt from 'bcrypt';
@@ -9,16 +8,17 @@ import {
   IAuthServiceRestoreAccessToken,
   IAuthServiceSetRefreshToken,
 } from './interfaces/auth-service.interface';
+import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
+    private readonly commonService: CommonService,
     private readonly jwtService: JwtService,
   ) {}
 
   async login({ loginDTO, context }: IAuthServiceLogin): Promise<string> {
-    const user = await this.userService.findOneByEmail({
+    const user = await this.commonService.findOneByEmail({
       email: loginDTO.email,
     });
     if (!user) throw new UnprocessableEntityException('User does not exist');
