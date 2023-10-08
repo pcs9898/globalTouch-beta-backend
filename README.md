@@ -27,7 +27,7 @@
 ## ProjectComment Module
 
 - [ ] feature12/createProjectComment
-- [ ] feature13/fetchProjectComments (page-limit:10,sortByTime)
+- [ ] feature13/fetchProjectComments (page-limit:10, sortByTime)
 - [ ] feature14/updateProjectComment
 - [ ] feature15/deleteProjectComment
 
