@@ -11,6 +11,8 @@ import { FetchProjectsTrendingWithTotalResponseDTO } from './dto/fetch-projects-
 import { FetchProjectsTrendingDTO } from './dto/fetch-projects-trending/fetch-projects-trending.dto';
 import { FetchProjectsUserLoggedInWithTotalResponseDTO } from './dto/fetch-projects-user-loggedIn/fetch-projects-user-loggedIn-withTotal-response.dto';
 import { FetchProjectsUserLoggedInDTO } from './dto/fetch-projects-user-loggedIn/fetch-projects-user-LoggedIn.dto';
+import { FetchProjectsNewestWithTotalResponseDTO } from './dto/fetch-projects-newest/fetch-projects-newest-withTotal-response.dto';
+import { FetchProjectsNewestDTO } from './dto/fetch-projects-newest/fetch-projects-newest.dto';
 
 @Resolver()
 export class ProjectResolver {
@@ -44,6 +46,14 @@ export class ProjectResolver {
     return this.projectService.fetchProjectsTrending({
       fetchProjectsTrendingDTO,
     });
+  }
+
+  @Query(() => FetchProjectsNewestWithTotalResponseDTO)
+  async fetchProjectsNewest(
+    @Args('fetchProjectsNewestDTO')
+    fetchProjectsNewestDTO: FetchProjectsNewestDTO,
+  ): Promise<FetchProjectsNewestWithTotalResponseDTO> {
+    return this.projectService.fetchProjectsNewest({ fetchProjectsNewestDTO });
   }
 
   @UseGuards(GqlAuthGuard('access'))

@@ -125,6 +125,14 @@ type FetchProjectsUserLoggedInResponseDTO {
   projectImages: [ProjectImage!]!
 }
 
+type FetchProjectsNewestResponseDTO {
+  title: String!
+  amount_required: Int!
+  amount_raised: Int!
+  countryCode: CountryCode!
+  projectImages: [ProjectImage!]!
+}
+
 type FetchProjectsTrendingWithTotalResponseDTO {
   projectsTrending: [FetchProjectsTrendingResponseDTO!]!
   total: Int!
@@ -135,10 +143,16 @@ type FetchProjectsUserLoggedInWithTotalResponseDTO {
   total: Int!
 }
 
+type FetchProjectsNewestWithTotalResponseDTO {
+  projectsNewest: [FetchProjectsNewestResponseDTO!]!
+  total: Int!
+}
+
 type Query {
   fetchProject(fetchProjectDTO: FetchProjectDTO!): FetchProjectResponseDTO!
   fetchProjectsUserLoggedIn(fetchProjectsUserLoggedInDTO: FetchProjectsUserLoggedInDTO!): FetchProjectsUserLoggedInWithTotalResponseDTO!
   fetchProjectsTrending(fetchProjectsTrendingDTO: FetchProjectsTrendingDTO!): FetchProjectsTrendingWithTotalResponseDTO!
+  fetchProjectsNewest(fetchProjectsNewestDTO: FetchProjectsNewestDTO!): FetchProjectsNewestWithTotalResponseDTO!
   sayHello: String!
   fetchUserLoggedIn: FetchUserLoggedInResponseDTO!
 }
@@ -152,6 +166,10 @@ input FetchProjectsUserLoggedInDTO {
 }
 
 input FetchProjectsTrendingDTO {
+  offset: Int!
+}
+
+input FetchProjectsNewestDTO {
   offset: Int!
 }
 

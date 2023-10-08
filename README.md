@@ -21,7 +21,7 @@
 - [x] feature8/fetchProject
 - [x] feature8.5/fetchProjectsUserLoggedIn (page-limit:6, sortByTime)
 - [x] feature9/fetchProjectsTrending (page-limit:4, sortByNumberOfDonations)
-- [ ] feature10/fetchProjectsNewest (page-limit:4, sortByTime)
+- [x] feature10/fetchProjectsNewest (page-limit:4, sortByTime)
 - [ ] feature11/fetchProjectsByCountry (page-limit:4, sortByTime)
 
 ## ProjectComment Module
@@ -38,9 +38,9 @@
 
 ## ProjectDonation Module
 
-- [ ] feature18/createProjectDonation (transaction)
+- [ ] feature18/createProjectDonation (transaction, payment verification)
 - [ ] feature19/fetchDonationsUserLoggedIn (page-limit:6, sortByTime)
 
 ## Search Module
 
-- [ ] feature20/search (searchByCategory, sortByTime)
+- [ ] feature20/search (searchByCategory, sortByTime, apply redis globally)

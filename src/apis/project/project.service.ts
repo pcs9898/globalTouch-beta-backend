@@ -16,6 +16,7 @@ import { UserService } from '../user/user.service';
 import {
   IProjectServiceCreateProject,
   IProjectServiceFetchProject,
+  IProjectServiceFetchProjectsNewest,
   IProjectServiceFetchProjectsTrending,
   IProjectServiceFetchProjectsUserLoggedIn,
 } from './interfaces/project-serivce.interface';
@@ -24,6 +25,8 @@ import { FetchProjectsTrendingResponseDTO } from './dto/fetch-projects-trending/
 import { FetchProjectsTrendingWithTotalResponseDTO } from './dto/fetch-projects-trending/fetch-projects-trending-withTotal-response.dto';
 import { FetchProjectsUserLoggedInWithTotalResponseDTO } from './dto/fetch-projects-user-loggedIn/fetch-projects-user-loggedIn-withTotal-response.dto';
 import { FetchProjectsUserLoggedInResponseDTO } from './dto/fetch-projects-user-loggedIn/fetch-projects-user-LoggedIn-response.dto';
+import { FetchProjectsNewestWithTotalResponseDTO } from './dto/fetch-projects-newest/fetch-projects-newest-withTotal-response.dto';
+import { FetchProjectsNewestResponseDTO } from './dto/fetch-projects-newest/fetch-projects-newest-reponse.dto';
 
 @Injectable()
 export class ProjectService {
@@ -173,6 +176,28 @@ export class ProjectService {
 
     return {
       projectsUserLoggedIn: plainProjectsUserLoggedIn,
+      total,
+    };
+  }
+
+  // fetchProjectsNewest
+  async fetchProjectsNewest({
+    fetchProjectsNewestDTO,
+  }: IProjectServiceFetchProjectsNewest): Promise<FetchProjectsNewestWithTotalResponseDTO> {
+    const limit = 4;
+    const [projectsNewest, total] = await this.projectRepository.findAndCount({
+      skip: (fetchProjectsNewestDTO.offset - 1) * limit,
+      take: limit,
+      order: { created_at: 'DESC' },
+      relations: ['countryCode', 'projectImages'],
+    });
+
+    const plainProjectsNewest = projectsNewest.map((projectNewest) =>
+      plainToClass(FetchProjectsNewestResponseDTO, projectNewest),
+    );
+
+    return {
+      projectsNewest: plainProjectsNewest,
       total,
     };
   }
