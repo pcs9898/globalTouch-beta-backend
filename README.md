@@ -26,20 +26,20 @@
 
 ## UpdatedProject Module
 
-- [ ] feature16/createUpdatedProject
-- [ ] feature17/fetchUpdatedProjects
+- [ ] feature12/createUpdatedProject
+- [ ] feature13/fetchUpdatedProjects
 
 ## ProjectDonation Module
 
-- [ ] feature18/createProjectDonation (transaction, payment verification)
-- [ ] feature19/fetchDonationsUserLoggedIn (page-limit:6, sortByTime)
+- [ ] feature14/createProjectDonation (transaction, payment verification)
+- [ ] feature15/fetchDonationsUserLoggedIn (page-limit:6, sortByTime)
 
 ## ProjectComment Module
 
-- [ ] feature12/createProjectComment
-- [ ] feature13/fetchProjectComments (page-limit:10, sortByTime)
-- [ ] feature14/updateProjectComment
-- [ ] feature15/deleteProjectComment
+- [ ] feature16/createProjectComment
+- [ ] feature17/fetchProjectComments (page-limit:10, sortByTime)
+- [ ] feature18/updateProjectComment
+- [ ] feature19/deleteProjectComment
 
 ## Search Module
 
