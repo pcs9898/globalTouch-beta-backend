@@ -7,6 +7,8 @@ import { CreateProjectDTO } from './dto/create-project.dto';
 import { IContext } from 'src/common/interfaces/context';
 import { FetchProjectResponseDTO } from './dto/fetch-project-response.dto';
 import { FetchProjectDTO } from './dto/fetch-project.dto';
+import { FetchProjectsTrendingDTO } from './dto/fetch-projects-trending.dto';
+import { FetchProjectsTrendingWithTotalResponseDTO } from './dto/fetch-projects-trending-withTotal-response.dto';
 
 @Resolver()
 export class ProjectResolver {
@@ -17,6 +19,16 @@ export class ProjectResolver {
     @Args('fetchProjectDTO') fetchProjectDTO: FetchProjectDTO,
   ): Promise<FetchProjectResponseDTO> {
     return this.projectService.fetchProject({ fetchProjectDTO });
+  }
+
+  @Query(() => FetchProjectsTrendingWithTotalResponseDTO)
+  async fetchProjectsTrending(
+    @Args('fetchProjectsTrendingDTO')
+    fetchProjectsTrendingDTO: FetchProjectsTrendingDTO,
+  ): Promise<FetchProjectsTrendingWithTotalResponseDTO> {
+    return this.projectService.fetchProjectsTrending({
+      fetchProjectsTrendingDTO,
+    });
   }
 
   @UseGuards(GqlAuthGuard('access'))

@@ -16,8 +16,11 @@ import { UserService } from '../user/user.service';
 import {
   IProjectServiceCreateProject,
   IProjectServiceFetchProject,
+  IProjectServiceFetchProjectsTrending,
 } from './interfaces/project-serivce.interface';
 import { FetchProjectResponseDTO } from './dto/fetch-project-response.dto';
+import { FetchProjectsTrendingResponseDTO } from './dto/fetch-projects-trending-response.dto';
+import { FetchProjectsTrendingWithTotalResponseDTO } from './dto/fetch-projects-trending-withTotal-response.dto';
 
 @Injectable()
 export class ProjectService {
@@ -119,5 +122,29 @@ export class ProjectService {
     if (!isProject) throw new NotFoundException('Project not found');
 
     return plainToClass(FetchProjectResponseDTO, isProject);
+  }
+
+  // fetchProjectsTrending
+  async fetchProjectsTrending({
+    fetchProjectsTrendingDTO,
+  }: IProjectServiceFetchProjectsTrending): Promise<FetchProjectsTrendingWithTotalResponseDTO> {
+    const limit = 4;
+    const [trendingProjects, total] = await this.projectRepository.findAndCount(
+      {
+        skip: (fetchProjectsTrendingDTO.offset - 1) * limit,
+        take: limit,
+        order: { donation_count: 'DESC' },
+        relations: ['countryCode', 'projectImages'],
+      },
+    );
+
+    const plainTrendingProjects = trendingProjects.map((trendingProject) =>
+      plainToClass(FetchProjectsTrendingResponseDTO, trendingProject),
+    );
+
+    return {
+      ProjectsTrending: plainTrendingProjects,
+      total,
+    };
   }
 }
