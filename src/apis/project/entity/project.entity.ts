@@ -2,6 +2,8 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { IsInt, IsNotEmpty, IsString, Length, Min } from 'class-validator';
 import { CountryCode } from 'src/apis/countryCode/entity/countryCode.entity';
 import { ProjectCategory } from 'src/apis/projectCategory/entity/projectCategory.entity';
+import { ProjectComment } from 'src/apis/projectComment/entity/projectComment.entity';
+import { ProjectDonation } from 'src/apis/projectDonation/entity/projectDonation.entity';
 import { ProjectImage } from 'src/apis/projectImage/entity/projectImage.entity';
 import { UpdatedProject } from 'src/apis/updatedProject/entity/updatedProject.entity';
 import { User } from 'src/apis/user/entity/user.entity';
@@ -82,4 +84,15 @@ export class Project {
   @OneToMany(() => UpdatedProject, (updatedProject) => updatedProject.project)
   @Field(() => [UpdatedProject])
   updatedProjects: UpdatedProject[];
+
+  @OneToMany(() => ProjectComment, (projectComment) => projectComment.project)
+  @Field(() => [ProjectComment])
+  projectComments: ProjectComment[];
+
+  @OneToMany(
+    () => ProjectDonation,
+    (projectDonation) => projectDonation.project,
+  )
+  @Field(() => [ProjectDonation])
+  projectDonations: ProjectDonation[];
 }

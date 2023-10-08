@@ -11,19 +11,21 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-export enum DONATION_STATUS_ENUM {
+export enum PROJECT_DONATION_STATUS_ENUM {
   PAYMENT = 'PAYMENT',
   CANCEL = 'CANCEL',
 }
 
-registerEnumType(DONATION_STATUS_ENUM, { name: 'DONATION_STATUS_ENUM' });
+registerEnumType(PROJECT_DONATION_STATUS_ENUM, {
+  name: 'PROJECT_DONATION_STATUS_ENUM',
+});
 
 @Entity()
 @ObjectType()
-export class Donation {
+export class ProjectDonation {
   @PrimaryGeneratedColumn()
   @Field(() => String)
-  donation_id: string;
+  projectDonation_id: string;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
   @IsNotEmpty()
@@ -37,23 +39,25 @@ export class Donation {
   @IsInt()
   @Min(0)
   @Field(() => Int, { nullable: false })
-  donation_amount: number;
+  amount: number;
 
-  @Column({ type: 'enum', enum: DONATION_STATUS_ENUM, nullable: false })
-  @Field(() => DONATION_STATUS_ENUM, { nullable: false })
-  donation_status: string;
+  @Column({ type: 'enum', enum: PROJECT_DONATION_STATUS_ENUM, nullable: false })
+  @Field(() => PROJECT_DONATION_STATUS_ENUM, { nullable: false })
+  status: string;
 
   @CreateDateColumn()
   @Field(() => Date)
   created_at: Date;
 
   @JoinColumn({ name: 'user_id' })
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, (user) => user.projectDonations, { nullable: false })
   @Field(() => User)
   user: User;
 
   @JoinColumn({ name: 'project_id' })
-  @ManyToOne(() => Project, { nullable: false })
+  @ManyToOne(() => Project, (project) => project.projectDonations, {
+    nullable: false,
+  })
   @Field(() => Project)
   project: Project;
 }

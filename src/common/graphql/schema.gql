@@ -6,13 +6,16 @@ type CountryCode {
   country_code: String!
 }
 
-type User {
-  user_id: String!
-  email: String!
-  name: String!
-  profile_image_url: String
+type ProjectCategory {
+  project_category: String!
+}
+
+type ProjectComment {
+  projectComment_id: String!
+  content: String!
   created_at: DateTime!
-  countryCode: CountryCode!
+  user: User!
+  project: Project!
 }
 
 """
@@ -20,28 +23,19 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type FetchUserLoggedInResponseDTO {
-  email: String!
-  name: String!
-  profile_image_url: String
-  countryCode: CountryCode!
+type ProjectDonation {
+  projectDonation_id: String!
+  imp_uid: String!
+  amount: Int!
+  status: PROJECT_DONATION_STATUS_ENUM!
+  created_at: DateTime!
+  user: User!
+  project: Project!
 }
 
-type UpdateUserResponseDTO {
-  name: String
-  profile_image_url: String
-}
-
-type CreateUserResponseDTO {
-  accessToken: String!
-}
-
-type UpdateCountryCodeReponseDTO {
-  accessToken: String!
-}
-
-type ProjectCategory {
-  project_category: String!
+enum PROJECT_DONATION_STATUS_ENUM {
+  PAYMENT
+  CANCEL
 }
 
 type ProjectImage {
@@ -70,6 +64,39 @@ type Project {
   countryCode: CountryCode!
   projectImages: [ProjectImage!]!
   updatedProjects: [UpdatedProject!]!
+  projectComments: [ProjectComment!]!
+  projectDonations: [ProjectDonation!]!
+}
+
+type User {
+  user_id: String!
+  email: String!
+  name: String!
+  profile_image_url: String
+  created_at: DateTime!
+  countryCode: CountryCode!
+  projects: [Project!]!
+  projectDonations: [ProjectDonation!]!
+}
+
+type FetchUserLoggedInResponseDTO {
+  email: String!
+  name: String!
+  profile_image_url: String
+  countryCode: CountryCode!
+}
+
+type UpdateUserResponseDTO {
+  name: String
+  profile_image_url: String
+}
+
+type CreateUserResponseDTO {
+  accessToken: String!
+}
+
+type UpdateCountryCodeReponseDTO {
+  accessToken: String!
 }
 
 type CreateProjectResponseDTO {

@@ -13,17 +13,17 @@ import {
 
 @Entity()
 @ObjectType()
-export class Comment {
+export class ProjectComment {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
-  comment_id: string;
+  projectComment_id: string;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
   @IsNotEmpty()
   @IsString()
   @Length(1, 255)
   @Field(() => String, { nullable: false })
-  comment_content: string;
+  content: string;
 
   @CreateDateColumn()
   @Field(() => Date)
@@ -35,7 +35,9 @@ export class Comment {
   user: User;
 
   @JoinColumn({ name: 'project_id' })
-  @ManyToOne(() => Project, { nullable: false })
+  @ManyToOne(() => Project, (project) => project.projectComments, {
+    nullable: false,
+  })
   @Field(() => Project)
   project: Project;
 }

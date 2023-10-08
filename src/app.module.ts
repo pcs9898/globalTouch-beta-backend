@@ -5,8 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './apis/user/user.module';
 import { AuthModule } from './apis/auth/auth.module';
-import { CommentModule } from './apis/comment/comment.module';
-import { DonationModule } from './apis/donation/donation.module';
+import { ProjectCommentModule } from './apis/projectComment/projectComment.module';
+import { ProjectDonationModule } from './apis/projectDonation/projectDonation.module';
 import { ProjectModule } from './apis/project/project.module';
 import { ProjectImageModule } from './apis/projectImage/projectImage.module';
 import { SearchModule } from './apis/search/search.module';
@@ -18,10 +18,10 @@ import { ProjectCategoryModule } from './apis/projectCategory/projectCategory.mo
 @Module({
   imports: [
     AuthModule,
-    CommentModule,
+    ProjectCommentModule,
     CountryCodeModule,
     CommonModule,
-    DonationModule,
+    ProjectDonationModule,
     ProjectCategoryModule,
     ProjectModule,
     ProjectImageModule,

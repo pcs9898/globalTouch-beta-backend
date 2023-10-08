@@ -3,4 +3,4 @@ import { Module } from '@nestjs/common';
 @Module({
   providers: [],
 })
-export class CommentModule {}
+export class ProjectCommentModule {}
