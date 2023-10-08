@@ -20,6 +20,7 @@ import {
   IProjectServiceFetchProjectsNewest,
   IProjectServiceFetchProjectsTrending,
   IProjectServiceFetchProjectsUserLoggedIn,
+  IProjectServiceFindOneProjectById,
 } from './interfaces/project-serivce.interface';
 import { FetchProjectResponseDTO } from './dto/fetch-project-response.dto';
 import { FetchProjectsTrendingResponseDTO } from './dto/fetch-projects-trending/fetch-projects-trending-response.dto';
@@ -235,5 +236,20 @@ export class ProjectService {
       projectsByCountry: plainProjectsByCountry,
       total,
     };
+  }
+
+  async findOneProjectById({
+    project_id,
+    onlyUser,
+  }: IProjectServiceFindOneProjectById) {
+    if (onlyUser) {
+      return await this.projectRepository.findOne({
+        where: { project_id },
+        relations: ['user'],
+      });
+    }
+    return await this.projectRepository.findOne({
+      where: { project_id },
+    });
   }
 }

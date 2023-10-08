@@ -161,6 +161,10 @@ type FetchProjectsByCountryWithTotalResponseDTO {
   total: Int!
 }
 
+type CreateUpdatedProjectResponseDTO {
+  success: Boolean!
+}
+
 type Query {
   fetchProject(fetchProjectDTO: FetchProjectDTO!): FetchProjectResponseDTO!
   fetchProjectsUserLoggedIn(fetchProjectsUserLoggedInDTO: FetchProjectsUserLoggedInDTO!): FetchProjectsUserLoggedInWithTotalResponseDTO!
@@ -199,6 +203,7 @@ type Mutation {
   createUser(createUserDTO: CreateUserDTO!): CreateUserResponseDTO!
   updateCountryCode(updateCountryCodeDTO: UpdateCountryCodeDTO!): UpdateCountryCodeReponseDTO!
   updateUser(updateUserDTO: UpdateUserDTO!): UpdateUserResponseDTO!
+  createUpdatedProject(createUpdatedProjectDTO: CreateUpdatedProjectDTO!): CreateUpdatedProjectResponseDTO!
 }
 
 input LoginDTO {
@@ -229,4 +234,9 @@ input UpdateCountryCodeDTO {
 input UpdateUserDTO {
   name: String
   profile_image_url: String
+}
+
+input CreateUpdatedProjectDTO {
+  content: String!
+  project_id: String!
 }

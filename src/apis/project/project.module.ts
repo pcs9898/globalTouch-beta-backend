@@ -27,5 +27,6 @@ import { User } from '../user/entity/user.entity';
     UserModule,
   ],
   providers: [ProjectResolver, ProjectService],
+  exports: [ProjectService],
 })
 export class ProjectModule {}

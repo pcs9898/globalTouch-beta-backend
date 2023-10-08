@@ -31,3 +31,8 @@ export interface IProjectServiceFetchProjectsNewest {
 export interface IProjectServiceFetchProjectsByCountry {
   fetchProjectsByCountryDTO: FetchProjectsByCountryDTO;
 }
+
+export interface IProjectServiceFindOneProjectById {
+  project_id: string;
+  onlyUser?: boolean;
+}
