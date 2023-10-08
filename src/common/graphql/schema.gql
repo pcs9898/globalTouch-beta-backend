@@ -161,6 +161,11 @@ type FetchProjectsByCountryWithTotalResponseDTO {
   total: Int!
 }
 
+type FetchUpdatedProjectsResponseDTO {
+  content: String!
+  created_at: DateTime!
+}
+
 type CreateUpdatedProjectResponseDTO {
   success: Boolean!
 }
@@ -173,6 +178,7 @@ type Query {
   fetchProjectsByCountry(fetchProjectsByCountryDTO: FetchProjectsByCountryDTO!): FetchProjectsByCountryWithTotalResponseDTO!
   sayHello: String!
   fetchUserLoggedIn: FetchUserLoggedInResponseDTO!
+  fetchUpdatedProjects(fetchUpdatedProjectsDTO: FetchUpdatedProjectsDTO!): [FetchUpdatedProjectsResponseDTO!]!
 }
 
 input FetchProjectDTO {
@@ -194,6 +200,10 @@ input FetchProjectsNewestDTO {
 input FetchProjectsByCountryDTO {
   offset: Int!
   country_code: String!
+}
+
+input FetchUpdatedProjectsDTO {
+  project_id: String!
 }
 
 type Mutation {

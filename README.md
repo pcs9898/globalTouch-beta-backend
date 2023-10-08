@@ -27,7 +27,7 @@
 ## UpdatedProject Module
 
 - [x] feature12/createUpdatedProject
-- [ ] feature13/fetchUpdatedProjects
+- [x] feature13/fetchUpdatedProjects
 
 ## ProjectDonation Module
 
