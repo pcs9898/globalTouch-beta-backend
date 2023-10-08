@@ -1,8 +1,8 @@
 import { ObjectType, PickType } from '@nestjs/graphql';
-import { Project } from '../entity/project.entity';
+import { Project } from '../../entity/project.entity';
 
 @ObjectType()
-export class FetchProjectsByCountryResponseDTO extends PickType(
+export class FetchProjectsUserLoggedInResponseDTO extends PickType(
   Project,
   [
     'projectImages',

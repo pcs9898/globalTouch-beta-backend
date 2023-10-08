@@ -19,15 +19,15 @@
 
 - [x] feature7/createProject (picture max 3, transaction)
 - [x] feature8/fetchProject
-- [ ] feature8.5/fetchProjectsUserLoggedIn(pageNation-pageSize:6, sortByTime)
-- [x] feature9/fetchProjectsTrending (pageNation-pageSize:4, sortByNumberOfDonations)
-- [ ] feature10/fetchProjectsNewst (pageNation-pageSize:4, sortByTime)
-- [ ] feature11/fetchProjectsByCountry (pageNation-pageSize:4, sortByTime)
+- [x] feature8.5/fetchProjectsUserLoggedIn (page-limit:6, sortByTime)
+- [x] feature9/fetchProjectsTrending (page-limit:4, sortByNumberOfDonations)
+- [ ] feature10/fetchProjectsNewest (page-limit:4, sortByTime)
+- [ ] feature11/fetchProjectsByCountry (page-limit:4, sortByTime)
 
 ## ProjectComment Module
 
 - [ ] feature12/createProjectComment
-- [ ] feature13/fetchProjectComments (pageNation-pageSize:10,sortByTime)
+- [ ] feature13/fetchProjectComments (page-limit:10,sortByTime)
 - [ ] feature14/updateProjectComment
 - [ ] feature15/deleteProjectComment
 
@@ -39,7 +39,7 @@
 ## ProjectDonation Module
 
 - [ ] feature18/createProjectDonation (transaction)
-- [ ] feature19/fetchDonationsUserLoggedIn (pageNation-pageSize:6, sortByTime)
+- [ ] feature19/fetchDonationsUserLoggedIn (page-limit:6, sortByTime)
 
 ## Search Module
 

@@ -17,10 +17,13 @@ import {
   IProjectServiceCreateProject,
   IProjectServiceFetchProject,
   IProjectServiceFetchProjectsTrending,
+  IProjectServiceFetchProjectsUserLoggedIn,
 } from './interfaces/project-serivce.interface';
 import { FetchProjectResponseDTO } from './dto/fetch-project-response.dto';
-import { FetchProjectsTrendingResponseDTO } from './dto/fetch-projects-trending-response.dto';
-import { FetchProjectsTrendingWithTotalResponseDTO } from './dto/fetch-projects-trending-withTotal-response.dto';
+import { FetchProjectsTrendingResponseDTO } from './dto/fetch-projects-trending/fetch-projects-trending-response.dto';
+import { FetchProjectsTrendingWithTotalResponseDTO } from './dto/fetch-projects-trending/fetch-projects-trending-withTotal-response.dto';
+import { FetchProjectsUserLoggedInWithTotalResponseDTO } from './dto/fetch-projects-user-loggedIn/fetch-projects-user-loggedIn-withTotal-response.dto';
+import { FetchProjectsUserLoggedInResponseDTO } from './dto/fetch-projects-user-loggedIn/fetch-projects-user-LoggedIn-response.dto';
 
 @Injectable()
 export class ProjectService {
@@ -143,7 +146,33 @@ export class ProjectService {
     );
 
     return {
-      ProjectsTrending: plainTrendingProjects,
+      projectsTrending: plainTrendingProjects,
+      total,
+    };
+  }
+
+  // fetchProjectsUserLoggedIn
+  async fetchProjectsUserLoggedIn({
+    fetchProjectsUserLoggedInDTO,
+    context,
+  }: IProjectServiceFetchProjectsUserLoggedIn): Promise<FetchProjectsUserLoggedInWithTotalResponseDTO> {
+    const limit = 6;
+    const [projectsUserLoggedIn, total] =
+      await this.projectRepository.findAndCount({
+        where: { user: context.req.user },
+        skip: (fetchProjectsUserLoggedInDTO.offset - 1) * limit,
+        take: limit,
+        order: { created_at: 'DESC' },
+        relations: ['countryCode', 'projectImages'],
+      });
+
+    const plainProjectsUserLoggedIn = projectsUserLoggedIn.map(
+      (projectUserLoggedIn) =>
+        plainToClass(FetchProjectsUserLoggedInResponseDTO, projectUserLoggedIn),
+    );
+
+    return {
+      projectsUserLoggedIn: plainProjectsUserLoggedIn,
       total,
     };
   }

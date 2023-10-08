@@ -4,7 +4,7 @@ import { FetchProjectsTrendingResponseDTO } from './fetch-projects-trending-resp
 @ObjectType()
 export class FetchProjectsTrendingWithTotalResponseDTO {
   @Field(() => [FetchProjectsTrendingResponseDTO])
-  ProjectsTrending: FetchProjectsTrendingResponseDTO[];
+  projectsTrending: FetchProjectsTrendingResponseDTO[];
 
   @Field(() => Int)
   total: number;
