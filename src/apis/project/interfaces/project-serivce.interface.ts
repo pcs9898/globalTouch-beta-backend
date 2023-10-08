@@ -4,6 +4,7 @@ import { FetchProjectDTO } from '../dto/fetch-project.dto';
 import { FetchProjectsTrendingDTO } from '../dto/fetch-projects-trending/fetch-projects-trending.dto';
 import { FetchProjectsUserLoggedInDTO } from '../dto/fetch-projects-user-loggedIn/fetch-projects-user-LoggedIn.dto';
 import { FetchProjectsNewestDTO } from '../dto/fetch-projects-newest/fetch-projects-newest.dto';
+import { FetchProjectsByCountryDTO } from '../dto/fetch-projects-byCountry/fetch-projects-byCountry.dto';
 
 export interface IProjectServiceCreateProject {
   createProjectDTO: CreateProjectDTO;
@@ -25,4 +26,8 @@ export interface IProjectServiceFetchProjectsUserLoggedIn {
 
 export interface IProjectServiceFetchProjectsNewest {
   fetchProjectsNewestDTO: FetchProjectsNewestDTO;
+}
+
+export interface IProjectServiceFetchProjectsByCountry {
+  fetchProjectsByCountryDTO: FetchProjectsByCountryDTO;
 }

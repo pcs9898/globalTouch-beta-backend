@@ -16,6 +16,7 @@ import { UserService } from '../user/user.service';
 import {
   IProjectServiceCreateProject,
   IProjectServiceFetchProject,
+  IProjectServiceFetchProjectsByCountry,
   IProjectServiceFetchProjectsNewest,
   IProjectServiceFetchProjectsTrending,
   IProjectServiceFetchProjectsUserLoggedIn,
@@ -27,6 +28,8 @@ import { FetchProjectsUserLoggedInWithTotalResponseDTO } from './dto/fetch-proje
 import { FetchProjectsUserLoggedInResponseDTO } from './dto/fetch-projects-user-loggedIn/fetch-projects-user-LoggedIn-response.dto';
 import { FetchProjectsNewestWithTotalResponseDTO } from './dto/fetch-projects-newest/fetch-projects-newest-withTotal-response.dto';
 import { FetchProjectsNewestResponseDTO } from './dto/fetch-projects-newest/fetch-projects-newest-reponse.dto';
+import { FetchProjectsByCountryWithTotalResponseDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry-withTotal-response.dto';
+import { FetchProjectsByCountryResponseDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry-response.dto';
 
 @Injectable()
 export class ProjectService {
@@ -134,7 +137,7 @@ export class ProjectService {
   async fetchProjectsTrending({
     fetchProjectsTrendingDTO,
   }: IProjectServiceFetchProjectsTrending): Promise<FetchProjectsTrendingWithTotalResponseDTO> {
-    const limit = 4;
+    const limit = 6;
     const [trendingProjects, total] = await this.projectRepository.findAndCount(
       {
         skip: (fetchProjectsTrendingDTO.offset - 1) * limit,
@@ -184,7 +187,7 @@ export class ProjectService {
   async fetchProjectsNewest({
     fetchProjectsNewestDTO,
   }: IProjectServiceFetchProjectsNewest): Promise<FetchProjectsNewestWithTotalResponseDTO> {
-    const limit = 4;
+    const limit = 6;
     const [projectsNewest, total] = await this.projectRepository.findAndCount({
       skip: (fetchProjectsNewestDTO.offset - 1) * limit,
       take: limit,
@@ -198,6 +201,38 @@ export class ProjectService {
 
     return {
       projectsNewest: plainProjectsNewest,
+      total,
+    };
+  }
+
+  async fetchProjectsByCountry({
+    fetchProjectsByCountryDTO,
+  }: IProjectServiceFetchProjectsByCountry): Promise<FetchProjectsByCountryWithTotalResponseDTO> {
+    const limit = 6;
+
+    const isCounryCode = await this.countryCodeService.findOneCountryCode({
+      country_code: fetchProjectsByCountryDTO.country_code,
+    });
+    if (!isCounryCode)
+      throw new UnprocessableEntityException('Invalid Country Code');
+
+    const [projectsByCountry, total] =
+      await this.projectRepository.findAndCount({
+        where: {
+          countryCode: isCounryCode,
+        },
+        skip: (fetchProjectsByCountryDTO.offset - 1) * limit,
+        take: limit,
+        order: { created_at: 'DESC' },
+        relations: ['countryCode', 'projectImages'],
+      });
+
+    const plainProjectsByCountry = projectsByCountry.map((projectByCountry) =>
+      plainToClass(FetchProjectsByCountryResponseDTO, projectByCountry),
+    );
+
+    return {
+      projectsByCountry: plainProjectsByCountry,
       total,
     };
   }

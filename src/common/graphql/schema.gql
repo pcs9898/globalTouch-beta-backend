@@ -133,6 +133,14 @@ type FetchProjectsNewestResponseDTO {
   projectImages: [ProjectImage!]!
 }
 
+type FetchProjectsByCountryResponseDTO {
+  title: String!
+  amount_required: Int!
+  amount_raised: Int!
+  countryCode: CountryCode!
+  projectImages: [ProjectImage!]!
+}
+
 type FetchProjectsTrendingWithTotalResponseDTO {
   projectsTrending: [FetchProjectsTrendingResponseDTO!]!
   total: Int!
@@ -148,11 +156,17 @@ type FetchProjectsNewestWithTotalResponseDTO {
   total: Int!
 }
 
+type FetchProjectsByCountryWithTotalResponseDTO {
+  projectsByCountry: [FetchProjectsByCountryResponseDTO!]!
+  total: Int!
+}
+
 type Query {
   fetchProject(fetchProjectDTO: FetchProjectDTO!): FetchProjectResponseDTO!
   fetchProjectsUserLoggedIn(fetchProjectsUserLoggedInDTO: FetchProjectsUserLoggedInDTO!): FetchProjectsUserLoggedInWithTotalResponseDTO!
   fetchProjectsTrending(fetchProjectsTrendingDTO: FetchProjectsTrendingDTO!): FetchProjectsTrendingWithTotalResponseDTO!
   fetchProjectsNewest(fetchProjectsNewestDTO: FetchProjectsNewestDTO!): FetchProjectsNewestWithTotalResponseDTO!
+  fetchProjectsByCountry(fetchProjectsByCountryDTO: FetchProjectsByCountryDTO!): FetchProjectsByCountryWithTotalResponseDTO!
   sayHello: String!
   fetchUserLoggedIn: FetchUserLoggedInResponseDTO!
 }
@@ -171,6 +185,11 @@ input FetchProjectsTrendingDTO {
 
 input FetchProjectsNewestDTO {
   offset: Int!
+}
+
+input FetchProjectsByCountryDTO {
+  offset: Int!
+  country_code: String!
 }
 
 type Mutation {

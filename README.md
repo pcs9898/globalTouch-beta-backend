@@ -20,9 +20,9 @@
 - [x] feature7/createProject (picture max 3, transaction)
 - [x] feature8/fetchProject
 - [x] feature8.5/fetchProjectsUserLoggedIn (page-limit:6, sortByTime)
-- [x] feature9/fetchProjectsTrending (page-limit:4, sortByNumberOfDonations)
-- [x] feature10/fetchProjectsNewest (page-limit:4, sortByTime)
-- [ ] feature11/fetchProjectsByCountry (page-limit:4, sortByTime)
+- [x] feature9/fetchProjectsTrending (page-limit:6, sortByNumberOfDonations)
+- [x] feature10/fetchProjectsNewest (page-limit:6, sortByTime)
+- [x] feature11/fetchProjectsByCountry (page-limit:6, sortByTime)
 
 ## ProjectComment Module
 

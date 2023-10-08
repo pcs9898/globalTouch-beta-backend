@@ -13,6 +13,9 @@ import { FetchProjectsUserLoggedInWithTotalResponseDTO } from './dto/fetch-proje
 import { FetchProjectsUserLoggedInDTO } from './dto/fetch-projects-user-loggedIn/fetch-projects-user-LoggedIn.dto';
 import { FetchProjectsNewestWithTotalResponseDTO } from './dto/fetch-projects-newest/fetch-projects-newest-withTotal-response.dto';
 import { FetchProjectsNewestDTO } from './dto/fetch-projects-newest/fetch-projects-newest.dto';
+import { FetchProjectsByCountryWithTotalResponseDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry-withTotal-response.dto';
+
+import { FetchProjectsByCountryDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry.dto';
 
 @Resolver()
 export class ProjectResolver {
@@ -54,6 +57,16 @@ export class ProjectResolver {
     fetchProjectsNewestDTO: FetchProjectsNewestDTO,
   ): Promise<FetchProjectsNewestWithTotalResponseDTO> {
     return this.projectService.fetchProjectsNewest({ fetchProjectsNewestDTO });
+  }
+
+  @Query(() => FetchProjectsByCountryWithTotalResponseDTO)
+  async fetchProjectsByCountry(
+    @Args('fetchProjectsByCountryDTO')
+    fetchProjectsByCountryDTO: FetchProjectsByCountryDTO,
+  ): Promise<FetchProjectsByCountryWithTotalResponseDTO> {
+    return this.projectService.fetchProjectsByCountry({
+      fetchProjectsByCountryDTO,
+    });
   }
 
   @UseGuards(GqlAuthGuard('access'))
