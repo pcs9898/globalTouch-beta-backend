@@ -24,13 +24,6 @@
 - [x] feature10/fetchProjectsNewest (page-limit:6, sortByTime)
 - [x] feature11/fetchProjectsByCountry (page-limit:6, sortByTime)
 
-## ProjectComment Module
-
-- [ ] feature12/createProjectComment
-- [ ] feature13/fetchProjectComments (page-limit:10, sortByTime)
-- [ ] feature14/updateProjectComment
-- [ ] feature15/deleteProjectComment
-
 ## UpdatedProject Module
 
 - [ ] feature16/createUpdatedProject
@@ -40,6 +33,13 @@
 
 - [ ] feature18/createProjectDonation (transaction, payment verification)
 - [ ] feature19/fetchDonationsUserLoggedIn (page-limit:6, sortByTime)
+
+## ProjectComment Module
+
+- [ ] feature12/createProjectComment
+- [ ] feature13/fetchProjectComments (page-limit:10, sortByTime)
+- [ ] feature14/updateProjectComment
+- [ ] feature15/deleteProjectComment
 
 ## Search Module
 
