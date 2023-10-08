@@ -17,11 +17,5 @@ export class CreateProjectDTO extends PickType(
   @Field(() => String, { nullable: false })
   @IsNotEmpty()
   @IsString()
-  @Length(2, 2)
-  country_code: string;
-
-  @Field(() => String, { nullable: false })
-  @IsNotEmpty()
-  @IsString()
   projectImageUrls: string;
 }

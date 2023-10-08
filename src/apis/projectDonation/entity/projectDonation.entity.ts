@@ -55,7 +55,7 @@ export class ProjectDonation {
   user: User;
 
   @JoinColumn({ name: 'project_id' })
-  @ManyToOne(() => Project, (project) => project.projectDonations, {
+  @ManyToOne(() => Project, {
     nullable: false,
   })
   @Field(() => Project)

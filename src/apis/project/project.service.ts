@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,7 +13,11 @@ import { CountryCodeService } from '../countryCode/countryCode.service';
 import { ProjectCategoryService } from '../projectCategory/projectCategory.service';
 import { plainToClass } from 'class-transformer';
 import { UserService } from '../user/user.service';
-import { IProjectServiceCreateProject } from './interfaces/project-serivce.interface';
+import {
+  IProjectServiceCreateProject,
+  IProjectServiceFetchProject,
+} from './interfaces/project-serivce.interface';
+import { FetchProjectResponseDTO } from './dto/fetch-project-response.dto';
 
 @Injectable()
 export class ProjectService {
@@ -31,6 +36,7 @@ export class ProjectService {
     private readonly dataSource: DataSource,
   ) {}
 
+  // createProject
   async createProject({
     createProjectDTO,
     context,
@@ -48,12 +54,6 @@ export class ProjectService {
           'Project title already exists. Please choose a different title.',
         );
 
-      const isCountryCode = await this.countryCodeService.findOneCountryCode({
-        country_code: createProjectDTO.country_code,
-      });
-      if (!isCountryCode)
-        throw new UnprocessableEntityException('Invalid country code');
-
       const isProjectCategory =
         await this.projectCategoryService.findOneProjectCategory({
           project_category: createProjectDTO.project_category,
@@ -63,7 +63,6 @@ export class ProjectService {
 
       const user = await this.userService.findOneUserById({
         user_id: context.req.user.user_id,
-        onlyUser: true,
       });
 
       const projectImageUrls = createProjectDTO.projectImageUrls.match(
@@ -76,7 +75,7 @@ export class ProjectService {
 
       const newProject = await queryRunner.manager.save(Project, {
         ...createProjectDTO,
-        countryCode: isCountryCode,
+        countryCode: user.countryCode,
         projectCategory: isProjectCategory,
         user,
       });
@@ -97,7 +96,6 @@ export class ProjectService {
 
       return plainToClass(CreateProjectResponseDTO, {
         ...newProject,
-        country_code: isCountryCode,
         project_category: isProjectCategory,
         projectImages: projectImagesResult,
       });
@@ -108,5 +106,18 @@ export class ProjectService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  // fetchProject
+  async fetchProject({
+    fetchProjectDTO,
+  }: IProjectServiceFetchProject): Promise<FetchProjectResponseDTO> {
+    const isProject = await this.projectRepository.findOne({
+      where: { project_id: fetchProjectDTO.project_id },
+      relations: ['user', 'projectCategory', 'countryCode', 'projectImages'],
+    });
+    if (!isProject) throw new NotFoundException('Project not found');
+
+    return plainToClass(FetchProjectResponseDTO, isProject);
   }
 }

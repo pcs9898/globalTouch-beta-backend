@@ -24,21 +24,21 @@
 - [ ] feature10/fetchProjectsNewst (pageNation-pageSize:4, sortByTime)
 - [ ] feature11/fetchProjectsByCountry (pageNation-pageSize:4, sortByTime)
 
-## Comment Module
+## ProjectComment Module
 
-- [ ] feature12/createComment
-- [ ] feature13/fetchComments (pageNation-pageSize:10,sortByTime)
-- [ ] feature14/updateComment
-- [ ] feature15/deleteComment
+- [ ] feature12/createProjectComment
+- [ ] feature13/fetchProjectComments (pageNation-pageSize:10,sortByTime) --- need to add fetchComments to feature8/fetchProject
+- [ ] feature14/updateProjectComment
+- [ ] feature15/deleteProjectComment
 
 ## UpdatedProject Module
 
 - [ ] feature16/createUpdatedProject
 - [ ] feature17/fetchUpdatedProjects
 
-## Donation Module
+## ProjectDonation Module
 
-- [ ] feature18/createDonation (transaction)
+- [ ] feature18/createProjectDonation (transaction)
 
 ## Search Module
 

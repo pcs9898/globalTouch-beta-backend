@@ -10,12 +10,24 @@ type ProjectCategory {
   project_category: String!
 }
 
-type ProjectComment {
-  projectComment_id: String!
+type ProjectImage {
+  projectImage_id: String!
+  image_url: String!
+  project: Project!
+}
+
+type Project {
+  project_id: String!
+  title: String!
   content: String!
+  amount_required: Int!
+  amount_raised: Int!
+  donation_count: Int!
   created_at: DateTime!
   user: User!
-  project: Project!
+  projectCategory: ProjectCategory!
+  countryCode: CountryCode!
+  projectImages: [ProjectImage!]!
 }
 
 """
@@ -36,36 +48,6 @@ type ProjectDonation {
 enum PROJECT_DONATION_STATUS_ENUM {
   PAYMENT
   CANCEL
-}
-
-type ProjectImage {
-  projectImage_id: String!
-  image_url: String!
-  project: Project!
-}
-
-type UpdatedProject {
-  updatedProject_id: String!
-  content: String!
-  created_at: DateTime!
-  project: Project!
-}
-
-type Project {
-  project_id: String!
-  title: String!
-  content: String!
-  amount_required: Int!
-  amount_raised: Int!
-  donation_count: Int!
-  created_at: DateTime!
-  user: User!
-  projectCategory: ProjectCategory!
-  countryCode: CountryCode!
-  projectImages: [ProjectImage!]!
-  updatedProjects: [UpdatedProject!]!
-  projectComments: [ProjectComment!]!
-  projectDonations: [ProjectDonation!]!
 }
 
 type User {
@@ -113,9 +95,28 @@ type CreateProjectResponseDTO {
   projectImages: [ProjectImage!]!
 }
 
+type FetchProjectResponseDTO {
+  project_id: String!
+  title: String!
+  content: String!
+  amount_required: Int!
+  amount_raised: Int!
+  donation_count: Int!
+  created_at: DateTime!
+  user: User!
+  projectCategory: ProjectCategory!
+  countryCode: CountryCode!
+  projectImages: [ProjectImage!]!
+}
+
 type Query {
+  fetchProject(fetchProjectDTO: FetchProjectDTO!): FetchProjectResponseDTO!
   sayHello: String!
   fetchUserLoggedIn: FetchUserLoggedInResponseDTO!
+}
+
+input FetchProjectDTO {
+  project_id: String!
 }
 
 type Mutation {
@@ -137,7 +138,6 @@ input CreateProjectDTO {
   content: String!
   amount_required: Int!
   project_category: String!
-  country_code: String!
   projectImageUrls: String!
 }
 

@@ -28,7 +28,7 @@ export class UpdatedProject {
   created_at: Date;
 
   @JoinColumn({ name: 'project_id' })
-  @ManyToOne(() => Project, (project) => project.updatedProjects, {
+  @ManyToOne(() => Project, {
     nullable: false,
   })
   @Field(() => Project)
