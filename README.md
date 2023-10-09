@@ -19,10 +19,10 @@
 
 - [x] feature7/createProject (picture max 3, transaction)
 - [x] feature8/fetchProject
-- [x] feature8.5/fetchProjectsUserLoggedIn (page-limit:6, sortByTime)
-- [x] feature9/fetchProjectsTrending (page-limit:6, sortByNumberOfDonations)
-- [x] feature10/fetchProjectsNewest (page-limit:6, sortByTime)
-- [x] feature11/fetchProjectsByCountry (page-limit:6, sortByTime)
+- [x] feature8.5/fetchProjectsUserLoggedIn (page-limit:8, sortByTime)
+- [x] feature9/fetchProjectsTrending (page-limit:8, sortByNumberOfDonations)
+- [x] feature10/fetchProjectsNewest (page-limit:8, sortByTime)
+- [x] feature11/fetchProjectsByCountry (page-limit:8, sortByTime)
 
 ## UpdatedProject Module
 
@@ -31,8 +31,8 @@
 
 ## ProjectDonation Module
 
-- [ ] feature14/createProjectDonation (transaction, payment verification)
-- [ ] feature15/fetchDonationsUserLoggedIn (page-limit:6, sortByTime)
+- [x] feature14/createProjectDonation (transaction, payment verification)
+- [ ] feature15/fetchDonationsUserLoggedIn (page-limit:8, sortByTime)
 
 ## ProjectComment Module
 
@@ -43,4 +43,10 @@
 
 ## Search Module
 
-- [ ] feature20/search (searchByCategory, sortByTime, apply redis globally)
+- [ ] feature20/search (searchByCategory, sortByTime)
+
+## Optimization
+
+- [ ] Apply redis globally
+- [ ] Code refactoring
+- [ ] Convert to MSA

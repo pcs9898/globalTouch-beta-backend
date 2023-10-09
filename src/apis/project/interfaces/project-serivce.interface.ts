@@ -5,6 +5,8 @@ import { FetchProjectsTrendingDTO } from '../dto/fetch-projects-trending/fetch-p
 import { FetchProjectsUserLoggedInDTO } from '../dto/fetch-projects-user-loggedIn/fetch-projects-user-LoggedIn.dto';
 import { FetchProjectsNewestDTO } from '../dto/fetch-projects-newest/fetch-projects-newest.dto';
 import { FetchProjectsByCountryDTO } from '../dto/fetch-projects-byCountry/fetch-projects-byCountry.dto';
+import { Project } from '../entity/project.entity';
+import { QueryRunner } from 'typeorm';
 
 export interface IProjectServiceCreateProject {
   createProjectDTO: CreateProjectDTO;
@@ -34,5 +36,15 @@ export interface IProjectServiceFetchProjectsByCountry {
 
 export interface IProjectServiceFindOneProjectById {
   project_id: string;
-  onlyUser?: boolean;
+  relationUser?: boolean;
+}
+
+export interface IProjectServiceFindOneWithWriteLock {
+  project_id: string;
+  queryRunner: QueryRunner;
+}
+
+export interface IProjectServiceSaveWithQueryRunner {
+  project: Project;
+  queryRunner: QueryRunner;
 }

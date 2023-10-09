@@ -8,20 +8,12 @@ import { UpdatedProject } from './entity/updatedProject.entity';
 import { Repository } from 'typeorm';
 import { CreateUpdatedProjectResponseDTO } from './dto/create-updatedProject-response.dto';
 import { ProjectService } from '../project/project.service';
-import { IContext } from 'src/common/interfaces/context';
-import { CreateUpdatedProjectDTO } from './dto/create-updatedProject.dto';
-import { FetchUpdatedProjectsDTO } from './dto/fetch-updatedProjects.dto';
 import { FetchUpdatedProjectsResponseDTO } from './dto/fetch-updatedProjects-response.dto';
 import { plainToClass } from 'class-transformer';
-
-export interface IUpdatedProjectServiceCreateUpdatedProject {
-  createUpdatedProjectDTO: CreateUpdatedProjectDTO;
-  context: IContext;
-}
-
-export interface IUpdatedProjectServiceFetchUpdatedProjects {
-  fetchUpdatedProjectsDTO: FetchUpdatedProjectsDTO;
-}
+import {
+  IUpdatedProjectServiceCreateUpdatedProject,
+  IUpdatedProjectServiceFetchUpdatedProjects,
+} from './interfaces/updatedProject.interface';
 
 @Injectable()
 export class UpdatedProjectService {
@@ -39,7 +31,7 @@ export class UpdatedProjectService {
   }: IUpdatedProjectServiceCreateUpdatedProject): Promise<CreateUpdatedProjectResponseDTO> {
     const isProject = await this.projectService.findOneProjectById({
       project_id: createUpdatedProjectDTO.project_id,
-      onlyUser: true,
+      relationUser: true,
     });
     if (!isProject) throw new NotFoundException('Project not found');
 

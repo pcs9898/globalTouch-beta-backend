@@ -77,7 +77,7 @@ type CreateUserResponseDTO {
   accessToken: String!
 }
 
-type UpdateCountryCodeReponseDTO {
+type UpdateCountryCodeResponseDTO {
   accessToken: String!
 }
 
@@ -139,6 +139,10 @@ type FetchProjectsByCountryResponseDTO {
   amount_raised: Int!
   countryCode: CountryCode!
   projectImages: [ProjectImage!]!
+}
+
+type CreateProjectDonationResponseDTO {
+  success: Boolean!
 }
 
 type FetchProjectsTrendingWithTotalResponseDTO {
@@ -209,9 +213,10 @@ input FetchUpdatedProjectsDTO {
 type Mutation {
   loginUser(loginDTO: LoginDTO!): String!
   restoreAccessToken: String!
+  createProjectDonation(createProjectDonationDTO: CreateProjectDonationDTO!): CreateProjectDonationResponseDTO!
   createProject(createProjectDTO: CreateProjectDTO!): CreateProjectResponseDTO!
   createUser(createUserDTO: CreateUserDTO!): CreateUserResponseDTO!
-  updateCountryCode(updateCountryCodeDTO: UpdateCountryCodeDTO!): UpdateCountryCodeReponseDTO!
+  updateCountryCode(updateCountryCodeDTO: UpdateCountryCodeDTO!): UpdateCountryCodeResponseDTO!
   updateUser(updateUserDTO: UpdateUserDTO!): UpdateUserResponseDTO!
   createUpdatedProject(createUpdatedProjectDTO: CreateUpdatedProjectDTO!): CreateUpdatedProjectResponseDTO!
 }
@@ -219,6 +224,12 @@ type Mutation {
 input LoginDTO {
   email: String!
   password: String!
+}
+
+input CreateProjectDonationDTO {
+  imp_uid: String!
+  amount: Int!
+  project_id: String!
 }
 
 input CreateProjectDTO {

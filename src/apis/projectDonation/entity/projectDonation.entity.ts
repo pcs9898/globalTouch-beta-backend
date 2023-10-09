@@ -23,7 +23,7 @@ registerEnumType(PROJECT_DONATION_STATUS_ENUM, {
 @Entity()
 @ObjectType()
 export class ProjectDonation {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   projectDonation_id: string;
 

@@ -21,6 +21,8 @@ import {
   IProjectServiceFetchProjectsTrending,
   IProjectServiceFetchProjectsUserLoggedIn,
   IProjectServiceFindOneProjectById,
+  IProjectServiceFindOneWithWriteLock,
+  IProjectServiceSaveWithQueryRunner,
 } from './interfaces/project-serivce.interface';
 import { FetchProjectResponseDTO } from './dto/fetch-project-response.dto';
 import { FetchProjectsTrendingResponseDTO } from './dto/fetch-projects-trending/fetch-projects-trending-response.dto';
@@ -54,38 +56,38 @@ export class ProjectService {
     createProjectDTO,
     context,
   }: IProjectServiceCreateProject): Promise<CreateProjectResponseDTO> {
+    const isProject = await this.projectRepository.findOne({
+      where: { title: createProjectDTO.title },
+    });
+    if (isProject)
+      throw new ConflictException(
+        'Project title already exists. Please choose a different title.',
+      );
+
+    const isProjectCategory =
+      await this.projectCategoryService.findOneProjectCategory({
+        project_category: createProjectDTO.project_category,
+      });
+    if (!isProjectCategory)
+      throw new UnprocessableEntityException('Invalid project category');
+
+    const user = await this.userService.findOneUserById({
+      user_id: context.req.user.user_id,
+    });
+
+    const projectImageUrls = createProjectDTO.projectImageUrls.match(
+      /(https?:\/\/[^\s]+?\.jpg)(?=(https?:\/\/)|$)/g,
+    );
+    if (!projectImageUrls)
+      throw new UnprocessableEntityException('At least 1 photo is required');
+    if (projectImageUrls.length > 3)
+      throw new UnprocessableEntityException('Maximum of 3 photos allowed');
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      const isProject = await queryRunner.manager.findOne(Project, {
-        where: { title: createProjectDTO.title },
-      });
-      if (isProject)
-        throw new ConflictException(
-          'Project title already exists. Please choose a different title.',
-        );
-
-      const isProjectCategory =
-        await this.projectCategoryService.findOneProjectCategory({
-          project_category: createProjectDTO.project_category,
-        });
-      if (!isProjectCategory)
-        throw new UnprocessableEntityException('Invalid project category');
-
-      const user = await this.userService.findOneUserById({
-        user_id: context.req.user.user_id,
-      });
-
-      const projectImageUrls = createProjectDTO.projectImageUrls.match(
-        /(https?:\/\/[^\s]+?\.jpg)(?=(https?:\/\/)|$)/g,
-      );
-      if (!projectImageUrls)
-        throw new UnprocessableEntityException('At least 1 photo is required');
-      if (projectImageUrls.length > 3)
-        throw new UnprocessableEntityException('Maximum of 3 photos allowed');
-
       const newProject = await queryRunner.manager.save(Project, {
         ...createProjectDTO,
         countryCode: user.countryCode,
@@ -138,7 +140,7 @@ export class ProjectService {
   async fetchProjectsTrending({
     fetchProjectsTrendingDTO,
   }: IProjectServiceFetchProjectsTrending): Promise<FetchProjectsTrendingWithTotalResponseDTO> {
-    const limit = 6;
+    const limit = 8;
     const [trendingProjects, total] = await this.projectRepository.findAndCount(
       {
         skip: (fetchProjectsTrendingDTO.offset - 1) * limit,
@@ -163,7 +165,7 @@ export class ProjectService {
     fetchProjectsUserLoggedInDTO,
     context,
   }: IProjectServiceFetchProjectsUserLoggedIn): Promise<FetchProjectsUserLoggedInWithTotalResponseDTO> {
-    const limit = 6;
+    const limit = 8;
     const [projectsUserLoggedIn, total] =
       await this.projectRepository.findAndCount({
         where: { user: context.req.user },
@@ -188,7 +190,7 @@ export class ProjectService {
   async fetchProjectsNewest({
     fetchProjectsNewestDTO,
   }: IProjectServiceFetchProjectsNewest): Promise<FetchProjectsNewestWithTotalResponseDTO> {
-    const limit = 6;
+    const limit = 8;
     const [projectsNewest, total] = await this.projectRepository.findAndCount({
       skip: (fetchProjectsNewestDTO.offset - 1) * limit,
       take: limit,
@@ -206,10 +208,11 @@ export class ProjectService {
     };
   }
 
+  // fetchProjectsByCountry
   async fetchProjectsByCountry({
     fetchProjectsByCountryDTO,
   }: IProjectServiceFetchProjectsByCountry): Promise<FetchProjectsByCountryWithTotalResponseDTO> {
-    const limit = 6;
+    const limit = 8;
 
     const isCounryCode = await this.countryCodeService.findOneCountryCode({
       country_code: fetchProjectsByCountryDTO.country_code,
@@ -238,11 +241,12 @@ export class ProjectService {
     };
   }
 
+  // findOneProjectById
   async findOneProjectById({
     project_id,
-    onlyUser,
+    relationUser,
   }: IProjectServiceFindOneProjectById) {
-    if (onlyUser) {
+    if (relationUser) {
       return await this.projectRepository.findOne({
         where: { project_id },
         relations: ['user'],
@@ -251,5 +255,25 @@ export class ProjectService {
     return await this.projectRepository.findOne({
       where: { project_id },
     });
+  }
+
+  // findOneWithWriteLock
+  async findOneWithWriteLock({
+    project_id,
+    queryRunner,
+  }: IProjectServiceFindOneWithWriteLock): Promise<Project> {
+    return await queryRunner.manager.findOne(Project, {
+      where: { project_id },
+      relations: ['user'],
+      lock: { mode: 'pessimistic_write' },
+    });
+  }
+
+  // saveWithQueryRunner
+  async saveWithQueryRunner({
+    project,
+    queryRunner,
+  }: IProjectServiceSaveWithQueryRunner): Promise<Project> {
+    return await queryRunner.manager.save(project);
   }
 }

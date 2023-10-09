@@ -8,36 +8,20 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { IUserServiceCreateUser } from './interfaces/user-service.interface';
+import {
+  IUserServiceCreateUser,
+  IUserServiceFetchUserLoggedIn,
+  IUserServiceFindOneUserById,
+  IUserServiceUpdateCountryCode,
+  IUserServiceUpdateUser,
+} from './interfaces/user-service.interface';
 import { CommonService } from '../common/common.service';
 import { AuthService } from '../auth/auth.service';
-import { IContext } from 'src/common/interfaces/context';
-import { UpdateCountryCodeDTO } from './dto/update-countryCode.dto';
-import { UpdateCountryCodeReponseDTO } from './dto/update-countryCode-response.dto';
+import { UpdateCountryCodeResponseDTO } from './dto/update-countryCode-response.dto';
 import { FetchUserLoggedInResponseDTO } from './dto/fetch-user-loggedIn-response.dto';
 import { plainToClass } from 'class-transformer';
-import { UpdateUserDTO } from './dto/update-user.dto';
 import { UpdateUserResponseDTO } from './dto/update-user-response.dto';
 import { CountryCodeService } from '../countryCode/countryCode.service';
-
-export interface IUserServiceUpdateCountryCode {
-  updateCountryCodeDTO: UpdateCountryCodeDTO;
-  context: IContext;
-}
-
-export interface IUserServiceFindOneUserById {
-  user_id: string;
-  onlyUser?: boolean;
-}
-
-export interface IUserServiceFetchUserLoggedIn {
-  context: IContext;
-}
-
-export interface IUserServiceUpdateUser {
-  updateUserDTO: UpdateUserDTO;
-  context: IContext;
-}
 
 @Injectable()
 export class UserService {
@@ -88,7 +72,7 @@ export class UserService {
   async updateCountryCode({
     updateCountryCodeDTO,
     context,
-  }: IUserServiceUpdateCountryCode): Promise<UpdateCountryCodeReponseDTO> {
+  }: IUserServiceUpdateCountryCode): Promise<UpdateCountryCodeResponseDTO> {
     const foundCountryCode = await this.countryCodeService.findOneCountryCode({
       country_code: updateCountryCodeDTO.country_code,
     });

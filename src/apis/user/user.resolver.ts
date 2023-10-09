@@ -5,7 +5,7 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { IContext } from 'src/common/interfaces/context';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
-import { UpdateCountryCodeReponseDTO } from './dto/update-countryCode-response.dto';
+import { UpdateCountryCodeResponseDTO } from './dto/update-countryCode-response.dto';
 import { UpdateCountryCodeDTO } from './dto/update-countryCode.dto';
 import { FetchUserLoggedInResponseDTO } from './dto/fetch-user-loggedIn-response.dto';
 import { UpdateUserResponseDTO } from './dto/update-user-response.dto';
@@ -29,11 +29,11 @@ export class UserResolver {
   }
 
   @UseGuards(GqlAuthGuard('access'))
-  @Mutation(() => UpdateCountryCodeReponseDTO)
+  @Mutation(() => UpdateCountryCodeResponseDTO)
   async updateCountryCode(
     @Args('updateCountryCodeDTO') updateCountryCodeDTO: UpdateCountryCodeDTO,
     @Context() context: IContext,
-  ): Promise<UpdateCountryCodeReponseDTO> {
+  ): Promise<UpdateCountryCodeResponseDTO> {
     return this.userService.updateCountryCode({
       updateCountryCodeDTO,
       context,
