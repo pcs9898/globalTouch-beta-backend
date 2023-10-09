@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from './entity/project.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 import { CreateProjectResponseDTO } from './dto/create-project-response.dto';
 import { ProjectImageService } from '../projectImage/projectImage.service';
 import { CountryCodeService } from '../countryCode/countryCode.service';
@@ -22,6 +22,7 @@ import {
   IProjectServiceFindOneProjectById,
   IProjectServiceFindOneWithWriteLock,
   IProjectServiceSaveWithQueryRunner,
+  IProjectServiceSearchProjects,
 } from './interfaces/project-serivce.interface';
 import { FetchProjectResponseDTO } from './dto/fetch-project-response.dto';
 import { FetchProjectsTrendingResponseDTO } from './dto/fetch-projects-trending/fetch-projects-trending-response.dto';
@@ -33,6 +34,8 @@ import { FetchProjectsByCountryWithTotalResponseDTO } from './dto/fetch-projects
 import { FetchProjectsByCountryResponseDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry-response.dto';
 import { FetchUserLoggedInProjectsWithTotalResponseDTO } from '../user/dto/fetch-user-loggedIn-projects/fetch-user-loggedIn-projects-withTotal-response.dto';
 import { CommonService } from '../common/common.service';
+import { SearchProjectsWithTotalResponseDTO } from '../searchProject/dto/searchProjects/searchProjects-withTotal-response.dto';
+import { SearchProjectsResponseDTO } from '../searchProject/dto/searchProjects/searchProjects-response.dto';
 
 @Injectable()
 export class ProjectService {
@@ -237,6 +240,48 @@ export class ProjectService {
 
     return {
       projectsByCountry: plainProjectsByCountry,
+      total,
+    };
+  }
+
+  async searchProjects({
+    searchProjectsDTO,
+  }: IProjectServiceSearchProjects): Promise<SearchProjectsWithTotalResponseDTO> {
+    const limit = 8;
+    let searchedProjects;
+    let total;
+
+    if (searchProjectsDTO.project_category === 'All') {
+      [searchedProjects, total] = await this.projectRepository.findAndCount({
+        where: {
+          title: Like(`%${searchProjectsDTO.searchTerm}%`),
+        },
+        skip: (searchProjectsDTO.offset - 1) * limit,
+        take: limit,
+        order: { created_at: 'DESC' },
+        relations: ['countryCode', 'projectImages'],
+      });
+    } else {
+      [searchedProjects, total] = await this.projectRepository.findAndCount({
+        where: {
+          title: Like(`%${searchProjectsDTO.searchTerm}%`),
+          projectCategory: {
+            project_category: searchProjectsDTO.project_category,
+          },
+        },
+        skip: (searchProjectsDTO.offset - 1) * limit,
+        take: limit,
+        order: { created_at: 'DESC' },
+        relations: ['countryCode', 'projectImages'],
+      });
+    }
+
+    const plainSearchedProjects = searchedProjects.map((searchedProject) =>
+      plainToClass(SearchProjectsResponseDTO, searchedProject),
+    );
+
+    return {
+      searchProjects: plainSearchedProjects,
       total,
     };
   }
