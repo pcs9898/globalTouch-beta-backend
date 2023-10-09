@@ -1,9 +1,10 @@
-import { ObjectType, PickType } from '@nestjs/graphql';
-import { ProjectComment } from '../entity/projectComment.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { IsBoolean, IsNotEmpty } from 'class-validator';
 
 @ObjectType()
-export class CreateProjectCommentResponseDTO extends PickType(
-  ProjectComment,
-  ['content', 'created_at', 'projectComment_id', 'user'] as const,
-  ObjectType,
-) {}
+export class CreateProjectCommentResponseDTO {
+  @Field(() => Boolean)
+  @IsNotEmpty()
+  @IsBoolean()
+  success: boolean;
+}

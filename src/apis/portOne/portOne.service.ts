@@ -12,7 +12,7 @@ export class PortOneService {
     return result.data.response.access_token;
   }
 
-  async checkPaid({
+  async checkDonated({
     imp_uid,
     amount,
   }: IPortOneServiceCheckPaid): Promise<void> {

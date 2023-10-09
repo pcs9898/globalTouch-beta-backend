@@ -38,7 +38,7 @@ export class ProjectDonationService {
     createProjectDonationDTO,
     context,
   }: IProjectDonationServiceCreateProjectDonation): Promise<CreateProjectDonationResponseDTO> {
-    await this.portOneService.checkPaid({
+    await this.portOneService.checkDonated({
       imp_uid: createProjectDonationDTO.imp_uid,
       amount: createProjectDonationDTO.amount,
     });
@@ -124,5 +124,15 @@ export class ProjectDonationService {
       UserLoggedInDonations: plainProjectDonationsUserLoggedIn,
       total,
     };
+  }
+
+  async checkUserDonated({ user_id, project_id }): Promise<ProjectDonation> {
+    return this.projectDonationRepository.findOne({
+      where: {
+        user: { user_id },
+        project: { project_id },
+        status: PROJECT_DONATION_STATUS_ENUM.PAYMENT,
+      },
+    });
   }
 }

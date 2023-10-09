@@ -176,6 +176,10 @@ type FetchProjectsByCountryWithTotalResponseDTO {
   total: Int!
 }
 
+type CreateProjectCommentResponseDTO {
+  success: Boolean!
+}
+
 type FetchUpdatedProjectsResponseDTO {
   content: String!
   created_at: DateTime!
@@ -228,8 +232,9 @@ input FetchUserLoggedInDonationsDTO {
 type Mutation {
   loginUser(loginDTO: LoginDTO!): String!
   restoreAccessToken: String!
-  createProjectDonation(createProjectDonationDTO: CreateProjectDonationDTO!): CreateProjectDonationResponseDTO!
+  createProjectComment(createProjectCommentDTO: CreateProjectCommentDTO!): CreateProjectCommentResponseDTO!
   createProject(createProjectDTO: CreateProjectDTO!): CreateProjectResponseDTO!
+  createProjectDonation(createProjectDonationDTO: CreateProjectDonationDTO!): CreateProjectDonationResponseDTO!
   createUpdatedProject(createUpdatedProjectDTO: CreateUpdatedProjectDTO!): CreateUpdatedProjectResponseDTO!
   createUser(createUserDTO: CreateUserDTO!): CreateUserResponseDTO!
   updateCountryCode(updateCountryCodeDTO: UpdateCountryCodeDTO!): UpdateCountryCodeResponseDTO!
@@ -241,9 +246,8 @@ input LoginDTO {
   password: String!
 }
 
-input CreateProjectDonationDTO {
-  imp_uid: String!
-  amount: Int!
+input CreateProjectCommentDTO {
+  content: String!
   project_id: String!
 }
 
@@ -253,6 +257,12 @@ input CreateProjectDTO {
   amount_required: Int!
   project_category: String!
   projectImageUrls: String!
+}
+
+input CreateProjectDonationDTO {
+  imp_uid: String!
+  amount: Int!
+  project_id: String!
 }
 
 input CreateUpdatedProjectDTO {

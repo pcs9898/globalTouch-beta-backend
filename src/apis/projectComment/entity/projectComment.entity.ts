@@ -5,6 +5,7 @@ import { User } from 'src/apis/user/entity/user.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -28,6 +29,9 @@ export class ProjectComment {
   @CreateDateColumn()
   @Field(() => Date)
   created_at: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 
   @JoinColumn({ name: 'user_id' })
   @ManyToOne(() => User, { nullable: false })
