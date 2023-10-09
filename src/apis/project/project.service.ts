@@ -12,7 +12,6 @@ import { ProjectImageService } from '../projectImage/projectImage.service';
 import { CountryCodeService } from '../countryCode/countryCode.service';
 import { ProjectCategoryService } from '../projectCategory/projectCategory.service';
 import { plainToClass } from 'class-transformer';
-import { UserService } from '../user/user.service';
 import {
   IProjectServiceCreateProject,
   IProjectServiceFetchProject,
@@ -27,12 +26,13 @@ import {
 import { FetchProjectResponseDTO } from './dto/fetch-project-response.dto';
 import { FetchProjectsTrendingResponseDTO } from './dto/fetch-projects-trending/fetch-projects-trending-response.dto';
 import { FetchProjectsTrendingWithTotalResponseDTO } from './dto/fetch-projects-trending/fetch-projects-trending-withTotal-response.dto';
-import { FetchProjectsUserLoggedInWithTotalResponseDTO } from './dto/fetch-projects-user-loggedIn/fetch-projects-user-loggedIn-withTotal-response.dto';
 import { FetchProjectsUserLoggedInResponseDTO } from './dto/fetch-projects-user-loggedIn/fetch-projects-user-LoggedIn-response.dto';
 import { FetchProjectsNewestWithTotalResponseDTO } from './dto/fetch-projects-newest/fetch-projects-newest-withTotal-response.dto';
 import { FetchProjectsNewestResponseDTO } from './dto/fetch-projects-newest/fetch-projects-newest-reponse.dto';
 import { FetchProjectsByCountryWithTotalResponseDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry-withTotal-response.dto';
 import { FetchProjectsByCountryResponseDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry-response.dto';
+import { FetchUserLoggedInProjectsWithTotalResponseDTO } from '../user/dto/fetch-user-loggedIn-projects/fetch-user-loggedIn-projects-withTotal-response.dto';
+import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class ProjectService {
@@ -46,9 +46,9 @@ export class ProjectService {
 
     private readonly projectCategoryService: ProjectCategoryService,
 
-    private readonly userService: UserService,
-
     private readonly dataSource: DataSource,
+
+    private readonly commonService: CommonService,
   ) {}
 
   // createProject
@@ -71,7 +71,7 @@ export class ProjectService {
     if (!isProjectCategory)
       throw new UnprocessableEntityException('Invalid project category');
 
-    const user = await this.userService.findOneUserById({
+    const user = await this.commonService.findOneUserById({
       user_id: context.req.user.user_id,
     });
 
@@ -162,14 +162,14 @@ export class ProjectService {
 
   // fetchProjectsUserLoggedIn
   async fetchProjectsUserLoggedIn({
-    fetchProjectsUserLoggedInDTO,
+    fetchUserLoggedInProjectsDTO,
     context,
-  }: IProjectServiceFetchProjectsUserLoggedIn): Promise<FetchProjectsUserLoggedInWithTotalResponseDTO> {
+  }: IProjectServiceFetchProjectsUserLoggedIn): Promise<FetchUserLoggedInProjectsWithTotalResponseDTO> {
     const limit = 8;
     const [projectsUserLoggedIn, total] =
       await this.projectRepository.findAndCount({
         where: { user: context.req.user },
-        skip: (fetchProjectsUserLoggedInDTO.offset - 1) * limit,
+        skip: (fetchUserLoggedInProjectsDTO.offset - 1) * limit,
         take: limit,
         order: { created_at: 'DESC' },
         relations: ['countryCode', 'projectImages'],
@@ -214,16 +214,16 @@ export class ProjectService {
   }: IProjectServiceFetchProjectsByCountry): Promise<FetchProjectsByCountryWithTotalResponseDTO> {
     const limit = 8;
 
-    const isCounryCode = await this.countryCodeService.findOneCountryCode({
+    const isCountryCode = await this.countryCodeService.findOneCountryCode({
       country_code: fetchProjectsByCountryDTO.country_code,
     });
-    if (!isCounryCode)
+    if (!isCountryCode)
       throw new UnprocessableEntityException('Invalid Country Code');
 
     const [projectsByCountry, total] =
       await this.projectRepository.findAndCount({
         where: {
-          countryCode: isCounryCode,
+          countryCode: isCountryCode,
         },
         skip: (fetchProjectsByCountryDTO.offset - 1) * limit,
         take: limit,

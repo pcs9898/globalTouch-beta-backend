@@ -4,6 +4,7 @@ import { User } from '../user/entity/user.entity';
 import { Repository } from 'typeorm';
 import {
   ICommonServiceCreateUserWithGoogle,
+  ICommonServiceFindOneUserById,
   ICommonServiceFindUserOneByEmail,
 } from './interfaces/common-service.interface';
 
@@ -16,6 +17,19 @@ export class CommonService {
 
   findOneUserByEmail({ email }: ICommonServiceFindUserOneByEmail) {
     return this.userRepository.findOne({ where: { email } });
+  }
+
+  async findOneUserById({ user_id, onlyUser }: ICommonServiceFindOneUserById) {
+    if (onlyUser) {
+      return this.userRepository.findOne({
+        where: { user_id },
+      });
+    }
+
+    return this.userRepository.findOne({
+      where: { user_id },
+      relations: ['countryCode'],
+    });
   }
 
   createUserWithGoogle({

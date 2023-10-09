@@ -81,6 +81,19 @@ type UpdateCountryCodeResponseDTO {
   accessToken: String!
 }
 
+type FetchUserLoggedInProjectsResponseDTO {
+  title: String!
+  amount_required: Int!
+  amount_raised: Int!
+  countryCode: CountryCode!
+  projectImages: [ProjectImage!]!
+}
+
+type FetchUserLoggedInProjectsWithTotalResponseDTO {
+  projectsUserLoggedIn: [FetchUserLoggedInProjectsResponseDTO!]!
+  total: Int!
+}
+
 type CreateProjectResponseDTO {
   project_id: String!
   title: String!
@@ -117,14 +130,6 @@ type FetchProjectsTrendingResponseDTO {
   projectImages: [ProjectImage!]!
 }
 
-type FetchProjectsUserLoggedInResponseDTO {
-  title: String!
-  amount_required: Int!
-  amount_raised: Int!
-  countryCode: CountryCode!
-  projectImages: [ProjectImage!]!
-}
-
 type FetchProjectsNewestResponseDTO {
   title: String!
   amount_required: Int!
@@ -141,17 +146,23 @@ type FetchProjectsByCountryResponseDTO {
   projectImages: [ProjectImage!]!
 }
 
+type FetchUserLoggedInDonationsResponseDTO {
+  amount: Int!
+  created_at: DateTime!
+  project: Project!
+}
+
+type FetchUserLoggedInDonationsWithTotalResponseDTO {
+  UserLoggedInDonations: [FetchUserLoggedInDonationsResponseDTO!]!
+  total: Int!
+}
+
 type CreateProjectDonationResponseDTO {
   success: Boolean!
 }
 
 type FetchProjectsTrendingWithTotalResponseDTO {
   projectsTrending: [FetchProjectsTrendingResponseDTO!]!
-  total: Int!
-}
-
-type FetchProjectsUserLoggedInWithTotalResponseDTO {
-  projectsUserLoggedIn: [FetchProjectsUserLoggedInResponseDTO!]!
   total: Int!
 }
 
@@ -176,21 +187,17 @@ type CreateUpdatedProjectResponseDTO {
 
 type Query {
   fetchProject(fetchProjectDTO: FetchProjectDTO!): FetchProjectResponseDTO!
-  fetchProjectsUserLoggedIn(fetchProjectsUserLoggedInDTO: FetchProjectsUserLoggedInDTO!): FetchProjectsUserLoggedInWithTotalResponseDTO!
   fetchProjectsTrending(fetchProjectsTrendingDTO: FetchProjectsTrendingDTO!): FetchProjectsTrendingWithTotalResponseDTO!
   fetchProjectsNewest(fetchProjectsNewestDTO: FetchProjectsNewestDTO!): FetchProjectsNewestWithTotalResponseDTO!
   fetchProjectsByCountry(fetchProjectsByCountryDTO: FetchProjectsByCountryDTO!): FetchProjectsByCountryWithTotalResponseDTO!
-  sayHello: String!
-  fetchUserLoggedIn: FetchUserLoggedInResponseDTO!
   fetchUpdatedProjects(fetchUpdatedProjectsDTO: FetchUpdatedProjectsDTO!): [FetchUpdatedProjectsResponseDTO!]!
+  fetchUserLoggedIn: FetchUserLoggedInResponseDTO!
+  fetchUserLoggedInProjects(fetchUserLoggedInProjectsDTO: FetchUserLoggedInProjectsDTO!): FetchUserLoggedInProjectsWithTotalResponseDTO!
+  fetchUserLoggedInDonations(fetchUserLoggedInDonationsDTO: FetchUserLoggedInDonationsDTO!): FetchUserLoggedInDonationsWithTotalResponseDTO!
 }
 
 input FetchProjectDTO {
   project_id: String!
-}
-
-input FetchProjectsUserLoggedInDTO {
-  offset: Int!
 }
 
 input FetchProjectsTrendingDTO {
@@ -210,15 +217,23 @@ input FetchUpdatedProjectsDTO {
   project_id: String!
 }
 
+input FetchUserLoggedInProjectsDTO {
+  offset: Int!
+}
+
+input FetchUserLoggedInDonationsDTO {
+  offset: Int!
+}
+
 type Mutation {
   loginUser(loginDTO: LoginDTO!): String!
   restoreAccessToken: String!
   createProjectDonation(createProjectDonationDTO: CreateProjectDonationDTO!): CreateProjectDonationResponseDTO!
   createProject(createProjectDTO: CreateProjectDTO!): CreateProjectResponseDTO!
+  createUpdatedProject(createUpdatedProjectDTO: CreateUpdatedProjectDTO!): CreateUpdatedProjectResponseDTO!
   createUser(createUserDTO: CreateUserDTO!): CreateUserResponseDTO!
   updateCountryCode(updateCountryCodeDTO: UpdateCountryCodeDTO!): UpdateCountryCodeResponseDTO!
   updateUser(updateUserDTO: UpdateUserDTO!): UpdateUserResponseDTO!
-  createUpdatedProject(createUpdatedProjectDTO: CreateUpdatedProjectDTO!): CreateUpdatedProjectResponseDTO!
 }
 
 input LoginDTO {
@@ -240,6 +255,11 @@ input CreateProjectDTO {
   projectImageUrls: String!
 }
 
+input CreateUpdatedProjectDTO {
+  content: String!
+  project_id: String!
+}
+
 input CreateUserDTO {
   email: String!
   name: String!
@@ -255,9 +275,4 @@ input UpdateCountryCodeDTO {
 input UpdateUserDTO {
   name: String
   profile_image_url: String
-}
-
-input CreateUpdatedProjectDTO {
-  content: String!
-  project_id: String!
 }

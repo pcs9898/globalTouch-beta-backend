@@ -12,8 +12,14 @@ import {
 import { DataSource, Repository } from 'typeorm';
 import { CreateProjectDonationResponseDTO } from './dto/create-projectDonation-response.dto';
 import { ProjectService } from '../project/project.service';
-import { IProjectDonationServiceCreateProjectDonation } from './interfaces/donation-service.interface';
+import {
+  IProjectDonationServiceCreateProjectDonation,
+  IProjectDonationServiceFetchProjectDonationsUserLoggedIn,
+} from './interfaces/donation-service.interface';
 import { PortOneService } from '../portone/portone.service';
+import { FetchUserLoggedInDonationsWithTotalResponseDTO } from '../user/dto/fetch-user-loggedIn-donations/fetch-user-loggedIn-donations-withTotal-response.dto';
+import { plainToClass } from 'class-transformer';
+import { FetchUserLoggedInDonationsResponseDTO } from '../user/dto/fetch-user-loggedIn-donations/fetch-user-loggedIn-donations-response.dto';
 
 @Injectable()
 export class ProjectDonationService {
@@ -88,5 +94,35 @@ export class ProjectDonationService {
     } finally {
       queryRunner.release();
     }
+  }
+
+  async fetchProjectDonationsUserLoggedIn({
+    fetchUserLoggedInDonationsDTO,
+    context,
+  }: IProjectDonationServiceFetchProjectDonationsUserLoggedIn): Promise<FetchUserLoggedInDonationsWithTotalResponseDTO> {
+    const limit = 8;
+    const [projectsDonationsUserLoggedIn, total] =
+      await this.projectDonationRepository.findAndCount({
+        where: {
+          user: { user_id: context.req.user.user_id },
+        },
+        skip: (fetchUserLoggedInDonationsDTO.offset - 1) * limit,
+        take: limit,
+        order: { created_at: 'DESC' },
+        relations: ['project', 'project.countryCode'],
+      });
+
+    const plainProjectDonationsUserLoggedIn = projectsDonationsUserLoggedIn.map(
+      (projectDonationsUserLoggedIn) =>
+        plainToClass(
+          FetchUserLoggedInDonationsResponseDTO,
+          projectDonationsUserLoggedIn,
+        ),
+    );
+
+    return {
+      UserLoggedInDonations: plainProjectDonationsUserLoggedIn,
+      total,
+    };
   }
 }

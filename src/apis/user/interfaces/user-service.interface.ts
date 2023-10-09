@@ -13,11 +13,6 @@ export interface IUserServiceUpdateCountryCode {
   context: IContext;
 }
 
-export interface IUserServiceFindOneUserById {
-  user_id: string;
-  onlyUser?: boolean;
-}
-
 export interface IUserServiceFetchUserLoggedIn {
   context: IContext;
 }

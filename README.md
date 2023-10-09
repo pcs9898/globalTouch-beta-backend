@@ -8,7 +8,8 @@
 - [x] feature5/updateCountryCode (createUserWithGoogle)
 - [x] feature5.5/fetchUserLoggedIn
 - [x] feature6/updateUser (editMyProfile)
-- [ ] feature15/fetchUserLoggedInDonations (page-limit:8, sortByTime)
+- [x] feature8.5/fetchUserLoggedInProjects (page-limit:8, sortByTime)
+- [x] feature15/fetchUserLoggedInDonations (page-limit:8, sortByTime)
 
 ## Auth Module
 
@@ -20,7 +21,6 @@
 
 - [x] feature7/createProject (picture max 3, transaction)
 - [x] feature8/fetchProject
-- [x] feature8.5/fetchProjectsUserLoggedIn (page-limit:8, sortByTime)
 - [x] feature9/fetchProjectsTrending (page-limit:8, sortByNumberOfDonations)
 - [x] feature10/fetchProjectsNewest (page-limit:8, sortByTime)
 - [x] feature11/fetchProjectsByCountry (page-limit:8, sortByTime)
@@ -47,6 +47,8 @@
 
 ## Optimization
 
+- [ ] ResolveField, DataLoader
 - [ ] Apply redis globally
 - [ ] Code refactoring
+- [ ] Test Code
 - [ ] Convert to MSA

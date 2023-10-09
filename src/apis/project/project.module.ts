@@ -9,8 +9,8 @@ import { CountryCodeModule } from '../countryCode/countryCode.module';
 import { CountryCode } from '../countryCode/entity/countryCode.entity';
 import { ProjectCategory } from '../projectCategory/entity/projectCategory.entity';
 import { ProjectCategoryModule } from '../projectCategory/projectCategory.module';
-import { UserModule } from '../user/user.module';
 import { User } from '../user/entity/user.entity';
+import { CommonModule } from '../common/common.module';
 
 @Module({
   imports: [
@@ -24,7 +24,7 @@ import { User } from '../user/entity/user.entity';
     ProjectImageModule,
     CountryCodeModule,
     ProjectCategoryModule,
-    UserModule,
+    CommonModule,
   ],
   providers: [ProjectResolver, ProjectService],
   exports: [ProjectService],

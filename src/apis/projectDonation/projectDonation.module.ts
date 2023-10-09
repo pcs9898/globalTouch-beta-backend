@@ -13,5 +13,6 @@ import { PortOneService } from '../portone/portone.service';
     ProjectModule,
   ],
   providers: [ProjectDonationResolver, ProjectDonationService, PortOneService],
+  exports: [ProjectDonationService],
 })
 export class ProjectDonationModule {}

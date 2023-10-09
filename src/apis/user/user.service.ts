@@ -11,7 +11,6 @@ import * as bcrypt from 'bcrypt';
 import {
   IUserServiceCreateUser,
   IUserServiceFetchUserLoggedIn,
-  IUserServiceFindOneUserById,
   IUserServiceUpdateCountryCode,
   IUserServiceUpdateUser,
 } from './interfaces/user-service.interface';
@@ -109,7 +108,7 @@ export class UserService {
   }: IUserServiceUpdateUser): Promise<UpdateUserResponseDTO> {
     await this.userRepository.update(context.req.user.user_id, updateUserDTO);
 
-    const updatedUser = await this.findOneUserById({
+    const updatedUser = await this.commonService.findOneUserById({
       user_id: context.req.user.user_id,
     });
 
@@ -117,16 +116,4 @@ export class UserService {
   }
 
   //
-  async findOneUserById({ user_id, onlyUser }: IUserServiceFindOneUserById) {
-    if (onlyUser) {
-      return this.userRepository.findOne({
-        where: { user_id },
-      });
-    }
-
-    return this.userRepository.findOne({
-      where: { user_id },
-      relations: ['countryCode'],
-    });
-  }
 }
