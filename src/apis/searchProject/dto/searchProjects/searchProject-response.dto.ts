@@ -2,7 +2,7 @@ import { ObjectType, PickType } from '@nestjs/graphql';
 import { Project } from 'src/apis/project/entity/project.entity';
 
 @ObjectType()
-export class SearchProjectsResponseDTO extends PickType(
+export class SearchProjectResponseDTO extends PickType(
   Project,
   [
     'projectImages',

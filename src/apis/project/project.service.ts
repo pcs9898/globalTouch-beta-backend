@@ -34,8 +34,8 @@ import { FetchProjectsByCountryWithTotalResponseDTO } from './dto/fetch-projects
 import { FetchProjectsByCountryResponseDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry-response.dto';
 import { FetchUserLoggedInProjectsWithTotalResponseDTO } from '../user/dto/fetch-user-loggedIn-projects/fetch-user-loggedIn-projects-withTotal-response.dto';
 import { CommonService } from '../common/common.service';
-import { SearchProjectsWithTotalResponseDTO } from '../searchProject/dto/searchProjects/searchProjects-withTotal-response.dto';
-import { SearchProjectsResponseDTO } from '../searchProject/dto/searchProjects/searchProjects-response.dto';
+import { SearchProjectWithTotalResponseDTO } from '../searchProject/dto/searchProjects/searchProject-withTotal-response.dto';
+import { SearchProjectResponseDTO } from '../searchProject/dto/searchProjects/searchProject-response.dto';
 
 @Injectable()
 export class ProjectService {
@@ -246,7 +246,7 @@ export class ProjectService {
 
   async searchProjects({
     searchProjectsDTO,
-  }: IProjectServiceSearchProjects): Promise<SearchProjectsWithTotalResponseDTO> {
+  }: IProjectServiceSearchProjects): Promise<SearchProjectWithTotalResponseDTO> {
     const limit = 8;
     let searchedProjects;
     let total;
@@ -277,7 +277,7 @@ export class ProjectService {
     }
 
     const plainSearchedProjects = searchedProjects.map((searchedProject) =>
-      plainToClass(SearchProjectsResponseDTO, searchedProject),
+      plainToClass(SearchProjectResponseDTO, searchedProject),
     );
 
     return {

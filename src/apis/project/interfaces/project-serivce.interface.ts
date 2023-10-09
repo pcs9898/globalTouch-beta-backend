@@ -7,7 +7,7 @@ import { FetchProjectsByCountryDTO } from '../dto/fetch-projects-byCountry/fetch
 import { Project } from '../entity/project.entity';
 import { QueryRunner } from 'typeorm';
 import { FetchUserLoggedInProjectsDTO } from 'src/apis/user/dto/fetch-user-loggedIn-projects/fetch-user-loggedIn-projects.dto';
-import { SearchProjectsDTO } from 'src/apis/searchProject/dto/searchProjects/searchProjects.dto';
+import { SearchProjectDTO } from 'src/apis/searchProject/dto/searchProjects/searchProject.dto';
 
 export interface IProjectServiceCreateProject {
   createProjectDTO: CreateProjectDTO;
@@ -51,5 +51,5 @@ export interface IProjectServiceSaveWithQueryRunner {
 }
 
 export interface IProjectServiceSearchProjects {
-  searchProjectsDTO: SearchProjectsDTO;
+  searchProjectsDTO: SearchProjectDTO;
 }

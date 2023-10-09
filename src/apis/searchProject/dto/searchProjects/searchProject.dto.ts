@@ -7,7 +7,7 @@ registerEnumType(PROJECT_CATEGORY_WITH_ALL_ENUM, {
 });
 
 @InputType()
-export class SearchProjectsDTO {
+export class SearchProjectDTO {
   @Field(() => String, { nullable: false })
   @IsNotEmpty()
   @IsString()
