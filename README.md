@@ -47,8 +47,8 @@
 
 ## Optimization
 
-- [ ] ResolveField, DataLoader
 - [ ] Apply redis globally
-- [ ] Code refactoring
 - [ ] Test Code
+- [ ] ResolveField, DataLoader
+- [ ] Code refactoring
 - [ ] Convert to MSA
