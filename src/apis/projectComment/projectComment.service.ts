@@ -8,24 +8,18 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProjectComment } from './entity/projectComment.entity';
 import { Repository } from 'typeorm';
-import { IContext } from 'src/common/interfaces/context';
-import { CreateProjectCommentDTO } from './dto/create-projectComment.dto';
 import { ProjectService } from '../project/project.service';
 import { ProjectDonationService } from '../projectDonation/projectDonation.service';
 import { CreateProjectCommentResponseDTO } from './dto/create-projectComment-response.dto';
-import { FetchProjectCommentsDTO } from './dto/fetch-projectComments/fetch-projectComments.dto';
 import { FetchProjectCommentsWithTotalResponseDTO } from './dto/fetch-projectComments/fetch-projectComments-withTotal-response.dto';
 import { plainToClass } from 'class-transformer';
 import { FetchProjectCommentsResponseDTO } from './dto/fetch-projectComments/fetch-projectComments-response.dto';
-
-export interface IProjectCommentServiceCreateProjectComment {
-  createProjectCommentDTO: CreateProjectCommentDTO;
-  context: IContext;
-}
-
-export interface IProjectCommentServiceFetchProjectComments {
-  fetchProjectCommentsDTO: FetchProjectCommentsDTO;
-}
+import { UpdateProjectCommentResponseDTO } from './dto/update-projectComment-response.dto';
+import {
+  IProjectCommentServiceCreateProjectComment,
+  IProjectCommentServiceFetchProjectComments,
+  IProjectServiceUpdateProjectComment,
+} from './interfaces/comment-service.interface';
 
 @Injectable()
 export class ProjectCommentService {
@@ -118,5 +112,37 @@ export class ProjectCommentService {
       projectComments: plainProjectComments,
       total,
     };
+  }
+
+  async updateProjectComment({
+    updateProjectCommentDTO,
+    context,
+  }: IProjectServiceUpdateProjectComment): Promise<UpdateProjectCommentResponseDTO> {
+    const isProject = await this.projectService.findOneProjectById({
+      project_id: updateProjectCommentDTO.project_id,
+    });
+    if (!isProject) throw new NotFoundException('Project not found');
+
+    const isProjectComment = await this.projectCommentRepository.findOne({
+      where: {
+        projectComment_id: updateProjectCommentDTO.projectComment_id,
+      },
+      relations: ['user'],
+    });
+    if (!isProjectComment)
+      throw new UnprocessableEntityException(
+        'Comment you are trying to update does not exist',
+      );
+    if (isProjectComment.user.user_id !== context.req.user.user_id)
+      throw new UnauthorizedException('Can only edit your own comment');
+
+    const updatedProjectComment = await this.projectCommentRepository.update(
+      {
+        projectComment_id: updateProjectCommentDTO.projectComment_id,
+      },
+      { content: updateProjectCommentDTO.content },
+    );
+
+    return { success: updatedProjectComment.affected > 0 ? true : false };
   }
 }

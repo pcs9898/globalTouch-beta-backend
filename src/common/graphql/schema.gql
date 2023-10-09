@@ -191,6 +191,10 @@ type FetchProjectCommentsWithTotalResponseDTO {
   total: Int!
 }
 
+type UpdateProjectCommentResponseDTO {
+  success: Boolean!
+}
+
 type FetchUpdatedProjectsResponseDTO {
   content: String!
   created_at: DateTime!
@@ -250,6 +254,7 @@ type Mutation {
   loginUser(loginDTO: LoginDTO!): String!
   restoreAccessToken: String!
   createProjectComment(createProjectCommentDTO: CreateProjectCommentDTO!): CreateProjectCommentResponseDTO!
+  updateProjectComment(updateProjectCommentDTO: UpdateProjectCommentDTO!): UpdateProjectCommentResponseDTO!
   createProject(createProjectDTO: CreateProjectDTO!): CreateProjectResponseDTO!
   createProjectDonation(createProjectDonationDTO: CreateProjectDonationDTO!): CreateProjectDonationResponseDTO!
   createUpdatedProject(createUpdatedProjectDTO: CreateUpdatedProjectDTO!): CreateUpdatedProjectResponseDTO!
@@ -266,6 +271,12 @@ input LoginDTO {
 input CreateProjectCommentDTO {
   content: String!
   project_id: String!
+}
+
+input UpdateProjectCommentDTO {
+  content: String!
+  project_id: String!
+  projectComment_id: String!
 }
 
 input CreateProjectDTO {

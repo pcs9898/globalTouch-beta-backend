@@ -38,7 +38,7 @@
 
 - [x] feature16/createProjectComment
 - [x] feature17/fetchProjectComments (page-limit:10, sortByTime)
-- [ ] feature18/updateProjectComment
+- [x] feature18/updateProjectComment
 - [ ] feature19/deleteProjectComment
 
 ## Search Module

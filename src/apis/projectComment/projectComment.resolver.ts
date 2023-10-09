@@ -7,6 +7,8 @@ import { CreateProjectCommentDTO } from './dto/create-projectComment.dto';
 import { IContext } from 'src/common/interfaces/context';
 import { FetchProjectCommentsWithTotalResponseDTO } from './dto/fetch-projectComments/fetch-projectComments-withTotal-response.dto';
 import { FetchProjectCommentsDTO } from './dto/fetch-projectComments/fetch-projectComments.dto';
+import { UpdateProjectCommentResponseDTO } from './dto/update-projectComment-response.dto';
+import { UpdateProjectCommentDTO } from './dto/update-projectcomment.dto';
 
 @Resolver()
 export class ProjectCommentResolver {
@@ -31,6 +33,19 @@ export class ProjectCommentResolver {
   ): Promise<CreateProjectCommentResponseDTO> {
     return this.projectCommentService.createProjectComment({
       createProjectCommentDTO,
+      context,
+    });
+  }
+
+  @UseGuards(GqlAuthGuard('access'))
+  @Mutation(() => UpdateProjectCommentResponseDTO)
+  async updateProjectComment(
+    @Args('updateProjectCommentDTO')
+    updateProjectCommentDTO: UpdateProjectCommentDTO,
+    @Context() context: IContext,
+  ): Promise<UpdateProjectCommentResponseDTO> {
+    return this.projectCommentService.updateProjectComment({
+      updateProjectCommentDTO,
       context,
     });
   }
