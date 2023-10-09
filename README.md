@@ -8,7 +8,7 @@
 - [x] feature5/updateCountryCode (createUserWithGoogle)
 - [x] feature5.5/fetchUserLoggedIn
 - [x] feature6/updateUser (editMyProfile)
-- [ ] feature15/fetchDonationsUserLoggedIn (page-limit:8, sortByTime)
+- [ ] feature15/fetchUserLoggedInDonations (page-limit:8, sortByTime)
 
 ## Auth Module
 
