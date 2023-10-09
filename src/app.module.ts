@@ -9,7 +9,7 @@ import { ProjectCommentModule } from './apis/projectComment/projectComment.modul
 import { ProjectDonationModule } from './apis/projectDonation/projectDonation.module';
 import { ProjectModule } from './apis/project/project.module';
 import { ProjectImageModule } from './apis/projectImage/projectImage.module';
-import { SearchModule } from './apis/search/search.module';
+import { SearchProjectModule } from './apis/searchProject/searchProject.module';
 import { UpdatedProjectModule } from './apis/updatedProject/updatedProject.module';
 import { CountryCodeModule } from './apis/countryCode/countryCode.module';
 import { CommonModule } from './apis/common/common.module';
@@ -25,7 +25,7 @@ import { ProjectCategoryModule } from './apis/projectCategory/projectCategory.mo
     ProjectCategoryModule,
     ProjectModule,
     ProjectImageModule,
-    SearchModule,
+    SearchProjectModule,
     UpdatedProjectModule,
     UserModule,
     ConfigModule.forRoot({

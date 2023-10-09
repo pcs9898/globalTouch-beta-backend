@@ -146,6 +146,14 @@ type FetchProjectsByCountryResponseDTO {
   projectImages: [ProjectImage!]!
 }
 
+type SearchProjectResponseDTO {
+  title: String!
+  amount_required: Int!
+  amount_raised: Int!
+  countryCode: CountryCode!
+  projectImages: [ProjectImage!]!
+}
+
 type FetchUserLoggedInDonationsResponseDTO {
   amount: Int!
   created_at: DateTime!
@@ -199,6 +207,11 @@ type DeleteProjectCommentResponseDTO {
   success: Boolean!
 }
 
+type SearchProjectWithTotalResponseDTO {
+  searchProjects: [SearchProjectResponseDTO!]!
+  total: Int!
+}
+
 type FetchUpdatedProjectsResponseDTO {
   content: String!
   created_at: DateTime!
@@ -214,6 +227,7 @@ type Query {
   fetchProjectsTrending(fetchProjectsTrendingDTO: FetchProjectsTrendingDTO!): FetchProjectsTrendingWithTotalResponseDTO!
   fetchProjectsNewest(fetchProjectsNewestDTO: FetchProjectsNewestDTO!): FetchProjectsNewestWithTotalResponseDTO!
   fetchProjectsByCountry(fetchProjectsByCountryDTO: FetchProjectsByCountryDTO!): FetchProjectsByCountryWithTotalResponseDTO!
+  searchProjects(searchProjectsDTO: SearchProjectDTO!): SearchProjectWithTotalResponseDTO!
   fetchUpdatedProjects(fetchUpdatedProjectsDTO: FetchUpdatedProjectsDTO!): [FetchUpdatedProjectsResponseDTO!]!
   fetchUserLoggedIn: FetchUserLoggedInResponseDTO!
   fetchUserLoggedInProjects(fetchUserLoggedInProjectsDTO: FetchUserLoggedInProjectsDTO!): FetchUserLoggedInProjectsWithTotalResponseDTO!
@@ -240,6 +254,22 @@ input FetchProjectsNewestDTO {
 input FetchProjectsByCountryDTO {
   offset: Int!
   country_code: String!
+}
+
+input SearchProjectDTO {
+  searchTerm: String!
+  project_category: PROJECT_CATEGORY_WITH_ALL_ENUM! = All
+  offset: Int!
+}
+
+enum PROJECT_CATEGORY_WITH_ALL_ENUM {
+  All
+  Medical
+  Emergency
+  Memorial
+  Education
+  CrisisRelief
+  Nonprofit
 }
 
 input FetchUpdatedProjectsDTO {
@@ -293,8 +323,17 @@ input CreateProjectDTO {
   title: String!
   content: String!
   amount_required: Int!
-  project_category: String!
+  project_category: PROJECT_CATEGORY_ENUM! = Medical
   projectImageUrls: String!
+}
+
+enum PROJECT_CATEGORY_ENUM {
+  Medical
+  Emergency
+  Memorial
+  Education
+  CrisisRelief
+  Nonprofit
 }
 
 input CreateProjectDonationDTO {

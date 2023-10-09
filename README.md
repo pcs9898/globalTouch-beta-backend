@@ -43,11 +43,11 @@
 
 ## Search Module
 
-- [ ] feature20/search (searchByCategory, sortByTime)
+- [x] feature20/searchProject (searchByCategory, page-limit:8, sortByTime)
 
 ## Optimization
 
-- [ ] Apply redis globally
+- [ ] Apply redis globally, project title index
 - [ ] Test Code
 - [ ] ResolveField, DataLoader
 - [ ] Code refactoring
