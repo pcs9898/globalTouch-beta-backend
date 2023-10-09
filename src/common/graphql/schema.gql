@@ -195,6 +195,10 @@ type UpdateProjectCommentResponseDTO {
   success: Boolean!
 }
 
+type DeleteProjectCommentResponseDTO {
+  success: Boolean!
+}
+
 type FetchUpdatedProjectsResponseDTO {
   content: String!
   created_at: DateTime!
@@ -255,6 +259,7 @@ type Mutation {
   restoreAccessToken: String!
   createProjectComment(createProjectCommentDTO: CreateProjectCommentDTO!): CreateProjectCommentResponseDTO!
   updateProjectComment(updateProjectCommentDTO: UpdateProjectCommentDTO!): UpdateProjectCommentResponseDTO!
+  deleteProjectComment(deleteProjectCommentDTO: DeleteProjectCommentDTO!): DeleteProjectCommentResponseDTO!
   createProject(createProjectDTO: CreateProjectDTO!): CreateProjectResponseDTO!
   createProjectDonation(createProjectDonationDTO: CreateProjectDonationDTO!): CreateProjectDonationResponseDTO!
   createUpdatedProject(createUpdatedProjectDTO: CreateUpdatedProjectDTO!): CreateUpdatedProjectResponseDTO!
@@ -275,6 +280,11 @@ input CreateProjectCommentDTO {
 
 input UpdateProjectCommentDTO {
   content: String!
+  project_id: String!
+  projectComment_id: String!
+}
+
+input DeleteProjectCommentDTO {
   project_id: String!
   projectComment_id: String!
 }

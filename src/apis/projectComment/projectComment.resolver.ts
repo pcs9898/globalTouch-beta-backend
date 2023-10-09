@@ -9,6 +9,8 @@ import { FetchProjectCommentsWithTotalResponseDTO } from './dto/fetch-projectCom
 import { FetchProjectCommentsDTO } from './dto/fetch-projectComments/fetch-projectComments.dto';
 import { UpdateProjectCommentResponseDTO } from './dto/update-projectComment-response.dto';
 import { UpdateProjectCommentDTO } from './dto/update-projectcomment.dto';
+import { DeleteProjectCommentResponseDTO } from './dto/delete-projectComment-response.dto';
+import { DeleteProjectCommentDTO } from './dto/delete-projectcomment.dto';
 
 @Resolver()
 export class ProjectCommentResolver {
@@ -46,6 +48,19 @@ export class ProjectCommentResolver {
   ): Promise<UpdateProjectCommentResponseDTO> {
     return this.projectCommentService.updateProjectComment({
       updateProjectCommentDTO,
+      context,
+    });
+  }
+
+  @UseGuards(GqlAuthGuard('access'))
+  @Mutation(() => DeleteProjectCommentResponseDTO)
+  async deleteProjectComment(
+    @Args('deleteProjectCommentDTO')
+    deleteProjectCommentDTO: DeleteProjectCommentDTO,
+    @Context() context: IContext,
+  ): Promise<DeleteProjectCommentResponseDTO> {
+    return this.projectCommentService.deleteProjectComment({
+      deleteProjectCommentDTO,
       context,
     });
   }

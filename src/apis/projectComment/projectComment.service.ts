@@ -17,9 +17,11 @@ import { FetchProjectCommentsResponseDTO } from './dto/fetch-projectComments/fet
 import { UpdateProjectCommentResponseDTO } from './dto/update-projectComment-response.dto';
 import {
   IProjectCommentServiceCreateProjectComment,
+  IProjectCommentServiceDeleteProjectComment,
   IProjectCommentServiceFetchProjectComments,
   IProjectServiceUpdateProjectComment,
 } from './interfaces/comment-service.interface';
+import { DeleteProjectCommentResponseDTO } from './dto/delete-projectComment-response.dto';
 
 @Injectable()
 export class ProjectCommentService {
@@ -32,10 +34,30 @@ export class ProjectCommentService {
     private readonly projectDonationService: ProjectDonationService,
   ) {}
 
-  private calculateMaxDonation(donations) {
+  private calculateMaxDonation({ donations }) {
     if (!donations.length) return null; // or any default value you want to return when there are no donations
 
     return Math.max(...donations.map((donation) => donation.amount));
+  }
+
+  private async checkProjectCommentOwner({ updateProjectCommentDTO, context }) {
+    const isProject = await this.projectService.findOneProjectById({
+      project_id: updateProjectCommentDTO.project_id,
+    });
+    if (!isProject) throw new NotFoundException('Project not found');
+
+    const isProjectComment = await this.projectCommentRepository.findOne({
+      where: {
+        projectComment_id: updateProjectCommentDTO.projectComment_id,
+      },
+      relations: ['user'],
+    });
+    if (!isProjectComment)
+      throw new UnprocessableEntityException(
+        'Comment you are trying to update does not exist',
+      );
+    if (isProjectComment.user.user_id !== context.req.user.user_id)
+      throw new UnauthorizedException('Can only edit your own comment');
   }
 
   async createProjectComment({
@@ -102,9 +124,9 @@ export class ProjectCommentService {
         FetchProjectCommentsResponseDTO,
         projectComment,
       );
-      plainComment.amount = this.calculateMaxDonation(
-        plainComment.user.projectDonations,
-      );
+      plainComment.amount = this.calculateMaxDonation({
+        donations: plainComment.user.projectDonations,
+      });
       return plainComment;
     });
 
@@ -118,23 +140,7 @@ export class ProjectCommentService {
     updateProjectCommentDTO,
     context,
   }: IProjectServiceUpdateProjectComment): Promise<UpdateProjectCommentResponseDTO> {
-    const isProject = await this.projectService.findOneProjectById({
-      project_id: updateProjectCommentDTO.project_id,
-    });
-    if (!isProject) throw new NotFoundException('Project not found');
-
-    const isProjectComment = await this.projectCommentRepository.findOne({
-      where: {
-        projectComment_id: updateProjectCommentDTO.projectComment_id,
-      },
-      relations: ['user'],
-    });
-    if (!isProjectComment)
-      throw new UnprocessableEntityException(
-        'Comment you are trying to update does not exist',
-      );
-    if (isProjectComment.user.user_id !== context.req.user.user_id)
-      throw new UnauthorizedException('Can only edit your own comment');
+    await this.checkProjectCommentOwner({ updateProjectCommentDTO, context });
 
     const updatedProjectComment = await this.projectCommentRepository.update(
       {
@@ -143,6 +149,25 @@ export class ProjectCommentService {
       { content: updateProjectCommentDTO.content },
     );
 
-    return { success: updatedProjectComment.affected > 0 ? true : false };
+    return { success: updatedProjectComment.affected ? true : false };
+  }
+
+  async deleteProjectComment({
+    deleteProjectCommentDTO,
+    context,
+  }: IProjectCommentServiceDeleteProjectComment): Promise<DeleteProjectCommentResponseDTO> {
+    await this.checkProjectCommentOwner({
+      updateProjectCommentDTO: deleteProjectCommentDTO,
+      context,
+    });
+
+    const deletedProjectComment =
+      await this.projectCommentRepository.softDelete({
+        projectComment_id: deleteProjectCommentDTO.projectComment_id,
+      });
+
+    return {
+      success: deletedProjectComment.affected ? true : false,
+    };
   }
 }
