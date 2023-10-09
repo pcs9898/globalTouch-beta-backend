@@ -13,11 +13,20 @@ import { CreateProjectCommentDTO } from './dto/create-projectComment.dto';
 import { ProjectService } from '../project/project.service';
 import { ProjectDonationService } from '../projectDonation/projectDonation.service';
 import { CreateProjectCommentResponseDTO } from './dto/create-projectComment-response.dto';
+import { FetchProjectCommentsDTO } from './dto/fetch-projectComments/fetch-projectComments.dto';
+import { FetchProjectCommentsWithTotalResponseDTO } from './dto/fetch-projectComments/fetch-projectComments-withTotal-response.dto';
+import { plainToClass } from 'class-transformer';
+import { FetchProjectCommentsResponseDTO } from './dto/fetch-projectComments/fetch-projectComments-response.dto';
 
 export interface IProjectCommentServiceCreateProjectComment {
   createProjectCommentDTO: CreateProjectCommentDTO;
   context: IContext;
 }
+
+export interface IProjectCommentServiceFetchProjectComments {
+  fetchProjectCommentsDTO: FetchProjectCommentsDTO;
+}
+
 @Injectable()
 export class ProjectCommentService {
   constructor(
@@ -28,6 +37,12 @@ export class ProjectCommentService {
 
     private readonly projectDonationService: ProjectDonationService,
   ) {}
+
+  private calculateMaxDonation(donations) {
+    if (!donations.length) return null; // or any default value you want to return when there are no donations
+
+    return Math.max(...donations.map((donation) => donation.amount));
+  }
 
   async createProjectComment({
     createProjectCommentDTO,
@@ -73,5 +88,35 @@ export class ProjectCommentService {
       throw new InternalServerErrorException(
         'Failed to create a comment, please try again',
       );
+  }
+
+  async fetchProjectComments({
+    fetchProjectCommentsDTO,
+  }: IProjectCommentServiceFetchProjectComments): Promise<FetchProjectCommentsWithTotalResponseDTO> {
+    const limit = 10;
+    const [projectComments, total] =
+      await this.projectCommentRepository.findAndCount({
+        where: { project: { project_id: fetchProjectCommentsDTO.project_id } },
+        skip: (fetchProjectCommentsDTO.offset - 1) * 4,
+        take: limit,
+        order: { created_at: 'DESC' },
+        relations: ['user', 'user.projectDonations'],
+      });
+
+    const plainProjectComments = projectComments.map((projectComment) => {
+      const plainComment = plainToClass(
+        FetchProjectCommentsResponseDTO,
+        projectComment,
+      );
+      plainComment.amount = this.calculateMaxDonation(
+        plainComment.user.projectDonations,
+      );
+      return plainComment;
+    });
+
+    return {
+      projectComments: plainProjectComments,
+      total,
+    };
   }
 }
