@@ -94,20 +94,6 @@ type FetchUserLoggedInProjectsWithTotalResponseDTO {
   total: Int!
 }
 
-type CreateProjectResponseDTO {
-  project_id: String!
-  title: String!
-  content: String!
-  amount_required: Int!
-  amount_raised: Int!
-  donation_count: Int!
-  created_at: DateTime!
-  user: User!
-  projectCategory: ProjectCategory!
-  countryCode: CountryCode!
-  projectImages: [ProjectImage!]!
-}
-
 type FetchProjectResponseDTO {
   project_id: String!
   title: String!
@@ -167,6 +153,10 @@ type FetchUserLoggedInDonationsWithTotalResponseDTO {
 
 type CreateProjectDonationResponseDTO {
   success: Boolean!
+}
+
+type CreateProjectResponseDTO {
+  project_id: String!
 }
 
 type FetchProjectsTrendingWithTotalResponseDTO {

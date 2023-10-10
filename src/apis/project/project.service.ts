@@ -108,15 +108,13 @@ export class ProjectService {
         ),
       );
 
-      const projectImagesResult = await Promise.all(projectImagesCreate);
+      await Promise.all(projectImagesCreate);
 
       await queryRunner.commitTransaction();
 
-      return plainToClass(CreateProjectResponseDTO, {
-        ...newProject,
-        project_category: isProjectCategory,
-        projectImages: projectImagesResult,
-      });
+      return {
+        project_id: newProject.project_id,
+      };
     } catch (error) {
       await queryRunner.rollbackTransaction();
 

@@ -47,7 +47,7 @@
 
 ## Optimization
 
-- [ ] Apply redis globally, project title index
+- [ ] Apply redis globally, project title index, Subscription
 - [ ] Test Code
 - [ ] ResolveField, DataLoader
 - [ ] Code refactoring
