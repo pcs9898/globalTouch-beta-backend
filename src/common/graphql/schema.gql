@@ -154,6 +154,7 @@ type FetchUserLoggedInDonationsResponseDTO {
   amount: Int!
   created_at: DateTime!
   project: Project!
+  project_image_url: String!
 }
 
 type FetchUserLoggedInDonationsWithTotalResponseDTO {

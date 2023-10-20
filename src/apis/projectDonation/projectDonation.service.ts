@@ -113,11 +113,29 @@ export class ProjectDonationService {
       });
 
     const plainProjectDonationsUserLoggedIn = projectsDonationsUserLoggedIn.map(
-      (projectDonationsUserLoggedIn) =>
-        plainToClass(
+      (projectDonationsUserLoggedIn) => {
+        const mainImage =
+          projectDonationsUserLoggedIn.project.projectImages.filter(
+            (image) => image.image_index === 0,
+          );
+
+        const {
+          project: { projectImages, ...restProject },
+          ...rest
+        } = projectDonationsUserLoggedIn;
+
+        const modifiedProjectDonationsUserLoggedIn = {
+          // ...projectDonationsUserLoggedIn,
+          project: { ...restProject },
+          ...rest,
+          project_image_url: mainImage[0].image_url,
+        };
+
+        return plainToClass(
           FetchUserLoggedInDonationsResponseDTO,
-          projectDonationsUserLoggedIn,
-        ),
+          modifiedProjectDonationsUserLoggedIn,
+        );
+      },
     );
 
     return {
