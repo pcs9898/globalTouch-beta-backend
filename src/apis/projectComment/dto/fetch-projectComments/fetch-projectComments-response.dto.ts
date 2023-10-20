@@ -4,7 +4,7 @@ import { ProjectComment } from '../../entity/projectComment.entity';
 @ObjectType()
 export class FetchProjectCommentsResponseDTO extends PickType(
   ProjectComment,
-  ['content', 'user'] as const,
+  ['content', 'user', 'projectComment_id'] as const,
   ObjectType,
 ) {
   @Field(() => Int)

@@ -15,6 +15,7 @@ import { plainToClass } from 'class-transformer';
 import {
   IProjectServiceCreateProject,
   IProjectServiceFetchProject,
+  IProjectServiceFetchProjectOgDTO,
   IProjectServiceFetchProjectsByCountry,
   IProjectServiceFetchProjectsNewest,
   IProjectServiceFetchProjectsTrending,
@@ -36,6 +37,7 @@ import { FetchUserLoggedInProjectsWithTotalResponseDTO } from '../user/dto/fetch
 import { CommonService } from '../common/common.service';
 import { SearchProjectWithTotalResponseDTO } from '../searchProject/dto/searchProjects/searchProject-withTotal-response.dto';
 import { SearchProjectResponseDTO } from '../searchProject/dto/searchProjects/searchProject-response.dto';
+import { FetchProjectOgResponseDTO } from './dto/fetch-projectOg-response.dto';
 
 @Injectable()
 export class ProjectService {
@@ -98,11 +100,12 @@ export class ProjectService {
         user,
       });
 
-      const projectImagesCreate = await projectImageUrls.map((image_url) =>
+      const projectImagesCreate = await projectImageUrls.map((image_url, i) =>
         this.projectImageService.create(
           {
             project: newProject,
             image_url,
+            image_index: i,
           },
           queryRunner.manager,
         ),
@@ -137,6 +140,17 @@ export class ProjectService {
     return plainToClass(FetchProjectResponseDTO, isProject);
   }
 
+  async fetchProjectOg({
+    fetchProjectOgDTO,
+  }: IProjectServiceFetchProjectOgDTO): Promise<FetchProjectOgResponseDTO> {
+    const isProject = await this.findOneProjectById({
+      project_id: fetchProjectOgDTO.project_id,
+    });
+    if (!isProject) throw new NotFoundException('Project not found');
+
+    return plainToClass(FetchProjectOgResponseDTO, isProject);
+  }
+
   // fetchProjectsTrending
   async fetchProjectsTrending({
     fetchProjectsTrendingDTO,
@@ -151,9 +165,18 @@ export class ProjectService {
       },
     );
 
-    const plainTrendingProjects = trendingProjects.map((trendingProject) =>
-      plainToClass(FetchProjectsTrendingResponseDTO, trendingProject),
-    );
+    const plainTrendingProjects = trendingProjects.map((trendingProject) => {
+      const mainImage = trendingProject.projectImages.filter(
+        (image) => image.image_index === 0,
+      );
+
+      const modifiedProject = {
+        ...trendingProject,
+        project_image_url: mainImage[0].image_url,
+      };
+
+      return plainToClass(FetchProjectsTrendingResponseDTO, modifiedProject);
+    });
 
     return {
       projectsTrending: plainTrendingProjects,
@@ -177,8 +200,21 @@ export class ProjectService {
       });
 
     const plainProjectsUserLoggedIn = projectsUserLoggedIn.map(
-      (projectUserLoggedIn) =>
-        plainToClass(FetchProjectsUserLoggedInResponseDTO, projectUserLoggedIn),
+      (projectUserLoggedIn) => {
+        const mainImage = projectUserLoggedIn.projectImages.filter(
+          (image) => image.image_index === 0,
+        );
+
+        const modifiedProject = {
+          ...projectUserLoggedIn,
+          project_image_url: mainImage[0].image_url,
+        };
+
+        return plainToClass(
+          FetchProjectsUserLoggedInResponseDTO,
+          modifiedProject,
+        );
+      },
     );
 
     return {
@@ -199,9 +235,18 @@ export class ProjectService {
       relations: ['countryCode', 'projectImages'],
     });
 
-    const plainProjectsNewest = projectsNewest.map((projectNewest) =>
-      plainToClass(FetchProjectsNewestResponseDTO, projectNewest),
-    );
+    const plainProjectsNewest = projectsNewest.map((projectNewest) => {
+      const mainImage = projectNewest.projectImages.filter(
+        (image) => image.image_index === 0,
+      );
+
+      const modifiedProject = {
+        ...projectNewest,
+        project_image_url: mainImage[0].image_url,
+      };
+
+      return plainToClass(FetchProjectsNewestResponseDTO, modifiedProject);
+    });
 
     return {
       projectsNewest: plainProjectsNewest,
@@ -214,6 +259,8 @@ export class ProjectService {
     fetchProjectsByCountryDTO,
   }: IProjectServiceFetchProjectsByCountry): Promise<FetchProjectsByCountryWithTotalResponseDTO> {
     const limit = 8;
+    let projectsByCountry;
+    let total;
 
     const isCountryCode = await this.countryCodeService.findOneCountryCode({
       country_code: fetchProjectsByCountryDTO.country_code,
@@ -221,8 +268,8 @@ export class ProjectService {
     if (!isCountryCode)
       throw new UnprocessableEntityException('Invalid Country Code');
 
-    const [projectsByCountry, total] =
-      await this.projectRepository.findAndCount({
+    if (fetchProjectsByCountryDTO.project_category === 'All') {
+      [projectsByCountry, total] = await this.projectRepository.findAndCount({
         where: {
           countryCode: isCountryCode,
         },
@@ -231,10 +278,33 @@ export class ProjectService {
         order: { created_at: 'DESC' },
         relations: ['countryCode', 'projectImages'],
       });
+    } else {
+      [projectsByCountry, total] = await this.projectRepository.findAndCount({
+        where: {
+          countryCode: isCountryCode,
+          projectCategory: {
+            project_category: fetchProjectsByCountryDTO.project_category,
+          },
+        },
+        skip: (fetchProjectsByCountryDTO.offset - 1) * limit,
+        take: limit,
+        order: { created_at: 'DESC' },
+        relations: ['countryCode', 'projectImages'],
+      });
+    }
 
-    const plainProjectsByCountry = projectsByCountry.map((projectByCountry) =>
-      plainToClass(FetchProjectsByCountryResponseDTO, projectByCountry),
-    );
+    const plainProjectsByCountry = projectsByCountry.map((projectByCountry) => {
+      const mainImage = projectByCountry.projectImages.filter(
+        (image) => image.image_index == 0,
+      );
+
+      const modifiedProject = {
+        ...projectByCountry,
+        project_image_url: mainImage[0].image_url,
+      };
+
+      return plainToClass(FetchProjectsByCountryResponseDTO, modifiedProject);
+    });
 
     return {
       projectsByCountry: plainProjectsByCountry,
@@ -274,9 +344,18 @@ export class ProjectService {
       });
     }
 
-    const plainSearchedProjects = searchedProjects.map((searchedProject) =>
-      plainToClass(SearchProjectResponseDTO, searchedProject),
-    );
+    const plainSearchedProjects = searchedProjects.map((searchedProject) => {
+      const mainImage = searchedProject.projectImages.filter(
+        (image) => image.image_index === 0,
+      );
+
+      const modifiedProject = {
+        ...searchedProject,
+        project_image_url: mainImage[0].image_url,
+      };
+
+      return plainToClass(SearchProjectResponseDTO, modifiedProject);
+    });
 
     return {
       searchProjects: plainSearchedProjects,

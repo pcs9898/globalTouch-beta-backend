@@ -14,6 +14,8 @@ import { FetchProjectsNewestDTO } from './dto/fetch-projects-newest/fetch-projec
 import { FetchProjectsByCountryWithTotalResponseDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry-withTotal-response.dto';
 
 import { FetchProjectsByCountryDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry.dto';
+import { FetchProjectOgResponseDTO } from './dto/fetch-projectOg-response.dto';
+import { FetchProjectOgDTO } from './dto/fetch-projectOg.dto';
 
 @Resolver()
 export class ProjectResolver {
@@ -24,6 +26,13 @@ export class ProjectResolver {
     @Args('fetchProjectDTO') fetchProjectDTO: FetchProjectDTO,
   ): Promise<FetchProjectResponseDTO> {
     return this.projectService.fetchProject({ fetchProjectDTO });
+  }
+
+  @Query(() => FetchProjectOgResponseDTO)
+  async fetchProjectOg(
+    @Args('fetchProjectOgDTO') fetchProjectOgDTO: FetchProjectOgDTO,
+  ): Promise<FetchProjectOgResponseDTO> {
+    return this.projectService.fetchProjectOg({ fetchProjectOgDTO });
   }
 
   @Query(() => FetchProjectsTrendingWithTotalResponseDTO)

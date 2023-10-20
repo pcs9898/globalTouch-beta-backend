@@ -14,6 +14,7 @@ import { UpdatedProjectModule } from './apis/updatedProject/updatedProject.modul
 import { CountryCodeModule } from './apis/countryCode/countryCode.module';
 import { CommonModule } from './apis/common/common.module';
 import { ProjectCategoryModule } from './apis/projectCategory/projectCategory.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -50,5 +51,6 @@ import { ProjectCategoryModule } from './apis/projectCategory/projectCategory.mo
       // autoLoadEntities: true,
     }),
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

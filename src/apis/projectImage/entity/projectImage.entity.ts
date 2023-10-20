@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Project } from 'src/apis/project/entity/project.entity';
 import {
@@ -21,6 +21,10 @@ export class ProjectImage {
   @IsString()
   @Field(() => String, { nullable: false })
   image_url: string;
+
+  @Column({ type: 'int', nullable: false })
+  @Field(() => Int)
+  image_index: number;
 
   @JoinColumn({ name: 'project_id' })
   @ManyToOne(() => Project, (project) => project.projectImages, {

@@ -109,7 +109,7 @@ export class ProjectDonationService {
         skip: (fetchUserLoggedInDonationsDTO.offset - 1) * limit,
         take: limit,
         order: { created_at: 'DESC' },
-        relations: ['project', 'project.countryCode'],
+        relations: ['project', 'project.countryCode', 'project.projectImages'],
       });
 
     const plainProjectDonationsUserLoggedIn = projectsDonationsUserLoggedIn.map(

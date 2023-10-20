@@ -1,5 +1,13 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { IsInt, IsNotEmpty, IsString, Length, Min } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Length,
+  Min,
+} from 'class-validator';
+import { PROJECT_CATEGORY_WITH_ALL_ENUM } from 'src/common/interfaces/enum';
 
 @InputType()
 export class FetchProjectsByCountryDTO {
@@ -14,4 +22,12 @@ export class FetchProjectsByCountryDTO {
   @IsString()
   @Length(2, 2)
   country_code: string;
+
+  @Field(() => PROJECT_CATEGORY_WITH_ALL_ENUM, {
+    defaultValue: 'All',
+    nullable: false,
+  })
+  @IsNotEmpty()
+  @IsEnum(PROJECT_CATEGORY_WITH_ALL_ENUM)
+  project_category: string;
 }

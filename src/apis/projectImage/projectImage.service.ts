@@ -12,7 +12,7 @@ export class ProjectImageService {
   ) {}
 
   async create(
-    { image_url, project }: IProjectImageServiceCreate,
+    { image_url, project, image_index }: IProjectImageServiceCreate,
     manager?: EntityManager,
   ): Promise<ProjectImage> {
     const repository = manager
@@ -22,6 +22,7 @@ export class ProjectImageService {
     return await repository.save({
       image_url,
       project,
+      image_index,
     });
   }
 }

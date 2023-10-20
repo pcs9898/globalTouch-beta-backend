@@ -21,6 +21,7 @@
 
 - [x] feature7/createProject (picture max 3, transaction)
 - [x] feature8/fetchProject
+- [ ] feature21/fetchProjectOg
 - [x] feature9/fetchProjectsTrending (page-limit:8, sortByNumberOfDonations)
 - [x] feature10/fetchProjectsNewest (page-limit:8, sortByTime)
 - [x] feature11/fetchProjectsByCountry (page-limit:8, sortByTime)
