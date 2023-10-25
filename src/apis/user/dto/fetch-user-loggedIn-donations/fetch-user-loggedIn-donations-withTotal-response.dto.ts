@@ -4,7 +4,7 @@ import { FetchUserLoggedInDonationsResponseDTO } from './fetch-user-loggedIn-don
 @ObjectType()
 export class FetchUserLoggedInDonationsWithTotalResponseDTO {
   @Field(() => [FetchUserLoggedInDonationsResponseDTO])
-  UserLoggedInDonations: FetchUserLoggedInDonationsResponseDTO[];
+  donations: FetchUserLoggedInDonationsResponseDTO[];
 
   @Field(() => Int)
   total: number;

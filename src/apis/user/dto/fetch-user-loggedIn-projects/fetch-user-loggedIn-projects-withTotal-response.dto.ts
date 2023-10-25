@@ -4,7 +4,7 @@ import { FetchUserLoggedInProjectsResponseDTO } from './fetch-user-loggedIn-proj
 @ObjectType()
 export class FetchUserLoggedInProjectsWithTotalResponseDTO {
   @Field(() => [FetchUserLoggedInProjectsResponseDTO])
-  projectsUserLoggedIn: FetchUserLoggedInProjectsResponseDTO[];
+  projects: FetchUserLoggedInProjectsResponseDTO[];
 
   @Field(() => Int)
   total: number;

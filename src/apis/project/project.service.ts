@@ -179,7 +179,7 @@ export class ProjectService {
     });
 
     return {
-      projectsTrending: plainTrendingProjects,
+      projects: plainTrendingProjects,
       total,
     };
   }
@@ -218,7 +218,7 @@ export class ProjectService {
     );
 
     return {
-      projectsUserLoggedIn: plainProjectsUserLoggedIn,
+      projects: plainProjectsUserLoggedIn,
       total,
     };
   }
@@ -249,7 +249,7 @@ export class ProjectService {
     });
 
     return {
-      projectsNewest: plainProjectsNewest,
+      projects: plainProjectsNewest,
       total,
     };
   }
@@ -307,7 +307,7 @@ export class ProjectService {
     });
 
     return {
-      projectsByCountry: plainProjectsByCountry,
+      projects: plainProjectsByCountry,
       total,
     };
   }

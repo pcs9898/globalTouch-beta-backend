@@ -139,7 +139,7 @@ export class ProjectDonationService {
     );
 
     return {
-      UserLoggedInDonations: plainProjectDonationsUserLoggedIn,
+      donations: plainProjectDonationsUserLoggedIn,
       total,
     };
   }

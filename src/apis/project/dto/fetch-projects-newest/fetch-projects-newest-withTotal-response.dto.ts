@@ -4,7 +4,7 @@ import { FetchProjectsNewestResponseDTO } from './fetch-projects-newest-reponse.
 @ObjectType()
 export class FetchProjectsNewestWithTotalResponseDTO {
   @Field(() => [FetchProjectsNewestResponseDTO])
-  projectsNewest: FetchProjectsNewestResponseDTO[];
+  projects: FetchProjectsNewestResponseDTO[];
 
   @Field(() => Int)
   total: number;

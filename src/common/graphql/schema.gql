@@ -91,7 +91,7 @@ type FetchUserLoggedInProjectsResponseDTO {
 }
 
 type FetchUserLoggedInProjectsWithTotalResponseDTO {
-  projectsUserLoggedIn: [FetchUserLoggedInProjectsResponseDTO!]!
+  projects: [FetchUserLoggedInProjectsResponseDTO!]!
   total: Int!
 }
 
@@ -158,7 +158,7 @@ type FetchUserLoggedInDonationsResponseDTO {
 }
 
 type FetchUserLoggedInDonationsWithTotalResponseDTO {
-  UserLoggedInDonations: [FetchUserLoggedInDonationsResponseDTO!]!
+  donations: [FetchUserLoggedInDonationsResponseDTO!]!
   total: Int!
 }
 
@@ -171,17 +171,17 @@ type CreateProjectResponseDTO {
 }
 
 type FetchProjectsTrendingWithTotalResponseDTO {
-  projectsTrending: [FetchProjectsTrendingResponseDTO!]!
+  projects: [FetchProjectsTrendingResponseDTO!]!
   total: Int!
 }
 
 type FetchProjectsNewestWithTotalResponseDTO {
-  projectsNewest: [FetchProjectsNewestResponseDTO!]!
+  projects: [FetchProjectsNewestResponseDTO!]!
   total: Int!
 }
 
 type FetchProjectsByCountryWithTotalResponseDTO {
-  projectsByCountry: [FetchProjectsByCountryResponseDTO!]!
+  projects: [FetchProjectsByCountryResponseDTO!]!
   total: Int!
 }
 

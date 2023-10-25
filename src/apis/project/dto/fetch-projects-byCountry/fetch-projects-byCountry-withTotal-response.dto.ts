@@ -4,7 +4,7 @@ import { FetchProjectsByCountryResponseDTO } from './fetch-projects-byCountry-re
 @ObjectType()
 export class FetchProjectsByCountryWithTotalResponseDTO {
   @Field(() => [FetchProjectsByCountryResponseDTO])
-  projectsByCountry: FetchProjectsByCountryResponseDTO[];
+  projects: FetchProjectsByCountryResponseDTO[];
 
   @Field(() => Int)
   total: number;
