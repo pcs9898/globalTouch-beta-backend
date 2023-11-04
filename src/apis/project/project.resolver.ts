@@ -2,73 +2,54 @@ import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ProjectService } from './project.service';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
-import { CreateProjectResponseDTO } from './dto/create-project-response.dto';
 import { CreateProjectDTO } from './dto/create-project.dto';
 import { IContext } from 'src/common/interfaces/context';
-import { FetchProjectResponseDTO } from './dto/fetch-project-response.dto';
-import { FetchProjectDTO } from './dto/fetch-project.dto';
-import { FetchProjectsTrendingWithTotalResponseDTO } from './dto/fetch-projects-trending/fetch-projects-trending-withTotal-response.dto';
-import { FetchProjectsTrendingDTO } from './dto/fetch-projects-trending/fetch-projects-trending.dto';
-import { FetchProjectsNewestWithTotalResponseDTO } from './dto/fetch-projects-newest/fetch-projects-newest-withTotal-response.dto';
-import { FetchProjectsNewestDTO } from './dto/fetch-projects-newest/fetch-projects-newest.dto';
-import { FetchProjectsByCountryWithTotalResponseDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry-withTotal-response.dto';
-
-import { FetchProjectsByCountryDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry.dto';
 import { FetchProjectOgResponseDTO } from './dto/fetch-projectOg-response.dto';
-import { FetchProjectOgDTO } from './dto/fetch-projectOg.dto';
+import { Project } from './entity/project.entity';
+
+import { FETCH_PROJECTS_ENUM } from 'src/common/interfaces/enum';
 
 @Resolver()
 export class ProjectResolver {
   constructor(private readonly projectService: ProjectService) {}
 
-  @Query(() => FetchProjectResponseDTO)
-  async fetchProject(
-    @Args('fetchProjectDTO') fetchProjectDTO: FetchProjectDTO,
-  ): Promise<FetchProjectResponseDTO> {
-    return this.projectService.fetchProject({ fetchProjectDTO });
+  @Query(() => Project)
+  async fetchProject(@Args('project_id') project_id: string): Promise<Project> {
+    return this.projectService.fetchProject({ project_id });
   }
 
   @Query(() => FetchProjectOgResponseDTO)
   async fetchProjectOg(
-    @Args('fetchProjectOgDTO') fetchProjectOgDTO: FetchProjectOgDTO,
+    @Args('project_id') project_id: string,
   ): Promise<FetchProjectOgResponseDTO> {
-    return this.projectService.fetchProjectOg({ fetchProjectOgDTO });
+    return this.projectService.fetchProjectOg({ project_id });
   }
 
-  @Query(() => FetchProjectsTrendingWithTotalResponseDTO)
-  async fetchProjectsTrending(
-    @Args('fetchProjectsTrendingDTO')
-    fetchProjectsTrendingDTO: FetchProjectsTrendingDTO,
-  ): Promise<FetchProjectsTrendingWithTotalResponseDTO> {
-    return this.projectService.fetchProjectsTrending({
-      fetchProjectsTrendingDTO,
-    });
+  @Query(() => [Project])
+  async fetchProjects(
+    @Args('fetchProjectsOption') fetchProjectsOption: FETCH_PROJECTS_ENUM,
+    @Args('offset') offset: number,
+  ): Promise<Project[]> {
+    return this.projectService.fetchProjects({ fetchProjectsOption, offset });
   }
 
-  @Query(() => FetchProjectsNewestWithTotalResponseDTO)
-  async fetchProjectsNewest(
-    @Args('fetchProjectsNewestDTO')
-    fetchProjectsNewestDTO: FetchProjectsNewestDTO,
-  ): Promise<FetchProjectsNewestWithTotalResponseDTO> {
-    return this.projectService.fetchProjectsNewest({ fetchProjectsNewestDTO });
-  }
-
-  @Query(() => FetchProjectsByCountryWithTotalResponseDTO)
+  @Query(() => [Project])
   async fetchProjectsByCountry(
-    @Args('fetchProjectsByCountryDTO')
-    fetchProjectsByCountryDTO: FetchProjectsByCountryDTO,
-  ): Promise<FetchProjectsByCountryWithTotalResponseDTO> {
+    @Args('country_code') country_code: string,
+    @Args('offset') offset: number,
+  ): Promise<Project[]> {
     return this.projectService.fetchProjectsByCountry({
-      fetchProjectsByCountryDTO,
+      country_code,
+      offset,
     });
   }
 
   @UseGuards(GqlAuthGuard('access'))
-  @Mutation(() => CreateProjectResponseDTO)
+  @Mutation(() => Project)
   async createProject(
     @Args('createProjectDTO') createProjectDTO: CreateProjectDTO,
     @Context() context: IContext,
-  ): Promise<CreateProjectResponseDTO> {
+  ): Promise<Project> {
     return this.projectService.createProject({ createProjectDTO, context });
   }
 }

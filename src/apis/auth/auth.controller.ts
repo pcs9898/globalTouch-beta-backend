@@ -19,30 +19,24 @@ export class AuthController {
     @Req() req: Request & IOAuthUser,
     @Res() res: Response,
   ) {
-    const { user, isNewUser } = await this.findOrCreateUser({ user: req.user });
+    const user = await this.findOrCreateUser({ user: req.user });
 
     this.authService.setRefreshToken({ user, res });
 
-    const redirectUrl = isNewUser
-      ? process.env.PASSPORT_OAUTH_GOOGLE_REDIRECT_URL_UPDATE_COUNTRY_CODE
-      : process.env.PASSPORT_OAUTH_GOOGLE_REDIRECT_URL_HOME;
+    const redirectUrl = process.env.PASSPORT_OAUTH_GOOGLE_REDIRECT_URL_HOME;
 
     res.redirect(redirectUrl);
   }
 
-  private async findOrCreateUser({
-    user: _user,
-  }: IOAuthUser): Promise<{ user: User; isNewUser: boolean }> {
+  private async findOrCreateUser({ user: _user }: IOAuthUser): Promise<User> {
     let user = await this.commonService.findOneUserByEmail({
       email: _user.email,
     });
-    let isNewUser = false;
 
     if (!user) {
       user = await this.commonService.createUserWithGoogle({ ..._user });
-      isNewUser = true;
     }
 
-    return { user, isNewUser };
+    return user;
   }
 }

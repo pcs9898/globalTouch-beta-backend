@@ -1,6 +1,5 @@
 import { IContext } from 'src/common/interfaces/context';
 import { CreateProjectCommentDTO } from '../dto/create-projectComment.dto';
-import { FetchProjectCommentsDTO } from '../dto/fetch-projectComments/fetch-projectComments.dto';
 import { UpdateProjectCommentDTO } from '../dto/update-projectcomment.dto';
 import { DeleteProjectCommentDTO } from '../dto/delete-projectcomment.dto';
 
@@ -10,7 +9,8 @@ export interface IProjectCommentServiceCreateProjectComment {
 }
 
 export interface IProjectCommentServiceFetchProjectComments {
-  fetchProjectCommentsDTO: FetchProjectCommentsDTO;
+  project_id: string;
+  offset: number;
 }
 
 export interface IProjectServiceUpdateProjectComment {

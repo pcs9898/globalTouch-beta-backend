@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { IsNotEmpty, IsString, Length } from 'class-validator';
 import { Project } from 'src/apis/project/entity/project.entity';
 import { User } from 'src/apis/user/entity/user.entity';
@@ -25,6 +25,9 @@ export class ProjectComment {
   @Length(1, 255)
   @Field(() => String, { nullable: false })
   content: string;
+
+  @Field(() => Int, { nullable: true })
+  maxDonationAmount: number;
 
   @CreateDateColumn()
   @Field(() => Date)

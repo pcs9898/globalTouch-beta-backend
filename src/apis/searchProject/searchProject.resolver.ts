@@ -1,16 +1,21 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { ProjectService } from '../project/project.service';
-import { SearchProjectWithTotalResponseDTO } from './dto/searchProjects/searchProject-withTotal-response.dto';
-import { SearchProjectDTO } from './dto/searchProjects/searchProject.dto';
+import { Project } from '../project/entity/project.entity';
 
 @Resolver()
 export class SearchProjectResolver {
   constructor(private readonly projectService: ProjectService) {}
 
-  @Query(() => SearchProjectWithTotalResponseDTO)
+  @Query(() => [Project])
   async searchProjects(
-    @Args('searchProjectsDTO') searchProjectsDTO: SearchProjectDTO,
-  ): Promise<SearchProjectWithTotalResponseDTO> {
-    return this.projectService.searchProjects({ searchProjectsDTO });
+    @Args('project_category') project_category: string,
+    @Args('searchTerm') searchTerm: string,
+    @Args('offset') offset: number,
+  ): Promise<Project[]> {
+    return this.projectService.searchProjects({
+      project_category,
+      searchTerm,
+      offset,
+    });
   }
 }

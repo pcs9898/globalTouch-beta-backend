@@ -1,5 +1,12 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { IsInt, IsNotEmpty, IsString, Length, Min } from 'class-validator';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Length,
+  Min,
+} from 'class-validator';
 import { CountryCode } from 'src/apis/countryCode/entity/countryCode.entity';
 import { ProjectCategory } from 'src/apis/projectCategory/entity/projectCategory.entity';
 import { ProjectImage } from 'src/apis/projectImage/entity/projectImage.entity';
@@ -54,6 +61,24 @@ export class Project {
   @Min(0)
   @Field(() => Int, { nullable: false })
   donation_count: number;
+
+  @Column({ type: 'varchar', nullable: false })
+  @IsNotEmpty()
+  @IsString()
+  @Field(() => String, { nullable: false })
+  cityName: string;
+
+  @Column({ type: 'decimal', precision: 10, scale: 6, nullable: false })
+  @IsNotEmpty()
+  @IsNumber()
+  @Field(() => Float, { nullable: false })
+  lat: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 6, nullable: false })
+  @IsNotEmpty()
+  @IsNumber()
+  @Field(() => Float, { nullable: false })
+  lng: number;
 
   @CreateDateColumn()
   @Field(() => Date)

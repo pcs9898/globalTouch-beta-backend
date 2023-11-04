@@ -2,11 +2,22 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { CustomExceptionFilter } from './common/filter/customExceptionFilter';
 import { ValidationPipe } from '@nestjs/common';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const httpsOptions = {
+    key: readFileSync(join(__dirname, '..', 'ssl', 'localhost-key.pem')),
+    cert: readFileSync(join(__dirname, '..', 'ssl', 'localhost.pem')),
+  };
+  // for https
+  const app = await NestFactory.create(AppModule, { httpsOptions });
+
+  // for http
+  // const app = await NestFactory.create(AppModule);
+
   app.enableCors({
-    origin: process.env.FRONTEND_URI,
+    origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

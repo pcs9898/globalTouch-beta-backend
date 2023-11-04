@@ -24,6 +24,9 @@ type Project {
   amount_required: Int!
   amount_raised: Int!
   donation_count: Int!
+  cityName: String!
+  lat: Float!
+  lng: Float!
   created_at: DateTime!
   user: User!
   projectCategory: ProjectCategory!
@@ -57,15 +60,14 @@ type User {
   name: String!
   profile_image_url: String
   created_at: DateTime!
-  countryCode: CountryCode!
   projects: [Project!]!
   projectDonations: [ProjectDonation!]!
 }
 
 type FetchUserLoggedInResponseDTO {
+  user_id: String!
   name: String!
   profile_image_url: String
-  countryCode: CountryCode!
 }
 
 type UpdateUserResponseDTO {
@@ -73,76 +75,13 @@ type UpdateUserResponseDTO {
   profile_image_url: String
 }
 
-type CreateUserResponseDTO {
-  accessToken: String!
-}
-
-type UpdateCountryCodeResponseDTO {
-  accessToken: String!
-}
-
-type FetchUserLoggedInProjectsResponseDTO {
-  project_id: String!
-  title: String!
-  amount_required: Int!
-  amount_raised: Int!
-  countryCode: CountryCode!
-  project_image_url: String!
-}
-
-type FetchUserLoggedInProjectsWithTotalResponseDTO {
-  projects: [FetchUserLoggedInProjectsResponseDTO!]!
-  total: Int!
-}
-
-type FetchProjectResponseDTO {
-  project_id: String!
-  title: String!
+type ProjectComment {
+  projectComment_id: String!
   content: String!
-  amount_required: Int!
-  amount_raised: Int!
-  donation_count: Int!
+  maxDonationAmount: Int
   created_at: DateTime!
   user: User!
-  projectCategory: ProjectCategory!
-  countryCode: CountryCode!
-  projectImages: [ProjectImage!]!
-}
-
-type FetchProjectsTrendingResponseDTO {
-  project_id: String!
-  title: String!
-  amount_required: Int!
-  amount_raised: Int!
-  countryCode: CountryCode!
-  project_image_url: String!
-}
-
-type FetchProjectsNewestResponseDTO {
-  project_id: String!
-  title: String!
-  amount_required: Int!
-  amount_raised: Int!
-  countryCode: CountryCode!
-  project_image_url: String!
-}
-
-type FetchProjectsByCountryResponseDTO {
-  project_id: String!
-  title: String!
-  amount_required: Int!
-  amount_raised: Int!
-  countryCode: CountryCode!
-  project_image_url: String!
-}
-
-type SearchProjectResponseDTO {
-  project_id: String!
-  title: String!
-  amount_required: Int!
-  amount_raised: Int!
-  countryCode: CountryCode!
-  project_image_url: String!
+  project: Project!
 }
 
 type FetchProjectOgResponseDTO {
@@ -157,51 +96,22 @@ type FetchUserLoggedInDonationsResponseDTO {
   project_image_url: String!
 }
 
+type CreateUserResponseDTO {
+  accessToken: String!
+}
+
 type FetchUserLoggedInDonationsWithTotalResponseDTO {
   donations: [FetchUserLoggedInDonationsResponseDTO!]!
   total: Int!
 }
 
+type FetchUserDonatedNCommentedResponseDTO {
+  donated: Boolean!
+  commented: Boolean!
+  id: String!
+}
+
 type CreateProjectDonationResponseDTO {
-  success: Boolean!
-}
-
-type CreateProjectResponseDTO {
-  project_id: String!
-}
-
-type FetchProjectsTrendingWithTotalResponseDTO {
-  projects: [FetchProjectsTrendingResponseDTO!]!
-  total: Int!
-}
-
-type FetchProjectsNewestWithTotalResponseDTO {
-  projects: [FetchProjectsNewestResponseDTO!]!
-  total: Int!
-}
-
-type FetchProjectsByCountryWithTotalResponseDTO {
-  projects: [FetchProjectsByCountryResponseDTO!]!
-  total: Int!
-}
-
-type FetchProjectCommentsResponseDTO {
-  projectComment_id: String!
-  content: String!
-  user: User!
-  amount: Int!
-}
-
-type CreateProjectCommentResponseDTO {
-  success: Boolean!
-}
-
-type FetchProjectCommentsWithTotalResponseDTO {
-  projectComments: [FetchProjectCommentsResponseDTO!]!
-  total: Int!
-}
-
-type UpdateProjectCommentResponseDTO {
   success: Boolean!
 }
 
@@ -209,83 +119,25 @@ type DeleteProjectCommentResponseDTO {
   success: Boolean!
 }
 
-type SearchProjectWithTotalResponseDTO {
-  searchProjects: [SearchProjectResponseDTO!]!
-  total: Int!
-}
-
-type FetchUpdatedProjectsResponseDTO {
+type UpdatedProject {
+  updatedProject_id: String!
   content: String!
   created_at: DateTime!
-}
-
-type CreateUpdatedProjectResponseDTO {
-  success: Boolean!
+  project: Project!
 }
 
 type Query {
-  fetchProjectComments(fetchProjectCommentsDTO: FetchProjectCommentsDTO!): FetchProjectCommentsWithTotalResponseDTO!
-  fetchProject(fetchProjectDTO: FetchProjectDTO!): FetchProjectResponseDTO!
-  fetchProjectOg(fetchProjectOgDTO: FetchProjectOgDTO!): FetchProjectOgResponseDTO!
-  fetchProjectsTrending(fetchProjectsTrendingDTO: FetchProjectsTrendingDTO!): FetchProjectsTrendingWithTotalResponseDTO!
-  fetchProjectsNewest(fetchProjectsNewestDTO: FetchProjectsNewestDTO!): FetchProjectsNewestWithTotalResponseDTO!
-  fetchProjectsByCountry(fetchProjectsByCountryDTO: FetchProjectsByCountryDTO!): FetchProjectsByCountryWithTotalResponseDTO!
-  searchProjects(searchProjectsDTO: SearchProjectDTO!): SearchProjectWithTotalResponseDTO!
-  fetchUpdatedProjects(fetchUpdatedProjectsDTO: FetchUpdatedProjectsDTO!): [FetchUpdatedProjectsResponseDTO!]!
+  fetchProjectComments(project_id: String!, offset: Float!): [ProjectComment!]!
+  fetchProject(project_id: String!): Project!
+  fetchProjectOg(project_id: String!): FetchProjectOgResponseDTO!
+  fetchProjects(fetchProjectsOption: String!, offset: Float!): [Project!]!
+  fetchProjectsByCountry(country_code: String!, offset: Float!): [Project!]!
+  searchProjects(project_category: String!, searchTerm: String!, offset: Float!): [Project!]!
+  fetchUpdatedProjects(project_id: String!): [UpdatedProject!]!
   fetchUserLoggedIn: FetchUserLoggedInResponseDTO!
-  fetchUserLoggedInProjects(fetchUserLoggedInProjectsDTO: FetchUserLoggedInProjectsDTO!): FetchUserLoggedInProjectsWithTotalResponseDTO!
+  fetchUserLoggedInProjects(offset: Float!): [Project!]!
   fetchUserLoggedInDonations(fetchUserLoggedInDonationsDTO: FetchUserLoggedInDonationsDTO!): FetchUserLoggedInDonationsWithTotalResponseDTO!
-}
-
-input FetchProjectCommentsDTO {
-  project_id: String!
-  offset: Int!
-}
-
-input FetchProjectDTO {
-  project_id: String!
-}
-
-input FetchProjectOgDTO {
-  project_id: String!
-}
-
-input FetchProjectsTrendingDTO {
-  offset: Int!
-}
-
-input FetchProjectsNewestDTO {
-  offset: Int!
-}
-
-input FetchProjectsByCountryDTO {
-  offset: Int!
-  country_code: String!
-  project_category: PROJECT_CATEGORY_WITH_ALL_ENUM! = All
-}
-
-enum PROJECT_CATEGORY_WITH_ALL_ENUM {
-  All
-  Medical
-  Emergency
-  Memorial
-  Education
-  CrisisRelief
-  Nonprofit
-}
-
-input SearchProjectDTO {
-  searchTerm: String!
-  project_category: PROJECT_CATEGORY_WITH_ALL_ENUM! = All
-  offset: Int!
-}
-
-input FetchUpdatedProjectsDTO {
-  project_id: String!
-}
-
-input FetchUserLoggedInProjectsDTO {
-  offset: Int!
+  fetchUserDonatedNCommented(project_id: String!): FetchUserDonatedNCommentedResponseDTO!
 }
 
 input FetchUserLoggedInDonationsDTO {
@@ -295,14 +147,14 @@ input FetchUserLoggedInDonationsDTO {
 type Mutation {
   loginUser(loginDTO: LoginDTO!): String!
   restoreAccessToken: String!
-  createProjectComment(createProjectCommentDTO: CreateProjectCommentDTO!): CreateProjectCommentResponseDTO!
-  updateProjectComment(updateProjectCommentDTO: UpdateProjectCommentDTO!): UpdateProjectCommentResponseDTO!
+  createProjectComment(createProjectCommentDTO: CreateProjectCommentDTO!): ProjectComment!
+  updateProjectComment(updateProjectCommentDTO: UpdateProjectCommentDTO!): ProjectComment!
   deleteProjectComment(deleteProjectCommentDTO: DeleteProjectCommentDTO!): DeleteProjectCommentResponseDTO!
-  createProject(createProjectDTO: CreateProjectDTO!): CreateProjectResponseDTO!
+  createProject(createProjectDTO: CreateProjectDTO!): Project!
   createProjectDonation(createProjectDonationDTO: CreateProjectDonationDTO!): CreateProjectDonationResponseDTO!
-  createUpdatedProject(createUpdatedProjectDTO: CreateUpdatedProjectDTO!): CreateUpdatedProjectResponseDTO!
+  createProjectDonationForMobile(createProjectDonationForMobileDTO: CreateProjectDonationForMobileDTO!): CreateProjectDonationResponseDTO!
+  createUpdatedProject(createUpdatedProjectDTO: CreateUpdatedProjectDTO!): UpdatedProject!
   createUser(createUserDTO: CreateUserDTO!): CreateUserResponseDTO!
-  updateCountryCode(updateCountryCodeDTO: UpdateCountryCodeDTO!): UpdateCountryCodeResponseDTO!
   updateUser(updateUserDTO: UpdateUserDTO!): UpdateUserResponseDTO!
 }
 
@@ -332,6 +184,10 @@ input CreateProjectDTO {
   content: String!
   amount_required: Int!
   project_category: PROJECT_CATEGORY_ENUM! = Medical
+  countryCode: String!
+  cityName: String!
+  lat: Float!
+  lng: Float!
   projectImageUrls: String!
 }
 
@@ -350,6 +206,11 @@ input CreateProjectDonationDTO {
   project_id: String!
 }
 
+input CreateProjectDonationForMobileDTO {
+  imp_uid: String!
+  project_id: String!
+}
+
 input CreateUpdatedProjectDTO {
   content: String!
   project_id: String!
@@ -358,13 +219,7 @@ input CreateUpdatedProjectDTO {
 input CreateUserDTO {
   email: String!
   name: String!
-  profile_image_url: String
   password: String!
-  country_code: String!
-}
-
-input UpdateCountryCodeDTO {
-  country_code: String!
 }
 
 input UpdateUserDTO {

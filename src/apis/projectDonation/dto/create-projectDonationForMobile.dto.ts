@@ -1,15 +1,15 @@
 import { Field, InputType, PickType } from '@nestjs/graphql';
-import { User } from '../entity/user.entity';
+import { ProjectDonation } from '../entity/projectDonation.entity';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 @InputType()
-export class CreateUserDTO extends PickType(
-  User,
-  ['email', 'name'] as const,
+export class CreateProjectDonationForMobileDTO extends PickType(
+  ProjectDonation,
+  ['imp_uid'] as const,
   InputType,
 ) {
   @Field(() => String, { nullable: false })
   @IsNotEmpty()
   @IsString()
-  password: string;
+  project_id: string;
 }

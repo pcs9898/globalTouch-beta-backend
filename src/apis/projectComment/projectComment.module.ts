@@ -14,5 +14,6 @@ import { ProjectDonationModule } from '../projectDonation/projectDonation.module
     ProjectDonationModule,
   ],
   providers: [ProjectCommentService, ProjectCommentResolver],
+  exports: [ProjectCommentService],
 })
 export class ProjectCommentModule {}

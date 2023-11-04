@@ -7,7 +7,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from './entity/project.entity';
 import { DataSource, Like, Repository } from 'typeorm';
-import { CreateProjectResponseDTO } from './dto/create-project-response.dto';
 import { ProjectImageService } from '../projectImage/projectImage.service';
 import { CountryCodeService } from '../countryCode/countryCode.service';
 import { ProjectCategoryService } from '../projectCategory/projectCategory.service';
@@ -16,28 +15,17 @@ import {
   IProjectServiceCreateProject,
   IProjectServiceFetchProject,
   IProjectServiceFetchProjectOgDTO,
+  IProjectServiceFetchProjects,
   IProjectServiceFetchProjectsByCountry,
-  IProjectServiceFetchProjectsNewest,
-  IProjectServiceFetchProjectsTrending,
   IProjectServiceFetchProjectsUserLoggedIn,
   IProjectServiceFindOneProjectById,
   IProjectServiceFindOneWithWriteLock,
   IProjectServiceSaveWithQueryRunner,
   IProjectServiceSearchProjects,
 } from './interfaces/project-serivce.interface';
-import { FetchProjectResponseDTO } from './dto/fetch-project-response.dto';
-import { FetchProjectsTrendingResponseDTO } from './dto/fetch-projects-trending/fetch-projects-trending-response.dto';
-import { FetchProjectsTrendingWithTotalResponseDTO } from './dto/fetch-projects-trending/fetch-projects-trending-withTotal-response.dto';
-import { FetchProjectsUserLoggedInResponseDTO } from './dto/fetch-projects-user-loggedIn/fetch-projects-user-LoggedIn-response.dto';
-import { FetchProjectsNewestWithTotalResponseDTO } from './dto/fetch-projects-newest/fetch-projects-newest-withTotal-response.dto';
-import { FetchProjectsNewestResponseDTO } from './dto/fetch-projects-newest/fetch-projects-newest-reponse.dto';
-import { FetchProjectsByCountryWithTotalResponseDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry-withTotal-response.dto';
-import { FetchProjectsByCountryResponseDTO } from './dto/fetch-projects-byCountry/fetch-projects-byCountry-response.dto';
-import { FetchUserLoggedInProjectsWithTotalResponseDTO } from '../user/dto/fetch-user-loggedIn-projects/fetch-user-loggedIn-projects-withTotal-response.dto';
 import { CommonService } from '../common/common.service';
-import { SearchProjectWithTotalResponseDTO } from '../searchProject/dto/searchProjects/searchProject-withTotal-response.dto';
-import { SearchProjectResponseDTO } from '../searchProject/dto/searchProjects/searchProject-response.dto';
 import { FetchProjectOgResponseDTO } from './dto/fetch-projectOg-response.dto';
+import { FETCH_PROJECTS_ENUM } from 'src/common/interfaces/enum';
 
 @Injectable()
 export class ProjectService {
@@ -60,7 +48,7 @@ export class ProjectService {
   async createProject({
     createProjectDTO,
     context,
-  }: IProjectServiceCreateProject): Promise<CreateProjectResponseDTO> {
+  }: IProjectServiceCreateProject): Promise<Project> {
     const isProject = await this.projectRepository.findOne({
       where: { title: createProjectDTO.title },
     });
@@ -76,13 +64,22 @@ export class ProjectService {
     if (!isProjectCategory)
       throw new UnprocessableEntityException('Invalid project category');
 
+    const isCountryCode = await this.countryCodeService.findOneCountryCode({
+      country_code: createProjectDTO.countryCode,
+    });
+    if (!isCountryCode)
+      throw new UnprocessableEntityException('Invalid country Code');
+
     const user = await this.commonService.findOneUserById({
       user_id: context.req.user.user_id,
+      onlyUser: true,
     });
 
-    const projectImageUrls = createProjectDTO.projectImageUrls.match(
-      /(https?:\/\/[^\s]+?\.jpg)(?=(https?:\/\/)|$)/g,
-    );
+    const splitUrls = createProjectDTO.projectImageUrls
+      .split('https://')
+      .filter(Boolean);
+    const projectImageUrls = splitUrls.map((part) => 'https://' + part);
+
     if (!projectImageUrls)
       throw new UnprocessableEntityException('At least 1 photo is required');
     if (projectImageUrls.length > 3)
@@ -95,8 +92,8 @@ export class ProjectService {
     try {
       const newProject = await queryRunner.manager.save(Project, {
         ...createProjectDTO,
-        countryCode: user.countryCode,
         projectCategory: isProjectCategory,
+        countryCode: isCountryCode,
         user,
       });
 
@@ -115,9 +112,11 @@ export class ProjectService {
 
       await queryRunner.commitTransaction();
 
-      return {
-        project_id: newProject.project_id,
-      };
+      const foundProject = await this.projectRepository.findOne({
+        where: { project_id: newProject.project_id },
+        relations: ['countryCode', 'projectImages', 'projectCategory'],
+      });
+      return foundProject;
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
@@ -129,238 +128,132 @@ export class ProjectService {
 
   // fetchProject
   async fetchProject({
-    fetchProjectDTO,
-  }: IProjectServiceFetchProject): Promise<FetchProjectResponseDTO> {
+    project_id,
+  }: IProjectServiceFetchProject): Promise<Project> {
     const isProject = await this.projectRepository.findOne({
-      where: { project_id: fetchProjectDTO.project_id },
+      where: { project_id },
       relations: ['user', 'projectCategory', 'countryCode', 'projectImages'],
     });
     if (!isProject) throw new NotFoundException('Project not found');
 
-    return plainToClass(FetchProjectResponseDTO, isProject);
+    return isProject;
   }
 
   async fetchProjectOg({
-    fetchProjectOgDTO,
+    project_id,
   }: IProjectServiceFetchProjectOgDTO): Promise<FetchProjectOgResponseDTO> {
     const isProject = await this.findOneProjectById({
-      project_id: fetchProjectOgDTO.project_id,
+      project_id,
     });
+
     if (!isProject) throw new NotFoundException('Project not found');
 
     return plainToClass(FetchProjectOgResponseDTO, isProject);
   }
 
-  // fetchProjectsTrending
-  async fetchProjectsTrending({
-    fetchProjectsTrendingDTO,
-  }: IProjectServiceFetchProjectsTrending): Promise<FetchProjectsTrendingWithTotalResponseDTO> {
+  async fetchProjects({
+    fetchProjectsOption,
+    offset,
+  }: IProjectServiceFetchProjects): Promise<Project[]> {
     const limit = 8;
-    const [trendingProjects, total] = await this.projectRepository.findAndCount(
-      {
-        skip: (fetchProjectsTrendingDTO.offset - 1) * limit,
+
+    if (fetchProjectsOption === FETCH_PROJECTS_ENUM.Trending) {
+      const [trendingProjects] = await this.projectRepository.findAndCount({
+        skip: (offset - 1) * limit,
         take: limit,
         order: { donation_count: 'DESC' },
-        relations: ['countryCode', 'projectImages'],
-      },
-    );
+        relations: ['countryCode', 'projectImages', 'projectCategory'],
+      });
+      return trendingProjects;
+    } else {
+      const [projectsNewest] = await this.projectRepository.findAndCount({
+        skip: (offset - 1) * limit,
+        take: limit,
+        order: { created_at: 'DESC' },
+        relations: ['countryCode', 'projectImages', 'projectCategory'],
+      });
 
-    const plainTrendingProjects = trendingProjects.map((trendingProject) => {
-      const mainImage = trendingProject.projectImages.filter(
-        (image) => image.image_index === 0,
-      );
-
-      const modifiedProject = {
-        ...trendingProject,
-        project_image_url: mainImage[0].image_url,
-      };
-
-      return plainToClass(FetchProjectsTrendingResponseDTO, modifiedProject);
-    });
-
-    return {
-      projects: plainTrendingProjects,
-      total,
-    };
+      return projectsNewest;
+    }
   }
 
   // fetchProjectsUserLoggedIn
   async fetchProjectsUserLoggedIn({
-    fetchUserLoggedInProjectsDTO,
+    offset,
     context,
-  }: IProjectServiceFetchProjectsUserLoggedIn): Promise<FetchUserLoggedInProjectsWithTotalResponseDTO> {
+  }: IProjectServiceFetchProjectsUserLoggedIn): Promise<Project[]> {
     const limit = 8;
-    const [projectsUserLoggedIn, total] =
-      await this.projectRepository.findAndCount({
-        where: { user: context.req.user },
-        skip: (fetchUserLoggedInProjectsDTO.offset - 1) * limit,
-        take: limit,
-        order: { created_at: 'DESC' },
-        relations: ['countryCode', 'projectImages'],
-      });
-
-    const plainProjectsUserLoggedIn = projectsUserLoggedIn.map(
-      (projectUserLoggedIn) => {
-        const mainImage = projectUserLoggedIn.projectImages.filter(
-          (image) => image.image_index === 0,
-        );
-
-        const modifiedProject = {
-          ...projectUserLoggedIn,
-          project_image_url: mainImage[0].image_url,
-        };
-
-        return plainToClass(
-          FetchProjectsUserLoggedInResponseDTO,
-          modifiedProject,
-        );
-      },
-    );
-
-    return {
-      projects: plainProjectsUserLoggedIn,
-      total,
-    };
-  }
-
-  // fetchProjectsNewest
-  async fetchProjectsNewest({
-    fetchProjectsNewestDTO,
-  }: IProjectServiceFetchProjectsNewest): Promise<FetchProjectsNewestWithTotalResponseDTO> {
-    const limit = 8;
-    const [projectsNewest, total] = await this.projectRepository.findAndCount({
-      skip: (fetchProjectsNewestDTO.offset - 1) * limit,
+    const [projectsUserLoggedIn] = await this.projectRepository.findAndCount({
+      where: { user: context.req.user },
+      skip: (offset - 1) * limit,
       take: limit,
       order: { created_at: 'DESC' },
       relations: ['countryCode', 'projectImages'],
     });
 
-    const plainProjectsNewest = projectsNewest.map((projectNewest) => {
-      const mainImage = projectNewest.projectImages.filter(
-        (image) => image.image_index === 0,
-      );
-
-      const modifiedProject = {
-        ...projectNewest,
-        project_image_url: mainImage[0].image_url,
-      };
-
-      return plainToClass(FetchProjectsNewestResponseDTO, modifiedProject);
-    });
-
-    return {
-      projects: plainProjectsNewest,
-      total,
-    };
+    return projectsUserLoggedIn;
   }
 
   // fetchProjectsByCountry
   async fetchProjectsByCountry({
-    fetchProjectsByCountryDTO,
-  }: IProjectServiceFetchProjectsByCountry): Promise<FetchProjectsByCountryWithTotalResponseDTO> {
+    country_code,
+    offset,
+  }: IProjectServiceFetchProjectsByCountry): Promise<Project[]> {
     const limit = 8;
-    let projectsByCountry;
-    let total;
 
     const isCountryCode = await this.countryCodeService.findOneCountryCode({
-      country_code: fetchProjectsByCountryDTO.country_code,
+      country_code,
     });
     if (!isCountryCode)
       throw new UnprocessableEntityException('Invalid Country Code');
 
-    if (fetchProjectsByCountryDTO.project_category === 'All') {
-      [projectsByCountry, total] = await this.projectRepository.findAndCount({
-        where: {
-          countryCode: isCountryCode,
-        },
-        skip: (fetchProjectsByCountryDTO.offset - 1) * limit,
-        take: limit,
-        order: { created_at: 'DESC' },
-        relations: ['countryCode', 'projectImages'],
-      });
-    } else {
-      [projectsByCountry, total] = await this.projectRepository.findAndCount({
-        where: {
-          countryCode: isCountryCode,
-          projectCategory: {
-            project_category: fetchProjectsByCountryDTO.project_category,
-          },
-        },
-        skip: (fetchProjectsByCountryDTO.offset - 1) * limit,
-        take: limit,
-        order: { created_at: 'DESC' },
-        relations: ['countryCode', 'projectImages'],
-      });
-    }
-
-    const plainProjectsByCountry = projectsByCountry.map((projectByCountry) => {
-      const mainImage = projectByCountry.projectImages.filter(
-        (image) => image.image_index == 0,
-      );
-
-      const modifiedProject = {
-        ...projectByCountry,
-        project_image_url: mainImage[0].image_url,
-      };
-
-      return plainToClass(FetchProjectsByCountryResponseDTO, modifiedProject);
+    const [projectsByCountry] = await this.projectRepository.findAndCount({
+      where: {
+        countryCode: isCountryCode,
+      },
+      skip: (offset - 1) * limit,
+      take: limit,
+      order: { created_at: 'DESC' },
+      relations: ['countryCode', 'projectImages'],
     });
 
-    return {
-      projects: plainProjectsByCountry,
-      total,
-    };
+    return projectsByCountry;
   }
 
   async searchProjects({
-    searchProjectsDTO,
-  }: IProjectServiceSearchProjects): Promise<SearchProjectWithTotalResponseDTO> {
+    project_category,
+    searchTerm,
+    offset,
+  }: IProjectServiceSearchProjects): Promise<Project[]> {
     const limit = 8;
     let searchedProjects;
-    let total;
 
-    if (searchProjectsDTO.project_category === 'All') {
-      [searchedProjects, total] = await this.projectRepository.findAndCount({
+    if (project_category === 'All') {
+      [searchedProjects] = await this.projectRepository.findAndCount({
         where: {
-          title: Like(`%${searchProjectsDTO.searchTerm}%`),
+          title: Like(`%${searchTerm}%`),
         },
-        skip: (searchProjectsDTO.offset - 1) * limit,
+        skip: (offset - 1) * limit,
         take: limit,
         order: { created_at: 'DESC' },
         relations: ['countryCode', 'projectImages'],
       });
+      return searchedProjects;
     } else {
-      [searchedProjects, total] = await this.projectRepository.findAndCount({
+      [searchedProjects] = await this.projectRepository.findAndCount({
         where: {
-          title: Like(`%${searchProjectsDTO.searchTerm}%`),
+          title: Like(`%${searchTerm}%`),
           projectCategory: {
-            project_category: searchProjectsDTO.project_category,
+            project_category: project_category,
           },
         },
-        skip: (searchProjectsDTO.offset - 1) * limit,
+        skip: (offset - 1) * limit,
         take: limit,
         order: { created_at: 'DESC' },
         relations: ['countryCode', 'projectImages'],
       });
+      return searchedProjects;
     }
-
-    const plainSearchedProjects = searchedProjects.map((searchedProject) => {
-      const mainImage = searchedProject.projectImages.filter(
-        (image) => image.image_index === 0,
-      );
-
-      const modifiedProject = {
-        ...searchedProject,
-        project_image_url: mainImage[0].image_url,
-      };
-
-      return plainToClass(SearchProjectResponseDTO, modifiedProject);
-    });
-
-    return {
-      searchProjects: plainSearchedProjects,
-      total,
-    };
   }
 
   // findOneProjectById

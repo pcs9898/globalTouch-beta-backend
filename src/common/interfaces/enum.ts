@@ -16,3 +16,8 @@ export enum PROJECT_CATEGORY_WITH_ALL_ENUM {
   CrisisRelief = 'Crisis Relief',
   Nonprofit = 'Nonprofit',
 }
+
+export enum FETCH_PROJECTS_ENUM {
+  Trending = 'Trending',
+  Newest = 'Newest',
+}

@@ -10,11 +10,7 @@ import { ProjectComment } from './entity/projectComment.entity';
 import { Repository } from 'typeorm';
 import { ProjectService } from '../project/project.service';
 import { ProjectDonationService } from '../projectDonation/projectDonation.service';
-import { CreateProjectCommentResponseDTO } from './dto/create-projectComment-response.dto';
-import { FetchProjectCommentsWithTotalResponseDTO } from './dto/fetch-projectComments/fetch-projectComments-withTotal-response.dto';
-import { plainToClass } from 'class-transformer';
-import { FetchProjectCommentsResponseDTO } from './dto/fetch-projectComments/fetch-projectComments-response.dto';
-import { UpdateProjectCommentResponseDTO } from './dto/update-projectComment-response.dto';
+
 import {
   IProjectCommentServiceCreateProjectComment,
   IProjectCommentServiceDeleteProjectComment,
@@ -34,10 +30,17 @@ export class ProjectCommentService {
     private readonly projectDonationService: ProjectDonationService,
   ) {}
 
-  private calculateMaxDonation({ donations }) {
+  private calculateMaxDonation({ donations, project_id }) {
     if (!donations.length) return null; // or any default value you want to return when there are no donations
 
-    return Math.max(...donations.map((donation) => donation.amount));
+    // console.log(donations.project);
+
+    // console.log(project_id);
+    const filteredDonations = donations
+      .filter((donation) => donation.project.project_id === project_id)
+      .map((donation) => donation.amount);
+
+    return Math.max(...filteredDonations);
   }
 
   private async checkProjectCommentOwner({ updateProjectCommentDTO, context }) {
@@ -63,7 +66,7 @@ export class ProjectCommentService {
   async createProjectComment({
     createProjectCommentDTO,
     context,
-  }: IProjectCommentServiceCreateProjectComment): Promise<CreateProjectCommentResponseDTO> {
+  }: IProjectCommentServiceCreateProjectComment): Promise<ProjectComment> {
     const isProject = await this.projectService.findOneProjectById({
       project_id: createProjectCommentDTO.project_id,
       relationUser: true,
@@ -99,7 +102,21 @@ export class ProjectCommentService {
       user: { user_id: context.req.user.user_id },
     });
 
-    if (newProjectComment) return { success: true };
+    const foundComment = await this.projectCommentRepository.findOne({
+      where: { projectComment_id: newProjectComment.projectComment_id },
+      relations: [
+        'user',
+        'user.projectDonations',
+        'user.projectDonations.project',
+      ],
+    });
+
+    foundComment.maxDonationAmount = this.calculateMaxDonation({
+      donations: foundComment.user.projectDonations,
+      project_id: createProjectCommentDTO.project_id,
+    });
+
+    if (foundComment) return foundComment;
     else
       throw new InternalServerErrorException(
         'Failed to create a comment, please try again',
@@ -107,49 +124,62 @@ export class ProjectCommentService {
   }
 
   async fetchProjectComments({
-    fetchProjectCommentsDTO,
-  }: IProjectCommentServiceFetchProjectComments): Promise<FetchProjectCommentsWithTotalResponseDTO> {
+    project_id,
+    offset,
+  }: IProjectCommentServiceFetchProjectComments): Promise<ProjectComment[]> {
     const limit = 10;
-    const [projectComments, total] =
-      await this.projectCommentRepository.findAndCount({
-        where: { project: { project_id: fetchProjectCommentsDTO.project_id } },
-        skip: (fetchProjectCommentsDTO.offset - 1) * 4,
-        take: limit,
-        order: { created_at: 'DESC' },
-        relations: ['user', 'user.projectDonations'],
-      });
 
-    const plainProjectComments = projectComments.map((projectComment) => {
-      const plainComment = plainToClass(
-        FetchProjectCommentsResponseDTO,
-        projectComment,
-      );
-      plainComment.amount = this.calculateMaxDonation({
-        donations: plainComment.user.projectDonations,
-      });
-      return plainComment;
+    const [projectComments] = await this.projectCommentRepository.findAndCount({
+      where: { project: { project_id } },
+      skip: (offset - 1) * limit,
+      take: limit,
+      order: { created_at: 'DESC' },
+      relations: [
+        'user',
+        'user.projectDonations',
+        'user.projectDonations.project',
+      ],
     });
 
-    return {
-      projectComments: plainProjectComments,
-      total,
-    };
+    const projectCommentsWithMaxAmountDonation = projectComments.map(
+      (projectComment) => {
+        projectComment.maxDonationAmount = this.calculateMaxDonation({
+          donations: projectComment.user.projectDonations,
+          project_id,
+        });
+        return projectComment;
+      },
+    );
+
+    return projectCommentsWithMaxAmountDonation;
   }
 
   async updateProjectComment({
     updateProjectCommentDTO,
     context,
-  }: IProjectServiceUpdateProjectComment): Promise<UpdateProjectCommentResponseDTO> {
+  }: IProjectServiceUpdateProjectComment): Promise<ProjectComment> {
     await this.checkProjectCommentOwner({ updateProjectCommentDTO, context });
 
     const updatedProjectComment = await this.projectCommentRepository.update(
-      {
-        projectComment_id: updateProjectCommentDTO.projectComment_id,
-      },
-      { content: updateProjectCommentDTO.content },
+      context.req.user.user_id,
+      updateProjectCommentDTO,
     );
 
-    return { success: updatedProjectComment.affected ? true : false };
+    if (updatedProjectComment.affected > 0) {
+      const foundComment = await this.projectCommentRepository.findOne({
+        where: { projectComment_id: updateProjectCommentDTO.projectComment_id },
+        relations: ['user', 'user.projectDonations'],
+      });
+
+      foundComment.maxDonationAmount = this.calculateMaxDonation({
+        donations: foundComment.user.projectDonations,
+        project_id: updateProjectCommentDTO.project_id,
+      });
+
+      return foundComment;
+    } else {
+      throw new Error('Failed, try again plz');
+    }
   }
 
   async deleteProjectComment({
@@ -169,5 +199,14 @@ export class ProjectCommentService {
     return {
       success: deletedProjectComment.affected ? true : false,
     };
+  }
+
+  async checkUserCommented({ user_id, project_id }): Promise<ProjectComment> {
+    return await this.projectCommentRepository.findOne({
+      where: {
+        user: { user_id },
+        project: { project_id },
+      },
+    });
   }
 }

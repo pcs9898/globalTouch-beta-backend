@@ -1,6 +1,5 @@
 import { IContext } from 'src/common/interfaces/context';
 import { CreateUpdatedProjectDTO } from '../dto/create-updatedProject.dto';
-import { FetchUpdatedProjectsDTO } from '../dto/fetch-updatedProjects.dto';
 
 export interface IUpdatedProjectServiceCreateUpdatedProject {
   createUpdatedProjectDTO: CreateUpdatedProjectDTO;
@@ -8,5 +7,5 @@ export interface IUpdatedProjectServiceCreateUpdatedProject {
 }
 
 export interface IUpdatedProjectServiceFetchUpdatedProjects {
-  fetchUpdatedProjectsDTO: FetchUpdatedProjectsDTO;
+  project_id: string;
 }

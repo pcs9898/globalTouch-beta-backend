@@ -14,6 +14,7 @@ import { CreateProjectDonationResponseDTO } from './dto/create-projectDonation-r
 import { ProjectService } from '../project/project.service';
 import {
   IProjectDonationServiceCreateProjectDonation,
+  IProjectDonationServiceCreateProjectDonationForMobile,
   IProjectDonationServiceFetchProjectDonationsUserLoggedIn,
 } from './interfaces/donation-service.interface';
 import { PortOneService } from '../portone/portone.service';
@@ -96,6 +97,68 @@ export class ProjectDonationService {
     }
   }
 
+  async createProjectDonationForMobile({
+    createProjectDonationForMobileDTO,
+    context,
+  }: IProjectDonationServiceCreateProjectDonationForMobile): Promise<CreateProjectDonationResponseDTO> {
+    const amount = await this.portOneService.checkDonatedAmount({
+      imp_uid: createProjectDonationForMobileDTO.imp_uid,
+    });
+
+    const isProjectDonation = await this.projectDonationRepository.findOne({
+      where: {
+        imp_uid: createProjectDonationForMobileDTO.imp_uid,
+        status: PROJECT_DONATION_STATUS_ENUM.PAYMENT,
+      },
+    });
+    if (isProjectDonation)
+      throw new ConflictException('The donation is already registered');
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const project = await this.projectService.findOneWithWriteLock({
+        project_id: createProjectDonationForMobileDTO.project_id,
+        queryRunner,
+      });
+      if (!project) throw new NotFoundException('Project not found');
+      if (project.user.user_id === context.req.user.user_id)
+        throw new UnprocessableEntityException('Self-donation is not allowed');
+
+      await queryRunner.manager.save(ProjectDonation, {
+        ...createProjectDonationForMobileDTO,
+        status: PROJECT_DONATION_STATUS_ENUM.PAYMENT,
+        user: context.req.user,
+        project,
+        amount,
+      });
+
+      project.amount_raised += amount;
+      project.donation_count += 1;
+
+      const updatedProject = await this.projectService.saveWithQueryRunner({
+        project,
+        queryRunner,
+      });
+
+      await queryRunner.commitTransaction();
+
+      if (updatedProject) return { success: true };
+      else
+        throw new UnprocessableEntityException(
+          'An error occurred during the donation process',
+        );
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      throw error;
+    } finally {
+      queryRunner.release();
+    }
+  }
+
   async fetchProjectDonationsUserLoggedIn({
     fetchUserLoggedInDonationsDTO,
     context,
@@ -145,7 +208,7 @@ export class ProjectDonationService {
   }
 
   async checkUserDonated({ user_id, project_id }): Promise<ProjectDonation> {
-    return this.projectDonationRepository.findOne({
+    return await this.projectDonationRepository.findOne({
       where: {
         user: { user_id },
         project: { project_id },

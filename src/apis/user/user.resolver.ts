@@ -5,17 +5,15 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { IContext } from 'src/common/interfaces/context';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
-import { UpdateCountryCodeResponseDTO } from './dto/update-countryCode-response.dto';
-import { UpdateCountryCodeDTO } from './dto/update-countryCode.dto';
 import { FetchUserLoggedInResponseDTO } from './dto/fetch-user-loggedIn-response.dto';
 import { UpdateUserResponseDTO } from './dto/update-user-response.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
-import { FetchUserLoggedInProjectsDTO } from './dto/fetch-user-loggedIn-projects/fetch-user-loggedIn-projects.dto';
-import { FetchUserLoggedInProjectsWithTotalResponseDTO } from './dto/fetch-user-loggedIn-projects/fetch-user-loggedIn-projects-withTotal-response.dto';
 import { ProjectService } from '../project/project.service';
 import { ProjectDonationService } from '../projectDonation/projectDonation.service';
 import { FetchUserLoggedInDonationsWithTotalResponseDTO } from './dto/fetch-user-loggedIn-donations/fetch-user-loggedIn-donations-withTotal-response.dto';
 import { FetchUserLoggedInDonationsDTO } from './dto/fetch-user-loggedIn-donations/fetch-user-loggedIn-donations.dto';
+import { FetchUserDonatedNCommentedResponseDTO } from './dto/fetch-user-donated-N-commented-response.dto';
+import { Project } from '../project/entity/project.entity';
 
 @Resolver()
 export class UserResolver {
@@ -36,14 +34,14 @@ export class UserResolver {
   }
 
   @UseGuards(GqlAuthGuard('access'))
-  @Query(() => FetchUserLoggedInProjectsWithTotalResponseDTO)
+  @Query(() => [Project])
   async fetchUserLoggedInProjects(
-    @Args('fetchUserLoggedInProjectsDTO')
-    fetchUserLoggedInProjectsDTO: FetchUserLoggedInProjectsDTO,
+    @Args('offset')
+    offset: number,
     @Context() context: IContext,
-  ): Promise<FetchUserLoggedInProjectsWithTotalResponseDTO> {
+  ): Promise<Project[]> {
     return this.projectService.fetchProjectsUserLoggedIn({
-      fetchUserLoggedInProjectsDTO,
+      offset,
       context,
     });
   }
@@ -61,24 +59,25 @@ export class UserResolver {
     });
   }
 
+  @UseGuards(GqlAuthGuard('access'))
+  @Query(() => FetchUserDonatedNCommentedResponseDTO)
+  async fetchUserDonatedNCommented(
+    @Args('project_id')
+    project_id: string,
+    @Context() context: IContext,
+  ): Promise<FetchUserDonatedNCommentedResponseDTO> {
+    return this.userService.fetchUserDonatedNCommented({
+      project_id,
+      context,
+    });
+  }
+
   @Mutation(() => CreateUserResponseDTO)
   async createUser(
     @Args('createUserDTO') createUserDTO: CreateUserDTO,
     @Context() context: IContext,
   ): Promise<CreateUserResponseDTO> {
     return this.userService.createUser({ createUserDTO, context });
-  }
-
-  @UseGuards(GqlAuthGuard('access'))
-  @Mutation(() => UpdateCountryCodeResponseDTO)
-  async updateCountryCode(
-    @Args('updateCountryCodeDTO') updateCountryCodeDTO: UpdateCountryCodeDTO,
-    @Context() context: IContext,
-  ): Promise<UpdateCountryCodeResponseDTO> {
-    return this.userService.updateCountryCode({
-      updateCountryCodeDTO,
-      context,
-    });
   }
 
   @UseGuards(GqlAuthGuard('access'))

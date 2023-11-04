@@ -2,6 +2,7 @@ import { IAuthUser, IContext } from 'src/common/interfaces/context';
 import { LoginDTO } from '../dto/login.dto';
 import { User } from 'src/apis/user/entity/user.entity';
 import { Response } from 'express';
+// import { Response } from 'express';
 
 export interface IOAuthUser {
   user: {
@@ -16,7 +17,8 @@ export interface IAuthServiceLogin {
 
 export interface IAuthServiceSetRefreshToken {
   user: User;
-  res: Response;
+  context?: IContext;
+  res?: Response;
 }
 
 export interface IAuthServiceGetAccessToken {

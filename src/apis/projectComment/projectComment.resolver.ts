@@ -2,37 +2,35 @@ import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ProjectCommentService } from './projectComment.service';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
-import { CreateProjectCommentResponseDTO } from './dto/create-projectComment-response.dto';
 import { CreateProjectCommentDTO } from './dto/create-projectComment.dto';
 import { IContext } from 'src/common/interfaces/context';
-import { FetchProjectCommentsWithTotalResponseDTO } from './dto/fetch-projectComments/fetch-projectComments-withTotal-response.dto';
-import { FetchProjectCommentsDTO } from './dto/fetch-projectComments/fetch-projectComments.dto';
-import { UpdateProjectCommentResponseDTO } from './dto/update-projectComment-response.dto';
 import { UpdateProjectCommentDTO } from './dto/update-projectcomment.dto';
 import { DeleteProjectCommentResponseDTO } from './dto/delete-projectComment-response.dto';
 import { DeleteProjectCommentDTO } from './dto/delete-projectcomment.dto';
+import { ProjectComment } from './entity/projectComment.entity';
 
 @Resolver()
 export class ProjectCommentResolver {
   constructor(private readonly projectCommentService: ProjectCommentService) {}
 
-  @Query(() => FetchProjectCommentsWithTotalResponseDTO)
+  @Query(() => [ProjectComment])
   async fetchProjectComments(
-    @Args('fetchProjectCommentsDTO')
-    fetchProjectCommentsDTO: FetchProjectCommentsDTO,
-  ): Promise<FetchProjectCommentsWithTotalResponseDTO> {
+    @Args('project_id') project_id: string,
+    @Args('offset') offset: number,
+  ): Promise<ProjectComment[]> {
     return this.projectCommentService.fetchProjectComments({
-      fetchProjectCommentsDTO,
+      project_id,
+      offset,
     });
   }
 
   @UseGuards(GqlAuthGuard('access'))
-  @Mutation(() => CreateProjectCommentResponseDTO)
+  @Mutation(() => ProjectComment)
   async createProjectComment(
     @Args('createProjectCommentDTO')
     createProjectCommentDTO: CreateProjectCommentDTO,
     @Context() context: IContext,
-  ): Promise<CreateProjectCommentResponseDTO> {
+  ): Promise<ProjectComment> {
     return this.projectCommentService.createProjectComment({
       createProjectCommentDTO,
       context,
@@ -40,12 +38,12 @@ export class ProjectCommentResolver {
   }
 
   @UseGuards(GqlAuthGuard('access'))
-  @Mutation(() => UpdateProjectCommentResponseDTO)
+  @Mutation(() => ProjectComment)
   async updateProjectComment(
     @Args('updateProjectCommentDTO')
     updateProjectCommentDTO: UpdateProjectCommentDTO,
     @Context() context: IContext,
-  ): Promise<UpdateProjectCommentResponseDTO> {
+  ): Promise<ProjectComment> {
     return this.projectCommentService.updateProjectComment({
       updateProjectCommentDTO,
       context,

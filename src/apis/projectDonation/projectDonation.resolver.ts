@@ -5,6 +5,7 @@ import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
 import { CreateProjectDonationResponseDTO } from './dto/create-projectDonation-response.dto';
 import { CreateProjectDonationDTO } from './dto/create-projectDonation.dto';
 import { IContext } from 'src/common/interfaces/context';
+import { CreateProjectDonationForMobileDTO } from './dto/create-projectDonationForMobile.dto';
 
 @Resolver()
 export class ProjectDonationResolver {
@@ -21,6 +22,19 @@ export class ProjectDonationResolver {
   ): Promise<CreateProjectDonationResponseDTO> {
     return this.projectDonationService.createProjectDonation({
       createProjectDonationDTO,
+      context,
+    });
+  }
+
+  @UseGuards(GqlAuthGuard('access'))
+  @Mutation(() => CreateProjectDonationResponseDTO)
+  async createProjectDonationForMobile(
+    @Args('createProjectDonationForMobileDTO')
+    createProjectDonationForMobileDTO: CreateProjectDonationForMobileDTO,
+    @Context() context: IContext,
+  ): Promise<CreateProjectDonationResponseDTO> {
+    return this.projectDonationService.createProjectDonationForMobile({
+      createProjectDonationForMobileDTO,
       context,
     });
   }

@@ -5,5 +5,5 @@ import { User } from '../entity/user.entity';
 export class FetchUserLoggedInResponseDTO extends PickType(User, [
   'name',
   'profile_image_url',
-  'countryCode',
+  'user_id',
 ] as const) {}

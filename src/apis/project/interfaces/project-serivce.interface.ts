@@ -1,14 +1,9 @@
 import { IContext } from 'src/common/interfaces/context';
 import { CreateProjectDTO } from '../dto/create-project.dto';
-import { FetchProjectDTO } from '../dto/fetch-project.dto';
-import { FetchProjectsTrendingDTO } from '../dto/fetch-projects-trending/fetch-projects-trending.dto';
-import { FetchProjectsNewestDTO } from '../dto/fetch-projects-newest/fetch-projects-newest.dto';
-import { FetchProjectsByCountryDTO } from '../dto/fetch-projects-byCountry/fetch-projects-byCountry.dto';
 import { Project } from '../entity/project.entity';
 import { QueryRunner } from 'typeorm';
-import { FetchUserLoggedInProjectsDTO } from 'src/apis/user/dto/fetch-user-loggedIn-projects/fetch-user-loggedIn-projects.dto';
-import { SearchProjectDTO } from 'src/apis/searchProject/dto/searchProjects/searchProject.dto';
-import { FetchProjectOgDTO } from '../dto/fetch-projectOg.dto';
+
+import { FETCH_PROJECTS_ENUM } from 'src/common/interfaces/enum';
 
 export interface IProjectServiceCreateProject {
   createProjectDTO: CreateProjectDTO;
@@ -16,24 +11,22 @@ export interface IProjectServiceCreateProject {
 }
 
 export interface IProjectServiceFetchProject {
-  fetchProjectDTO: FetchProjectDTO;
+  project_id: string;
 }
 
-export interface IProjectServiceFetchProjectsTrending {
-  fetchProjectsTrendingDTO: FetchProjectsTrendingDTO;
+export interface IProjectServiceFetchProjects {
+  fetchProjectsOption: FETCH_PROJECTS_ENUM;
+  offset: number;
 }
 
 export interface IProjectServiceFetchProjectsUserLoggedIn {
-  fetchUserLoggedInProjectsDTO: FetchUserLoggedInProjectsDTO;
+  offset: number;
   context: IContext;
 }
 
-export interface IProjectServiceFetchProjectsNewest {
-  fetchProjectsNewestDTO: FetchProjectsNewestDTO;
-}
-
 export interface IProjectServiceFetchProjectsByCountry {
-  fetchProjectsByCountryDTO: FetchProjectsByCountryDTO;
+  country_code: string;
+  offset: number;
 }
 
 export interface IProjectServiceFindOneProjectById {
@@ -52,9 +45,12 @@ export interface IProjectServiceSaveWithQueryRunner {
 }
 
 export interface IProjectServiceSearchProjects {
-  searchProjectsDTO: SearchProjectDTO;
+  project_category: string;
+  searchTerm: string;
+
+  offset: number;
 }
 
 export interface IProjectServiceFetchProjectOgDTO {
-  fetchProjectOgDTO: FetchProjectOgDTO;
+  project_id: string;
 }

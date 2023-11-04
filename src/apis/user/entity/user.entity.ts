@@ -1,14 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
-import { CountryCode } from 'src/apis/countryCode/entity/countryCode.entity';
 import { Project } from 'src/apis/project/entity/project.entity';
 import { ProjectDonation } from 'src/apis/projectDonation/entity/projectDonation.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -45,11 +42,6 @@ export class User {
   @CreateDateColumn()
   @Field(() => Date)
   created_at: Date;
-
-  @JoinColumn({ name: 'country_code' })
-  @ManyToOne(() => CountryCode, { nullable: true })
-  @Field(() => CountryCode)
-  countryCode: CountryCode;
 
   @OneToMany(() => Project, (project) => project.user)
   @Field(() => [Project])
