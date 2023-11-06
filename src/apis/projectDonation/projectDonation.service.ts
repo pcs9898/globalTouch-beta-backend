@@ -18,9 +18,6 @@ import {
   IProjectDonationServiceFetchProjectDonationsUserLoggedIn,
 } from './interfaces/donation-service.interface';
 import { PortOneService } from '../portone/portone.service';
-import { FetchUserLoggedInDonationsWithTotalResponseDTO } from '../user/dto/fetch-user-loggedIn-donations/fetch-user-loggedIn-donations-withTotal-response.dto';
-import { plainToClass } from 'class-transformer';
-import { FetchUserLoggedInDonationsResponseDTO } from '../user/dto/fetch-user-loggedIn-donations/fetch-user-loggedIn-donations-response.dto';
 
 @Injectable()
 export class ProjectDonationService {
@@ -160,51 +157,24 @@ export class ProjectDonationService {
   }
 
   async fetchProjectDonationsUserLoggedIn({
-    fetchUserLoggedInDonationsDTO,
+    offset,
     context,
-  }: IProjectDonationServiceFetchProjectDonationsUserLoggedIn): Promise<FetchUserLoggedInDonationsWithTotalResponseDTO> {
+  }: IProjectDonationServiceFetchProjectDonationsUserLoggedIn): Promise<
+    ProjectDonation[]
+  > {
     const limit = 8;
-    const [projectsDonationsUserLoggedIn, total] =
+    const [projectsDonationsUserLoggedIn] =
       await this.projectDonationRepository.findAndCount({
         where: {
           user: { user_id: context.req.user.user_id },
         },
-        skip: (fetchUserLoggedInDonationsDTO.offset - 1) * limit,
+        skip: (offset - 1) * limit,
         take: limit,
         order: { created_at: 'DESC' },
         relations: ['project', 'project.countryCode', 'project.projectImages'],
       });
 
-    const plainProjectDonationsUserLoggedIn = projectsDonationsUserLoggedIn.map(
-      (projectDonationsUserLoggedIn) => {
-        const mainImage =
-          projectDonationsUserLoggedIn.project.projectImages.filter(
-            (image) => image.image_index === 0,
-          );
-
-        const {
-          project: { projectImages, ...restProject },
-          ...rest
-        } = projectDonationsUserLoggedIn;
-
-        const modifiedProjectDonationsUserLoggedIn = {
-          // ...projectDonationsUserLoggedIn,
-          project: { ...restProject },
-          ...rest,
-          project_image_url: mainImage[0].image_url,
-        };
-
-        return plainToClass(
-          FetchUserLoggedInDonationsResponseDTO,
-          modifiedProjectDonationsUserLoggedIn,
-        );
-      },
-    );
-
-    return {
-      donations: plainProjectDonationsUserLoggedIn,
-      total,
-    };
+    return projectsDonationsUserLoggedIn;
   }
 
   async checkUserDonated({ user_id, project_id }): Promise<ProjectDonation> {

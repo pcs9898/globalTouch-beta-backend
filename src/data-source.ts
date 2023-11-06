@@ -7,7 +7,7 @@ import { SeederOptions } from 'typeorm-extension';
 
 const configService = new ConfigService();
 
-console.log(configService.get('DATABASE_HOST'));
+console.log(configService.get('DATABASE_NAME'));
 const options: DataSourceOptions & SeederOptions = {
   type: 'mysql',
   host: configService.get('DATABASE_HOST'),
@@ -17,7 +17,8 @@ const options: DataSourceOptions & SeederOptions = {
   database: configService.get('DATABASE_NAME'),
   synchronize: false,
   entities: ['src/apis/**/entity/*.entity.*'],
-  seeds: ['src/database/seeds/**/*{.ts,.js}'],
+  // seeds: ['src/database/seeds/**/*{.ts,.js}'],
+  seeds: ['src/database/seeds/total.seeder.ts'],
   factories: ['src/database/factories/**/*{.ts,.js}'],
 };
 

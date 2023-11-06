@@ -79,6 +79,7 @@ export class UserService {
 
     const updatedUser = await this.commonService.findOneUserById({
       user_id: context.req.user.user_id,
+      onlyUser: true,
     });
 
     return plainToClass(UpdateUserResponseDTO, updatedUser);

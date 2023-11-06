@@ -183,6 +183,8 @@ export class ProjectService {
     context,
   }: IProjectServiceFetchProjectsUserLoggedIn): Promise<Project[]> {
     const limit = 8;
+
+    console.log(context.req.user);
     const [projectsUserLoggedIn] = await this.projectRepository.findAndCount({
       where: { user: context.req.user },
       skip: (offset - 1) * limit,

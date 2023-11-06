@@ -1,7 +1,8 @@
 // src/db/seeds/user.seeder.ts
 import { Seeder } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
-import { ProjectCategory } from '../../apis/projectCategory/entity/projectCategory.entity';
+import { ProjectCategory } from 'src/apis/projectCategory/entity/projectCategory.entity';
+
 const fs = require('fs');
 
 export default class ProjectCategorySeeder implements Seeder {

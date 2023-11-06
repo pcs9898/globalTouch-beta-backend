@@ -10,10 +10,9 @@ import { UpdateUserResponseDTO } from './dto/update-user-response.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { ProjectService } from '../project/project.service';
 import { ProjectDonationService } from '../projectDonation/projectDonation.service';
-import { FetchUserLoggedInDonationsWithTotalResponseDTO } from './dto/fetch-user-loggedIn-donations/fetch-user-loggedIn-donations-withTotal-response.dto';
-import { FetchUserLoggedInDonationsDTO } from './dto/fetch-user-loggedIn-donations/fetch-user-loggedIn-donations.dto';
 import { FetchUserDonatedNCommentedResponseDTO } from './dto/fetch-user-donated-N-commented-response.dto';
 import { Project } from '../project/entity/project.entity';
+import { ProjectDonation } from '../projectDonation/entity/projectDonation.entity';
 
 @Resolver()
 export class UserResolver {
@@ -47,14 +46,14 @@ export class UserResolver {
   }
 
   @UseGuards(GqlAuthGuard('access'))
-  @Query(() => FetchUserLoggedInDonationsWithTotalResponseDTO)
+  @Query(() => [ProjectDonation])
   async fetchUserLoggedInDonations(
-    @Args('fetchUserLoggedInDonationsDTO')
-    fetchUserLoggedInDonationsDTO: FetchUserLoggedInDonationsDTO,
+    @Args('offset')
+    offset: number,
     @Context() context: IContext,
-  ): Promise<FetchUserLoggedInDonationsWithTotalResponseDTO> {
+  ): Promise<ProjectDonation[]> {
     return this.projectDonationService.fetchProjectDonationsUserLoggedIn({
-      fetchUserLoggedInDonationsDTO,
+      offset,
       context,
     });
   }

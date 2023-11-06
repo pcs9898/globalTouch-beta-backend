@@ -1,6 +1,5 @@
 import { IContext } from 'src/common/interfaces/context';
 import { CreateProjectDonationDTO } from '../dto/create-projectDonation.dto';
-import { FetchUserLoggedInDonationsDTO } from 'src/apis/user/dto/fetch-user-loggedIn-donations/fetch-user-loggedIn-donations.dto';
 import { CreateProjectDonationForMobileDTO } from '../dto/create-projectDonationForMobile.dto';
 
 export interface IProjectDonationServiceCreateProjectDonation {
@@ -14,6 +13,6 @@ export interface IProjectDonationServiceCreateProjectDonationForMobile {
 }
 
 export interface IProjectDonationServiceFetchProjectDonationsUserLoggedIn {
-  fetchUserLoggedInDonationsDTO: FetchUserLoggedInDonationsDTO;
+  offset: number;
   context: IContext;
 }

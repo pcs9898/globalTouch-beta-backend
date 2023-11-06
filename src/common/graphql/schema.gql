@@ -89,20 +89,8 @@ type FetchProjectOgResponseDTO {
   content: String!
 }
 
-type FetchUserLoggedInDonationsResponseDTO {
-  amount: Int!
-  created_at: DateTime!
-  project: Project!
-  project_image_url: String!
-}
-
 type CreateUserResponseDTO {
   accessToken: String!
-}
-
-type FetchUserLoggedInDonationsWithTotalResponseDTO {
-  donations: [FetchUserLoggedInDonationsResponseDTO!]!
-  total: Int!
 }
 
 type FetchUserDonatedNCommentedResponseDTO {
@@ -136,12 +124,8 @@ type Query {
   fetchUpdatedProjects(project_id: String!): [UpdatedProject!]!
   fetchUserLoggedIn: FetchUserLoggedInResponseDTO!
   fetchUserLoggedInProjects(offset: Float!): [Project!]!
-  fetchUserLoggedInDonations(fetchUserLoggedInDonationsDTO: FetchUserLoggedInDonationsDTO!): FetchUserLoggedInDonationsWithTotalResponseDTO!
+  fetchUserLoggedInDonations(offset: Float!): [ProjectDonation!]!
   fetchUserDonatedNCommented(project_id: String!): FetchUserDonatedNCommentedResponseDTO!
-}
-
-input FetchUserLoggedInDonationsDTO {
-  offset: Int!
 }
 
 type Mutation {
