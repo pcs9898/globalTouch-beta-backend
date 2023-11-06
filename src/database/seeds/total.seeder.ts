@@ -56,13 +56,13 @@ export default class UserSeeder implements Seeder {
         'seeds-data/projectCategory.seed.json',
         'utf8',
       );
-      const peojectCategories = JSON.parse(rawData);
-      const peojectCategoriesToInsert = peojectCategories.map(
+      const projectCategories = JSON.parse(rawData);
+      const projectCategoriesToInsert = projectCategories.map(
         (project_category: string) => ({
           project_category,
         }),
       );
-      await projectCategoryRepository.insert(peojectCategoriesToInsert);
+      await projectCategoryRepository.insert(projectCategoriesToInsert);
       console.log('ProjectCategory seeded successfully');
     } catch (error) {
       console.error('Error seeding ProjectCategory', error);
@@ -72,10 +72,6 @@ export default class UserSeeder implements Seeder {
     console.log('Seeding User,Project,ProjectURl...');
     try {
       for (let i = 0; i < 100; i++) {
-        const temp_countryCode = faker.location.countryCode('alpha-2');
-        const countryCode = await countryRepository.findOne({
-          where: { country_code: temp_countryCode },
-        });
         const userUuid = faker.string.uuid();
         const userToInsert = {
           user_id: userUuid,
@@ -99,10 +95,10 @@ export default class UserSeeder implements Seeder {
             where: { user_id: userUuid },
           }),
           countryCode: await countryRepository.findOne({
-            where: { country_code: project.country_code },
+            where: { country_code: project.countryCode },
           }),
           projectCategory: await projectCategoryRepository.findOne({
-            where: { project_category: project.project_category },
+            where: { project_category: project.projectCategory },
           }),
           cityName: project.cityName,
         };
@@ -152,15 +148,23 @@ export default class UserSeeder implements Seeder {
           const project = await projectRepository.findOne({
             where: { project_id: projectsList[i] },
           });
+          const tempAmount = project.amount_raised;
+          const tempDonationCount = project.donation_count;
+          const amount = faker.number.int({ min: 100, max: 10000 });
           const donationToInsert = {
             projectDonation_id: faker.string.uuid(),
             imp_uid: faker.string.uuid(),
-            amount: faker.number.int({ min: 100, max: 10000 }),
+            amount: amount,
             status: 'PAYMENT',
             user: user,
             project: project,
           };
           await projectDonationRepository.insert(donationToInsert);
+          await projectRepository.save({
+            project_id: projectsList[i],
+            amount_raised: tempAmount + amount,
+            donation_count: tempDonationCount + 1,
+          });
           const commentToInsert = {
             projectComment_id: faker.string.uuid(),
             content: faker.lorem.words({ min: 3, max: 10 }),
