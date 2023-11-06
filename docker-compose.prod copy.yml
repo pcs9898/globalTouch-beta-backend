@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  globaltouch-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/myfolder/src
+    ports:
+      - 3000:3000
+    env_file:
+      - ./.env.docker
+
+  # globaltouch-database:
+  #   # platform: linux/86_64
+  #   image: mysql:latest
+  #   environment:
+  #     MYSQL_DATABASE: 'globaltouch-database'
+  #     MYSQL_ROOT_PASSWORD: 'root'
+  #   ports:
+  #     - 3306:3306
