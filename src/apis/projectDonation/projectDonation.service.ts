@@ -17,7 +17,7 @@ import {
   IProjectDonationServiceCreateProjectDonationForMobile,
   IProjectDonationServiceFetchProjectDonationsUserLoggedIn,
 } from './interfaces/donation-service.interface';
-import { PortOneService } from '../portone/portone.service';
+import { PortOneService } from '../portOne/portOne.service';
 
 @Injectable()
 export class ProjectDonationService {

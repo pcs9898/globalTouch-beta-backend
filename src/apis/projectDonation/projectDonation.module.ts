@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProjectDonation } from './entity/projectDonation.entity';
 import { Project } from '../project/entity/project.entity';
 import { ProjectModule } from '../project/project.module';
-import { PortOneService } from '../portone/portone.service';
+import { PortOneService } from '../portOne/portOne.service';
 
 @Module({
   imports: [
