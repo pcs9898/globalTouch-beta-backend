@@ -11,10 +11,10 @@ async function bootstrap() {
     cert: readFileSync(join(__dirname, '..', 'ssl', 'localhost.pem')),
   };
   // for https
-  // const app = await NestFactory.create(AppModule, { httpsOptions });
+  const app = await NestFactory.create(AppModule, { httpsOptions });
 
   // for http
-  const app = await NestFactory.create(AppModule);
+  // const app = await NestFactory.create(AppModule);
 
   app.enableCors({
     origin: true,
