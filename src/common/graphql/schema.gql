@@ -25,8 +25,7 @@ type Project {
   amount_raised: Int!
   donation_count: Int!
   cityName: String!
-  lat: Float!
-  lng: Float!
+  location: String!
   created_at: DateTime!
   user: User!
   projectCategory: ProjectCategory!
@@ -119,6 +118,7 @@ type Query {
   fetchProject(project_id: String!): Project!
   fetchProjectOg(project_id: String!): FetchProjectOgResponseDTO!
   fetchProjects(fetchProjectsOption: String!, offset: Float!): [Project!]!
+  fetchMarkers(north: Float!, south: Float!, east: Float!, west: Float!): [Project!]!
   fetchProjectsByCountry(country_code: String!, offset: Float!): [Project!]!
   searchProjects(project_category: String!, searchTerm: String!, offset: Float!): [Project!]!
   fetchUpdatedProjects(project_id: String!): [UpdatedProject!]!

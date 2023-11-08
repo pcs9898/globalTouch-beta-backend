@@ -13,6 +13,7 @@ import { ProjectCategoryService } from '../projectCategory/projectCategory.servi
 import { plainToClass } from 'class-transformer';
 import {
   IProjectServiceCreateProject,
+  IProjectServiceFetchMarkers,
   IProjectServiceFetchProject,
   IProjectServiceFetchProjectOgDTO,
   IProjectServiceFetchProjects,
@@ -92,6 +93,7 @@ export class ProjectService {
     try {
       const newProject = await queryRunner.manager.save(Project, {
         ...createProjectDTO,
+        location: `POINT(${createProjectDTO.lat} ${createProjectDTO.lng})`,
         projectCategory: isProjectCategory,
         countryCode: isCountryCode,
         user,
@@ -175,6 +177,22 @@ export class ProjectService {
 
       return projectsNewest;
     }
+  }
+
+  async fetchMarkers({
+    north,
+    south,
+    east,
+    west,
+  }: IProjectServiceFetchMarkers) {
+    return await this.projectRepository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.countryCode', 'countryCode')
+      .leftJoinAndSelect('project.projectImages', 'projectImages')
+      .where('ST_Within(project.location, ST_GeomFromText(:bounds,4326))', {
+        bounds: `POLYGON((${north} ${west}, ${north} ${east}, ${south} ${east}, ${south} ${west}, ${north} ${west}))`,
+      })
+      .getMany();
   }
 
   // fetchProjectsUserLoggedIn

@@ -1,12 +1,5 @@
-import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
-import {
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  Length,
-  Min,
-} from 'class-validator';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { IsInt, IsNotEmpty, IsString, Length, Min } from 'class-validator';
 import { CountryCode } from 'src/apis/countryCode/entity/countryCode.entity';
 import { ProjectCategory } from 'src/apis/projectCategory/entity/projectCategory.entity';
 import { ProjectImage } from 'src/apis/projectImage/entity/projectImage.entity';
@@ -68,17 +61,26 @@ export class Project {
   @Field(() => String, { nullable: false })
   cityName: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 6, nullable: false })
-  @IsNotEmpty()
-  @IsNumber()
-  @Field(() => Float, { nullable: false })
-  lat: number;
+  // @Column({ type: 'decimal', precision: 10, scale: 6, nullable: false })
+  // @IsNotEmpty()
+  // @IsNumber()
+  // @Field(() => Float, { nullable: false })
+  // lat: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 6, nullable: false })
-  @IsNotEmpty()
-  @IsNumber()
-  @Field(() => Float, { nullable: false })
-  lng: number;
+  // @Column({ type: 'decimal', precision: 10, scale: 6, nullable: false })
+  // @IsNotEmpty()
+  // @IsNumber()
+  // @Field(() => Float, { nullable: false })
+  // lng: number;
+
+  @Column({
+    type: 'point',
+    nullable: false,
+    spatialFeatureType: 'Point',
+    srid: 4326,
+  })
+  @Field(() => String)
+  location: string;
 
   @CreateDateColumn()
   @Field(() => Date)

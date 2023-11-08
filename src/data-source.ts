@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 
-config({ path: '.env.development' }); // .env.dev 파일을 읽어 환경 변수에 로드합니다.
+config({ path: '.env.dev' }); // .env.dev 파일을 읽어 환경 변수에 로드합니다.
 import { ConfigService } from '@nestjs/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
@@ -17,8 +17,8 @@ const options: DataSourceOptions & SeederOptions = {
   database: configService.get('DATABASE_NAME'),
   synchronize: false,
   entities: ['src/apis/**/entity/*.entity.*'],
-  // seeds: ['src/database/seeds/**/*{.ts,.js}'],
-  seeds: ['src/database/seeds/total.seeder.ts'],
+  seeds: ['src/database/seeds/**/*{.ts,.js}'],
+  // seeds: ['src/database/seeds/total.seeder.ts'],
   factories: ['src/database/factories/**/*{.ts,.js}'],
 };
 

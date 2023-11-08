@@ -54,3 +54,10 @@ export interface IProjectServiceSearchProjects {
 export interface IProjectServiceFetchProjectOgDTO {
   project_id: string;
 }
+
+export interface IProjectServiceFetchMarkers {
+  north: number;
+  south: number;
+  east: number;
+  west: number;
+}

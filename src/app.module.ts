@@ -48,6 +48,7 @@ import { AppController } from './app.controller';
       entities: [__dirname + '/apis/**/entity/*.entity.*'],
       synchronize: true,
       logging: true,
+      legacySpatialSupport: false,
       // autoLoadEntities: true,
     }),
   ],

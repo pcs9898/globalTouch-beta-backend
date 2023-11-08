@@ -34,6 +34,21 @@ export class ProjectResolver {
   }
 
   @Query(() => [Project])
+  async fetchMarkers(
+    @Args('north') north: number,
+    @Args('south') south: number,
+    @Args('east') east: number,
+    @Args('west') west: number,
+  ): Promise<Project[]> {
+    return this.projectService.fetchMarkers({
+      north,
+      south,
+      east,
+      west,
+    });
+  }
+
+  @Query(() => [Project])
   async fetchProjectsByCountry(
     @Args('country_code') country_code: string,
     @Args('offset') offset: number,
