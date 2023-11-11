@@ -8,5 +8,7 @@ RUN yarn install
 COPY . /myfolder/
 
 RUN npm rebuild bcrypt --build-from-source
+RUN yarn build
 
-CMD yarn start:dev
+
+CMD yarn start:prod:docker
