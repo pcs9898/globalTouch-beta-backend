@@ -17,9 +17,10 @@ const options: DataSourceOptions & SeederOptions = {
   database: configService.get('DATABASE_NAME'),
   synchronize: false,
   entities: ['src/apis/**/entity/*.entity.*'],
-  seeds: ['src/database/seeds/**/*{.ts,.js}'],
-  // seeds: ['src/database/seeds/total.seeder.ts'],
+  // seeds: ['src/database/seeds/**/*{.ts,.js}'],
+  seeds: ['src/database/seeds/total.seeder.ts'],
   factories: ['src/database/factories/**/*{.ts,.js}'],
+  legacySpatialSupport: false,
 };
 
 // (async () => {

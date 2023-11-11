@@ -187,6 +187,7 @@ export class ProjectService {
   }: IProjectServiceFetchMarkers) {
     return await this.projectRepository
       .createQueryBuilder('project')
+      .leftJoinAndSelect('project.projectCategory', 'projectCategory')
       .leftJoinAndSelect('project.countryCode', 'countryCode')
       .leftJoinAndSelect('project.projectImages', 'projectImages')
       .where('ST_Within(project.location, ST_GeomFromText(:bounds,4326))', {
