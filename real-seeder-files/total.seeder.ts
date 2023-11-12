@@ -71,13 +71,13 @@ export default class UserSeeder implements Seeder {
     //User
     console.log('Seeding User,Project,ProjectURl...');
     try {
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 150; i++) {
         const userUuid = faker.string.uuid();
         const userToInsert = {
           user_id: userUuid,
           email: faker.internet.email(),
           password_hash: await bcrypt.hash(faker.internet.password(), 10),
-          name: faker.person.fullName(),
+          name: faker.person.firstName(),
           profile_image_url: faker.image.url(),
         };
         await userRepository.insert(userToInsert);
@@ -110,18 +110,21 @@ export default class UserSeeder implements Seeder {
           where: { project_id: projectUuid },
         });
         //UpdatedProject
-        const updatedProjectToInsert = {
-          updatedProject_id: faker.string.uuid(),
-          content: faker.lorem.words({ min: 20, max: 40 }),
-          project: temp_project,
-        };
-        updatedProjectRepository.insert(updatedProjectToInsert);
+        for (let j = 0; j < 2; j++) {
+          const updatedProjectToInsert = {
+            updatedProject_id: faker.string.uuid(),
+            content: faker.lorem.words({ min: 20, max: 40 }),
+            project: temp_project,
+          };
+          updatedProjectRepository.insert(updatedProjectToInsert);
+        }
+
         //ProjectImage
         const image_urls = project.projectImages.split(',');
         image_urls.map(async (url, i) => {
           const imageUrlToInsert = {
             projectImage_id: faker.string.uuid(),
-            image_url: url,
+            image_url: `https://storage.googleapis.com/uyvugugihohonodjiwqd/projectImages/${url}`,
             project: temp_project,
             image_index: i,
           };
@@ -138,11 +141,11 @@ export default class UserSeeder implements Seeder {
     //ProjectDonation
     try {
       console.log('Seeding ProjectDonation,projectComment...');
-      for (let i = 0; i < 100; i++) {
-        for (let j = 0; j < 3; j++) {
+      for (let i = 0; i < 150; i++) {
+        for (let j = 0; j < 15; j++) {
           let temp = i + j + 1;
-          if (temp >= 100) {
-            temp -= 100;
+          if (temp >= 150) {
+            temp -= 150;
           }
           const user = await userRepository.findOne({
             where: { user_id: usersList[temp] },
