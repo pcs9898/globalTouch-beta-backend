@@ -24,7 +24,6 @@ export class CustomExceptionFilter implements ExceptionFilter {
       error.status = exception.getStatus();
       error.message = exception.message;
       if (exception.message === 'Cannot GET /favicon.ico') {
-        // If so, just return an empty response
         response.status(200).send();
         return;
       }

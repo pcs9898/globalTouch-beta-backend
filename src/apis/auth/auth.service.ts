@@ -39,15 +39,29 @@ export class AuthService {
       { secret: process.env.PASSPORT_JWT_REFRESH_SECRET_KEY, expiresIn: '2w' },
     );
 
+    //local
+    // if (res) {
+    //   res.setHeader(
+    //     'set-cookie',
+    //     `refreshToken=${refreshToken}; path=/; sameSite:none; secure:true; httpOnly:true; `,
+    //   );
+    // } else {
+    //   context.res.setHeader(
+    //     'set-cookie',
+    //     `refreshToken=${refreshToken}; path=/; sameSite:none; secure:true; httpOnly:true; `,
+    //   );
+    // }
+
+    //docker
     if (res) {
       res.setHeader(
-        'set-cookie',
-        `refreshToken=${refreshToken}; path=/; sameSite:none; secure:true; httpOnly:true; `,
+        'set-Cookie',
+        `refreshToken=${refreshToken}; path=/; domain=.channitest.shop; SameSite=None; Secure; httpOnly;`,
       );
     } else {
       context.res.setHeader(
-        'set-cookie',
-        `refreshToken=${refreshToken}; path=/; sameSite:none; secure:true; httpOnly:true; `,
+        'set-Cookie',
+        `refreshToken=${refreshToken}; path=/; domain=.channitest.shop; SameSite=None; Secure; httpOnly;`,
       );
     }
   }
