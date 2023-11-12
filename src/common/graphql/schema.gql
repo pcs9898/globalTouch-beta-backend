@@ -131,6 +131,7 @@ type Query {
 type Mutation {
   loginUser(loginDTO: LoginDTO!): String!
   restoreAccessToken: String!
+  logout: String!
   createProjectComment(createProjectCommentDTO: CreateProjectCommentDTO!): ProjectComment!
   updateProjectComment(updateProjectCommentDTO: UpdateProjectCommentDTO!): ProjectComment!
   deleteProjectComment(deleteProjectCommentDTO: DeleteProjectCommentDTO!): DeleteProjectCommentResponseDTO!

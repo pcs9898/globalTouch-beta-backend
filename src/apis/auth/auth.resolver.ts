@@ -22,4 +22,10 @@ export class AuthResolver {
   restoreAccessToken(@Context() context: IContext): string {
     return this.authService.restoreAccessToken({ user: context.req.user });
   }
+
+  @UseGuards(GqlAuthGuard('refresh'))
+  @Mutation(() => String)
+  logout(@Context() context: IContext): boolean {
+    return this.authService.logout(context);
+  }
 }

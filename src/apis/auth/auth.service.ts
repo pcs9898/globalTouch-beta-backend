@@ -9,6 +9,7 @@ import {
   IAuthServiceSetRefreshToken,
 } from './interfaces/auth-service.interface';
 import { CommonService } from '../common/common.service';
+import { IContext } from 'src/common/interfaces/context';
 
 @Injectable()
 export class AuthService {
@@ -64,6 +65,14 @@ export class AuthService {
         `refreshToken=${refreshToken}; path=/; domain=.channitest.shop;  SameSite=None; Secure; `,
       );
     }
+  }
+
+  logout(context: IContext) {
+    context.res.setHeader(
+      'set-Cookie',
+      `refreshToken=; path=/; domain=.channitest.shop; SameSite=None; Secure; expires=Thu, 01 Jan 1970 00:00:00 UTC`,
+    );
+    return true;
   }
 
   getAccessToken({ user }: IAuthServiceGetAccessToken): string {
