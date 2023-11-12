@@ -68,17 +68,20 @@ export class AuthService {
   }
 
   logout(context: IContext) {
-    context.res.setHeader(
-      'set-Cookie',
-      `refreshToken=; path=/; domain=.channitest.shop; SameSite=None; Secure; expires=Thu, 01 Jan 1970 00:00:00 UTC`,
-    );
-    // console.log('hi');
-    // context.res.setHeader(
-    //   'set-Cookie',
-    //   `refreshToken=; path=/;  SameSite=None; Secure; expires=Thu, 01 Jan 1970 00:00:00 UTC`,
-    // );
-
-    return true;
+    try {
+      context.res.setHeader(
+        'set-Cookie',
+        `refreshToken=; path=/; domain=.channitest.shop; SameSite=None; Secure; expires=Thu, 01 Jan 1970 00:00:00 UTC`,
+      );
+      // console.log('hi');
+      // context.res.setHeader(
+      //   'set-Cookie',
+      //   `refreshToken=; path=/;  SameSite=None; Secure; expires=Thu, 01 Jan 1970 00:00:00 UTC`,
+      // );
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   getAccessToken({ user }: IAuthServiceGetAccessToken): string {
