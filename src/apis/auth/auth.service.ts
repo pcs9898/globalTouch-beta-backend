@@ -41,30 +41,30 @@ export class AuthService {
     );
 
     //local
-    if (res) {
-      res.setHeader(
-        'set-cookie',
-        `refreshToken=${refreshToken}; path=/; sameSite:none; secure:true; httpOnly:true; `,
-      );
-    } else {
-      context.res.setHeader(
-        'set-cookie',
-        `refreshToken=${refreshToken}; path=/; sameSite:none; secure:true; httpOnly:true; `,
-      );
-    }
-
-    //docker
     // if (res) {
     //   res.setHeader(
-    //     'set-Cookie',
-    //     `refreshToken=${refreshToken}; path=/; domain=.channitest.shop; SameSite=None;  Secure; `,
+    //     'set-cookie',
+    //     `refreshToken=${refreshToken}; path=/; sameSite:none; secure:true; httpOnly:true; `,
     //   );
     // } else {
     //   context.res.setHeader(
-    //     'set-Cookie',
-    //     `refreshToken=${refreshToken}; path=/; domain=.channitest.shop;  SameSite=None; Secure; `,
+    //     'set-cookie',
+    //     `refreshToken=${refreshToken}; path=/; sameSite:none; secure:true; httpOnly:true; `,
     //   );
     // }
+
+    //docker
+    if (res) {
+      res.setHeader(
+        'set-Cookie',
+        `refreshToken=${refreshToken}; path=/; domain=.channitest.shop; SameSite=None;  Secure; `,
+      );
+    } else {
+      context.res.setHeader(
+        'set-Cookie',
+        `refreshToken=${refreshToken}; path=/; domain=.channitest.shop;  SameSite=None; Secure; `,
+      );
+    }
   }
 
   logout(context: IContext) {
