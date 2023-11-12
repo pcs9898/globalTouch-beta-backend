@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 
-config({ path: '.env.docker' }); // .env.dev 파일을 읽어 환경 변수에 로드합니다.
+config({ path: '.env.dev' }); // .env.dev 파일을 읽어 환경 변수에 로드합니다.
 import { ConfigService } from '@nestjs/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';

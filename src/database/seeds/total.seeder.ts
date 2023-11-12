@@ -186,3 +186,69 @@ export default class UserSeeder implements Seeder {
     console.timeEnd('seed');
   }
 }
+
+// CountryCode.seeder.ts
+// import { CountryCode } from 'src/apis/countryCode/entity/countryCode.entity';
+// import { DataSource } from 'typeorm';
+// import { Seeder } from 'typeorm-extension';
+// const fs = require('fs');
+
+// export default class CoutnryCodeSeeder implements Seeder {
+//   public async run(dataSource: DataSource): Promise<any> {
+//     console.log('Seeding CoutnryCode...');
+//     const repository = dataSource.getRepository(CountryCode);
+
+//     try {
+//       const rawData = fs.readFileSync(
+//         'seeds-data/coutnryCode.seed.json',
+//         'utf8',
+//       );
+
+//       const countryCodes = JSON.parse(rawData);
+
+//       const countryCodeToInsert = countryCodes.map((country_code: string) => ({
+//         country_code,
+//       }));
+
+//       await repository.insert(countryCodeToInsert);
+
+//       console.log('CoutnryCode seeded successfully');
+//     } catch (error) {
+//       console.error('Error seeding CoutnryCode', error);
+//     }
+//   }
+// }
+
+// ProjectCategory.seeder.ts
+// import { Seeder } from 'typeorm-extension';
+// import { DataSource } from 'typeorm';
+// import { ProjectCategory } from 'src/apis/projectCategory/entity/projectCategory.entity';
+
+// const fs = require('fs');
+
+// export default class ProjectCategorySeeder implements Seeder {
+//   public async run(dataSource: DataSource): Promise<any> {
+//     console.log('Seeding ProjectCategory...');
+//     const repository = dataSource.getRepository(ProjectCategory);
+
+//     try {
+//       const rawData = fs.readFileSync(
+//         'seeds-data/projectCategory.seed.json',
+//         'utf8',
+//       );
+
+//       const peojectCategories = JSON.parse(rawData);
+
+//       const peojectCategoriesToInsert = peojectCategories.map(
+//         (project_category: string) => ({
+//           project_category,
+//         }),
+//       );
+
+//       await repository.insert(peojectCategoriesToInsert);
+//       console.log('ProjectCategory seeded successfully');
+//     } catch (error) {
+//       console.error('Error seeding ProjectCategory', error);
+//     }
+//   }
+// }
