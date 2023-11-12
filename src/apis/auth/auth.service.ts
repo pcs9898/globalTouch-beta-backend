@@ -56,12 +56,12 @@ export class AuthService {
     if (res) {
       res.setHeader(
         'set-Cookie',
-        `refreshToken=${refreshToken}; path=/; domain=channitest.shop;  Secure; httpOnly;`,
+        `refreshToken=${refreshToken}; path=/; domain=channitest.shop;  Secure; `,
       );
     } else {
       context.res.setHeader(
         'set-Cookie',
-        `refreshToken=${refreshToken}; path=/; domain=channitest.shop;  Secure; httpOnly;`,
+        `refreshToken=${refreshToken}; path=/; domain=channitest.shop;  Secure; `,
       );
     }
   }
