@@ -6,7 +6,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 async function bootstrap() {
-  // for https, local
+  // // for https, local
   // const httpsOptions = {
   //   key: readFileSync(join(__dirname, '..', 'ssl', 'localhost-key.pem')),
   //   cert: readFileSync(join(__dirname, '..', 'ssl', 'localhost.pem')),
