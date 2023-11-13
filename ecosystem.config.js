@@ -7,7 +7,7 @@ module.exports = {
       script: './dist/main.js',
       watch: false,
       autorestart: true,
-      env: {
+      env_development: {
         NODE_ENV: 'dev',
       },
       env_production: {
