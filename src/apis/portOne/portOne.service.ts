@@ -8,10 +8,12 @@ import {
 @Injectable()
 export class PortOneService {
   async getAccessToken(): Promise<string> {
+    console.log(process.env.PORTONE_IMP_KEY);
     const result = await axios.post(`https://api.iamport.kr/users/getToken`, {
       imp_key: process.env.PORTONE_IMP_KEY,
       imp_secret: process.env.PORTONE_IMP_SECRET,
     });
+
     return result.data.response.access_token;
   }
 
