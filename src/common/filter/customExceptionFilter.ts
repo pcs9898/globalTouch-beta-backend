@@ -14,6 +14,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
+    const request = ctx.getRequest<Request>();
 
     const error = {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -25,6 +26,17 @@ export class CustomExceptionFilter implements ExceptionFilter {
       error.message = exception.message;
       if (exception.message === 'Cannot GET /favicon.ico') {
         response.status(200).send();
+        return;
+      }
+
+      if (exception.message === 'request aborted') {
+        console.error('Request aborted by the client');
+        response.status(error.status).json({
+          statusCode: error.status,
+          timestamp: new Date().toISOString(),
+          path: request.url,
+          error: 'Request aborted by the client',
+        });
         return;
       }
     } else if (exception instanceof AxiosError) {
