@@ -5,7 +5,7 @@ module.exports = {
     {
       name: 'globaltouch-backend',
       script: './dist/main.js',
-      watch: true,
+      watch: false,
       env: {
         NODE_ENV: 'dev',
       },
