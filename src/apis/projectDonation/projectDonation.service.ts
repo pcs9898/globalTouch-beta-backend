@@ -35,7 +35,7 @@ export class ProjectDonationService {
   async createProjectDonation({
     createProjectDonationDTO,
     context,
-  }: IProjectDonationServiceCreateProjectDonation): Promise<CreateProjectDonationResponseDTO> {
+  }: IProjectDonationServiceCreateProjectDonation): Promise<ProjectDonation> {
     await this.portOneService.checkDonated({
       imp_uid: createProjectDonationDTO.imp_uid,
       amount: createProjectDonationDTO.amount,
@@ -63,7 +63,7 @@ export class ProjectDonationService {
       if (project.user.user_id === context.req.user.user_id)
         throw new UnprocessableEntityException('Self-donation is not allowed');
 
-      await queryRunner.manager.save(ProjectDonation, {
+      const newDonation = await queryRunner.manager.save(ProjectDonation, {
         ...createProjectDonationDTO,
         status: PROJECT_DONATION_STATUS_ENUM.PAYMENT,
         user: context.req.user,
@@ -80,7 +80,12 @@ export class ProjectDonationService {
 
       await queryRunner.commitTransaction();
 
-      if (updatedProject) return { success: true };
+      const foundDonation = await this.projectDonationRepository.findOne({
+        where: { projectDonation_id: newDonation.projectDonation_id },
+        relations: ['project', 'project.countryCode', 'project.projectImages'],
+      });
+
+      if (updatedProject) return foundDonation;
       else
         throw new UnprocessableEntityException(
           'An error occurred during the donation process',

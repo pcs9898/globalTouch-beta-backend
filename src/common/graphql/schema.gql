@@ -136,7 +136,7 @@ type Mutation {
   updateProjectComment(updateProjectCommentDTO: UpdateProjectCommentDTO!): ProjectComment!
   deleteProjectComment(deleteProjectCommentDTO: DeleteProjectCommentDTO!): DeleteProjectCommentResponseDTO!
   createProject(createProjectDTO: CreateProjectDTO!): Project!
-  createProjectDonation(createProjectDonationDTO: CreateProjectDonationDTO!): CreateProjectDonationResponseDTO!
+  createProjectDonation(createProjectDonationDTO: CreateProjectDonationDTO!): ProjectDonation!
   createProjectDonationForMobile(createProjectDonationForMobileDTO: CreateProjectDonationForMobileDTO!): CreateProjectDonationResponseDTO!
   createUpdatedProject(createUpdatedProjectDTO: CreateUpdatedProjectDTO!): UpdatedProject!
   createUser(createUserDTO: CreateUserDTO!): CreateUserResponseDTO!
