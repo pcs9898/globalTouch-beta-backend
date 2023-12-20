@@ -1,4 +1,4 @@
-# globalTouch-beta
+# globalTouch-beta-backend
 
 - [x] feature0/initialSetup
 

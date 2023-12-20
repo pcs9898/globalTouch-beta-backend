@@ -57,12 +57,12 @@ export class AuthService {
     if (res) {
       res.setHeader(
         'set-Cookie',
-        `refreshToken=${refreshToken}; path=/; domain=.channitest.shop; SameSite=None;  Secure; `,
+        `refreshToken=${refreshToken}; path=/; domain=.channitest.store; SameSite=None;  Secure; `,
       );
     } else {
       context.res.setHeader(
         'set-Cookie',
-        `refreshToken=${refreshToken}; path=/; domain=.channitest.shop;  SameSite=None; Secure; `,
+        `refreshToken=${refreshToken}; path=/; domain=.channitest.store;  SameSite=None; Secure; `,
       );
     }
   }
@@ -71,7 +71,7 @@ export class AuthService {
     try {
       context.res.setHeader(
         'set-Cookie',
-        `refreshToken=; path=/; domain=.channitest.shop; SameSite=None; Secure; expires=Thu, 01 Jan 1970 00:00:00 UTC`,
+        `refreshToken=; path=/; domain=.channitest.store; SameSite=None; Secure; expires=Thu, 01 Jan 1970 00:00:00 UTC`,
       );
       // console.log('hi');
       // context.res.setHeader(
